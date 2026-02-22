@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
@@ -3574,7 +3574,7 @@
             { id: "tetris_20_lines", name: "Arquiteto do Caos", desc: "Eliminou 20 linhas no total.", rarity: "legendary" },
             { id: "snake_10", name: "Ninja da Cobrinha", desc: "Fez 10 pontos na Cobrinha.", rarity: "uncommon" },
             { id: "paint_artist", name: "Picasso do Pixel", desc: "Desenhou no Paint.", rarity: "common" },
-            { id: "music_time", name: "Modo Vibe ON", desc: "Escutou música por 5 minutos.", rarity: "uncommon" },
+            { id: "music_time", name: "Modo Vibe ON", desc: "Escutou uma música.", rarity: "uncommon" },
             { id: "ttt_win", name: "Mente de Titânio", desc: "Ganhou no Jogo da Velha.", rarity: "uncommon" },
             { id: "mines_win", name: "Caçador de Bombas", desc: "Venceu o Campo Minado.", rarity: "rare" },
             { id: "cmd_user", name: "Digitador das Sombras", desc: "Usou um comando no CMD.", rarity: "common" },
@@ -8869,69 +8869,30 @@ onclick="revealMine('${winId}',${i},this)">
             }
         }
 
-        // ===== Controle de conquista: 5 minutos contínuos =====
-const musicAchievement = {
-    requiredTime: 300, // 5 minutos = 300 segundos
-    currentTime: 0,
-    interval: null,
-    unlocked: false
-};
-
-function startMusicTimer() {
-    if (musicAchievement.unlocked) return;
-
-    stopMusicTimer();
-
-    musicAchievement.interval = setInterval(() => {
-        musicAchievement.currentTime++;
-
-        if (musicAchievement.currentTime >= musicAchievement.requiredTime) {
-            musicAchievement.unlocked = true;
-            stopMusicTimer();
-            unlockAchievement("music_5min");
-        }
-    }, 1000);
-}
-
-function stopMusicTimer(reset = true) {
-    clearInterval(musicAchievement.interval);
-    musicAchievement.interval = null;
-
-    if (reset && !musicAchievement.unlocked) {
-        musicAchievement.currentTime = 0;
-    }
-}
-
         function musicPlay(winId) {
-    const audio = document.getElementById(`audio-${winId}`);
-    const playBtn = document.getElementById(`play-${winId}`);
+            const audio = document.getElementById(`audio-${winId}`);
+            const playBtn = document.getElementById(`play-${winId}`);
 
-    if (audio.paused) {
-        audio.play();
-        playBtn.classList.remove("paused");
-        playBtn.innerText = "⏸";
+            if (audio.paused) {
+                audio.play();
+                playBtn.classList.remove("paused");
+                playBtn.innerText = "⏸";
+                unlockAchievement("music_time");
+            } else {
+                audio.pause();
+                playBtn.classList.add("paused");
+                playBtn.innerText = "▶";
+            }
 
-        startMusicTimer(); // começa contar
+            audio.ontimeupdate = () => updateProgress(winId);
+            audio.onloadedmetadata = () => updateDuration(winId);
+            audio.onended = () => {
+                playBtn.classList.add("paused");
+                playBtn.innerText = "▶";
+            };
 
-    } else {
-        audio.pause();
-        playBtn.classList.add("paused");
-        playBtn.innerText = "▶";
-
-        stopMusicTimer(); // pausa reseta
-    }
-
-    audio.ontimeupdate = () => updateProgress(winId);
-    audio.onloadedmetadata = () => updateDuration(winId);
-
-    audio.onended = () => {
-        playBtn.classList.add("paused");
-        playBtn.innerText = "▶";
-        stopMusicTimer(); // terminou = reseta
-    };
-
-    enableThumbDrag(winId);
-}
+            enableThumbDrag(winId);
+        }
 
         function updateProgress(winId) {
             const audio = document.getElementById(`audio-${winId}`);
@@ -8962,19 +8923,16 @@ function stopMusicTimer(reset = true) {
         }
 
         function seekMusic(e, winId) {
-    const audio = document.getElementById(`audio-${winId}`);
-    const bar = e.currentTarget;
+            const audio = document.getElementById(`audio-${winId}`);
+            const bar = e.currentTarget;
 
-    const rect = bar.getBoundingClientRect();
-    const clickX = e.clientX - rect.left;
-    const percent = clickX / rect.width;
+            const rect = bar.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percent = clickX / rect.width;
 
-    audio.currentTime = percent * audio.duration;
-
-    stopMusicTimer(); // buscar posição quebra continuidade
-
-    updateProgress(winId);
-}
+            audio.currentTime = percent * audio.duration;
+            updateProgress(winId);
+        }
 
         function musicBack(winId) {
             document.getElementById(`audio-${winId}`).currentTime = 0;
@@ -9038,27 +8996,27 @@ function stopMusicTimer(reset = true) {
         let currentTrackIndex = 0;
 
         function updateTrack(winId) {
-    const track = tracks[currentTrackIndex];
-    const audio = document.getElementById(`audio-${winId}`);
-    const cover = document.getElementById(`cover-${winId}`);
-    const title = document.getElementById(`title-${winId}`);
-    const playBtn = document.getElementById(`play-${winId}`);
+            const track = tracks[currentTrackIndex];
+            const audio = document.getElementById(`audio-${winId}`);
+            const cover = document.getElementById(`cover-${winId}`);
+            const title = document.getElementById(`title-${winId}`);
+            const playBtn = document.getElementById(`play-${winId}`);
 
-    stopMusicTimer(); // troca música = perde progresso
+            audio.src = track.src;
+            cover.src = track.cover;
+            title.innerText = track.title;
 
-    audio.src = track.src;
-    cover.src = track.cover;
-    title.innerText = track.title;
+            audio.pause();
+            audio.currentTime = 0;
+            playBtn.innerText = "▶";
+            playBtn.classList.add("paused");
 
-    audio.pause();
-    audio.currentTime = 0;
-    playBtn.innerText = "▶";
-    playBtn.classList.add("paused");
+            // Atualiza a barra de progresso zerada
+            updateProgress(winId);
 
-    updateProgress(winId);
-
-    audio.onloadedmetadata = () => updateDuration(winId);
-}
+            // Espera o áudio carregar os metadados antes de atualizar a duração
+            audio.onloadedmetadata = () => updateDuration(winId);
+        }
 
         function nextTrack(winId) {
             currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
@@ -9473,5 +9431,4 @@ function stopMusicTimer(reset = true) {
 
     </script>
 </body>
-
 </html>
