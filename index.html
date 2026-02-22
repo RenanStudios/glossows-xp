@@ -4146,461 +4146,767 @@
         }
 
         function initGameLogic(charIndex) {
-            const canvas = document.getElementById("dorf-canvas");
-            const ctx = canvas.getContext("2d");
-
-            // Inicialização aprimorada com atributos de combate
-            dorfState.player = {
-                x: 150, y: 380, vx: 0, vy: 0, w: 75, h: 145,
-                health: 100, side: 1, char: CHARS[charIndex],
-                state: 'idle', frame: 0, attackTimer: 0,
-                attackType: null, // 'light' ou 'heavy'
-                isStunned: 0, isBlocking: false,
-                color: CHARS[charIndex].color
-            };
-
-            dorfState.cpu = {
-                x: 675, y: 380, vx: 0, vy: 0, w: 75, h: 145,
-                health: 100, side: -1, char: CHARS[(charIndex + 1) % 3],
-                state: 'idle', frame: 0, attackTimer: 0,
-                attackType: null,
-                isStunned: 0, isBlocking: false,
-                color: CHARS[(charIndex + 1) % 3].color
-            };
-
-            const keys = {};
-            window.onkeydown = e => keys[e.code] = true;
-            window.onkeyup = e => keys[e.code] = false;
-
-            function spawnHitParticles(x, y, color, count = 15) {
-                for (let i = 0; i < count; i++) {
-                    dorfState.particles.push({
-                        x, y,
-                        vx: (Math.random() - 0.5) * 20,
-                        vy: (Math.random() - 0.5) * 20,
-                        life: 1,
-                        size: Math.random() * 6 + 2,
-                        color: color || "#fff"
-                    });
-                }
-            }
-
-            function checkAttack(attacker, target) {
-                // Frames de impacto específicos por tipo de ataque
-                const impactFrame = attacker.attackType === 'heavy' ? 12 : 6;
-
-                if (attacker.state === 'attack' && attacker.attackTimer === impactFrame) {
-                    const range = attacker.attackType === 'heavy' ? 90 : 60;
-                    const damage = attacker.attackType === 'heavy' ? 12 : 5;
-                    const reach = attacker.side === 1 ? attacker.x + attacker.w : attacker.x - range;
-
-                    // Verificação de Colisão (Hitbox)
-                    if (reach + range > target.x && reach < target.x + target.w &&
-                        attacker.y - 120 < target.y && attacker.y > target.y - target.h) {
-
-                        // Lógica de Defesa
-                        let finalDamage = damage * attacker.char.power;
-                        let knockbackX = attacker.side * (attacker.attackType === 'heavy' ? 20 : 10);
-
-                        if (target.isBlocking) {
-                            finalDamage *= 0.2; // 80% de redução
-                            knockbackX *= 0.5;
-                            spawnHitParticles(target.x + target.w / 2, target.y - 80, "#fff", 5); // Partículas de faísca
-                        } else {
-                            target.health -= finalDamage;
-                            target.isStunned = attacker.attackType === 'heavy' ? 15 : 8;
-                            target.vy = attacker.attackType === 'heavy' ? -8 : -3;
-
-                            dorfState.hitstop = attacker.attackType === 'heavy' ? 8 : 4;
-                            dorfState.shake = attacker.attackType === 'heavy' ? 15 : 5;
-                            spawnHitParticles(reach + (range / 2), attacker.y - 80, attacker.char.secondary, 20);
-                        }
-
-                        target.vx = knockbackX;
-                        updateHUD();
-                    }
-                }
-            }
-
-            function updateHUD() {
-                const p1Hp = Math.max(0, dorfState.player.health);
-                const p2Hp = Math.max(0, dorfState.cpu.health);
-
-                const barP1 = document.getElementById("hp-player");
-                const barP2 = document.getElementById("hp-cpu");
-
-                if (barP1) barP1.style.width = p1Hp + "%";
-                if (barP2) barP2.style.width = p2Hp + "%";
-
-                const txtP1 = document.getElementById("p1-percent");
-                const txtP2 = document.getElementById("p2-percent");
-
-                if (txtP1) txtP1.innerText = Math.ceil(p1Hp) + "%";
-                if (txtP2) txtP2.innerText = Math.ceil(p2Hp) + "%";
-
-                if (p1Hp <= 0 || p2Hp <= 0) {
-                    dorfState.screen = "over";
-                    setTimeout(() => {
-                        const msg = p1Hp <= 0 ? "K.O. - CPU VENCEU!" : "K.O. - VOCÊ VENCEU!";
-                        alert(msg);
-                        if (window.dorfShowTitle) dorfShowTitle();
-                    }, 300);
-                }
-            }
-
-            function update() {
-                // Hitstop (Congelamento de impacto)
-                if (dorfState.hitstop > 0) {
-                    dorfState.hitstop--;
-                    return;
-                }
-
-                const p = dorfState.player;
-                const c = dorfState.cpu;
-
-                // Processamento de Stun (Atordoamento)
-                [p, c].forEach(e => { if (e.isStunned > 0) e.isStunned--; });
-
-                // Player Logic
-                if (p.isStunned <= 0 && p.state !== 'attack') {
-                    p.isBlocking = keys["ArrowDown"];
-
-                    if (!p.isBlocking) {
-                        if (keys["ArrowRight"]) { p.vx = 7; p.side = 1; p.state = 'move'; }
-                        else if (keys["ArrowLeft"]) { p.vx = -7; p.side = -1; p.state = 'move'; }
-                        else { p.vx *= 0.8; p.state = 'idle'; }
-
-                        if (keys["ArrowUp"] && p.y >= 380) p.vy = -18;
-
-                        if (keys["KeyZ"]) {
-                            p.state = 'attack'; p.attackType = 'light'; p.attackTimer = 0;
-                        } else if (keys["KeyX"]) {
-                            p.state = 'attack'; p.attackType = 'heavy'; p.attackTimer = 0;
-                        }
-                    } else {
-                        p.vx *= 0.5; // Movimento lento ao defender
-                        p.state = 'idle';
-                    }
-                }
-
-                // CPU AI Aprimorada
-                const dist = Math.abs(c.x - p.x);
-                if (c.isStunned <= 0 && c.state !== 'attack') {
-                    c.side = p.x > c.x ? 1 : -1;
-
-                    if (dist > 150) {
-                        c.vx = (p.x > c.x ? 5 : -5);
-                        c.state = 'move';
-                        c.isBlocking = false;
-                    } else {
-                        // Chance de defender se o player atacar
-                        c.isBlocking = (p.state === 'attack' && Math.random() > 0.5);
-
-                        if (!c.isBlocking) {
-                            c.vx *= 0.8;
-                            c.state = 'idle';
-                            if (Math.random() > 0.95) {
-                                c.state = 'attack';
-                                c.attackType = Math.random() > 0.7 ? 'heavy' : 'light';
-                                c.attackTimer = 0;
-                            }
-                        }
-                    }
-                }
-
-                // Physics & Animation
-                [p, c].forEach(e => {
-                    e.vy += 0.9; // Gravidade
-                    e.x += e.vx;
-                    e.y += e.vy;
-
-                    // Chão e Bordas
-                    if (e.y > 380) { e.y = 380; e.vy = 0; }
-                    if (e.x < 10) e.x = 10;
-                    if (e.x > canvas.width - e.w - 10) e.x = canvas.width - e.w - 10;
-
-                    // Ciclo de Ataque
-                    if (e.state === 'attack') {
-                        e.attackTimer++;
-                        const duration = e.attackType === 'heavy' ? 30 : 15;
-                        if (e.attackTimer > duration) e.state = 'idle';
-                    }
-                });
-
-                checkAttack(p, c);
-                checkAttack(c, p);
-
-                // Feedback Visual
-                if (dorfState.shake > 0) dorfState.shake *= 0.85;
-                dorfState.particles.forEach(pt => {
-                    pt.x += pt.vx; pt.y += pt.vy; pt.life -= 0.04;
-                });
-                dorfState.particles = dorfState.particles.filter(pt => pt.life > 0);
-            }
-
-            function drawEntity(e) {
-                ctx.save();
-                const bounce = Math.sin(Date.now() / 150) * 3;
-                const t = Date.now() / 200;
-                ctx.translate(e.x + e.w / 2, e.y + (e.state === 'idle' ? bounce : 0));
-                if (e.side === -1) ctx.scale(-1, 1);
-
-                const isAttack = e.state === 'attack';
-                const W = e.w, H = e.h;
-
-                // ── Sombra ──────────────────────────────────────────────
-                ctx.fillStyle = "rgba(0,0,0,0.18)";
-                ctx.beginPath();
-                ctx.ellipse(0, 12 - bounce, 38, 10, 0, 0, Math.PI * 2);
-                ctx.fill();
-
-                // ── Helpers ──────────────────────────────────────────────
-                function glossyFill(x, y, w, h, r, topColor, botColor, glossOpacity = 0.65) {
-                    const grad = ctx.createLinearGradient(x, y, x, y + h);
-                    grad.addColorStop(0, topColor);
-                    grad.addColorStop(1, botColor);
-                    ctx.fillStyle = grad;
-                    ctx.beginPath();
-                    ctx.roundRect(x, y, w, h, r);
-                    ctx.fill();
-                    ctx.strokeStyle = "rgba(255,255,255,0.45)";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    // gloss highlight
-                    const gl = ctx.createLinearGradient(x, y, x, y + h * 0.45);
-                    gl.addColorStop(0, `rgba(255,255,255,${glossOpacity})`);
-                    gl.addColorStop(1, "rgba(255,255,255,0)");
-                    ctx.fillStyle = gl;
-                    ctx.beginPath();
-                    ctx.roundRect(x + 4, y + 4, w - 8, h * 0.42, r * 0.8);
-                    ctx.fill();
-                }
-
-                function glossyEllipse(cx, cy, rx, ry, topColor, botColor) {
-                    const grad = ctx.createRadialGradient(cx - rx * 0.25, cy - ry * 0.3, ry * 0.05, cx, cy, Math.max(rx, ry));
-                    grad.addColorStop(0, topColor);
-                    grad.addColorStop(1, botColor);
-                    ctx.fillStyle = grad;
-                    ctx.beginPath();
-                    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.strokeStyle = "rgba(255,255,255,0.5)";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    // gloss
-                    const gl = ctx.createRadialGradient(cx - rx * 0.2, cy - ry * 0.35, 1, cx - rx * 0.1, cy - ry * 0.2, ry * 0.6);
-                    gl.addColorStop(0, "rgba(255,255,255,0.7)");
-                    gl.addColorStop(1, "rgba(255,255,255,0)");
-                    ctx.fillStyle = gl;
-                    ctx.beginPath();
-                    ctx.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-
-                const c1 = e.char.color;
-                const c2 = e.char.secondary;
-
-                // ── Pernas (walk cycle) ───────────────────────────────────
-                const legSwing = isAttack ? 0 : Math.sin(t) * 10;
-                const legW = 14, legH = 22, legY = -H * 0.18;
-
-                // Perna traseira
-                ctx.save();
-                ctx.translate(-9, legY);
-                ctx.rotate((-legSwing * Math.PI) / 180);
-                glossyFill(-legW / 2, 0, legW, legH, 7, c2, c1, 0.5);
-                // Pé traseiro
-                glossyFill(-legW / 2 - 2, legH - 5, legW + 6, 9, 4, c1, c2, 0.4);
-                ctx.restore();
-
-                // Perna dianteira
-                ctx.save();
-                ctx.translate(9, legY);
-                ctx.rotate((legSwing * Math.PI) / 180);
-                glossyFill(-legW / 2, 0, legW, legH, 7, c1, c2, 0.5);
-                // Pé dianteiro
-                glossyFill(-legW / 2 - 2, legH - 5, legW + 6, 9, 4, c2, c1, 0.4);
-                ctx.restore();
-
-                // ── Torso ────────────────────────────────────────────────
-                // Forma trapezoidal simulada com roundRect mais largo em cima
-                const torsoY = -H * 0.62, torsoH = H * 0.42, torsoW = W * 0.72;
-                glossyFill(-torsoW / 2, torsoY, torsoW, torsoH, [16, 16, 10, 10], c1, c2, 0.6);
-
-                // Emblema central (core gem)
-                ctx.shadowBlur = 14;
-                ctx.shadowColor = "rgba(255,255,255,0.9)";
-                glossyEllipse(0, torsoY + torsoH * 0.42, 9, 9, "#fff", c2);
-                ctx.shadowBlur = 0;
-
-                // ── Braço traseiro ───────────────────────────────────────
-                const armSwing = isAttack ? 0 : Math.sin(t + Math.PI) * 12;
-                const armW = 11, armH = 26, armY = torsoY + 6;
-
-                ctx.save();
-                ctx.translate(-torsoW / 2 + 4, armY);
-                ctx.rotate((-armSwing * Math.PI) / 180);
-                glossyFill(-armW / 2, 0, armW, armH, 6, c2, c1, 0.45);
-                // Mão
-                glossyEllipse(0, armH + 5, 7, 7, "#fff", c2);
-                ctx.restore();
-
-                // ── Braço dianteiro / Ataque ──────────────────────────────
-                ctx.save();
-                ctx.translate(torsoW / 2 - 4, armY);
-
-                if (isAttack) {
-                    const ext = Math.min(e.attackTimer * 9, 68);
-                    ctx.rotate(-20 * Math.PI / 180);
-
-                    // Braço esticado
-                    const punchGrad = ctx.createLinearGradient(0, 0, ext + armW, 0);
-                    punchGrad.addColorStop(0, c1);
-                    punchGrad.addColorStop(0.6, c2);
-                    punchGrad.addColorStop(1, "#fff");
-                    ctx.fillStyle = punchGrad;
-                    ctx.beginPath();
-                    ctx.roundRect(-armW / 2, -armW / 2, ext + armW, armW, 8);
-                    ctx.fill();
-                    ctx.strokeStyle = "rgba(255,255,255,0.6)";
-                    ctx.lineWidth = 2;
-                    ctx.stroke();
-
-                    // Punho
-                    glossyEllipse(ext + armW / 2, 0, 11, 11, "#fff", c2);
-
-                    // Onda de impacto
-                    if (e.attackTimer > 5) {
-                        ctx.globalAlpha = 1 - (e.attackTimer - 5) / 8;
-                        ctx.strokeStyle = "#fff";
-                        ctx.lineWidth = 3;
-                        for (let i = 1; i <= 3; i++) {
-                            ctx.beginPath();
-                            ctx.arc(ext + armW, 0, i * 9, -Math.PI / 2, Math.PI / 2);
-                            ctx.stroke();
-                        }
-                        ctx.globalAlpha = 1;
-                    }
-                } else {
-                    ctx.rotate((armSwing * Math.PI) / 180);
-                    glossyFill(-armW / 2, 0, armW, armH, 6, c1, c2, 0.45);
-                    glossyEllipse(0, armH + 5, 7, 7, "#fff", c1);
-                }
-                ctx.restore();
-
-                // ── Pescoço ───────────────────────────────────────────────
-                const neckY = torsoY - 10;
-                glossyFill(-6, neckY, 12, 12, 4, c1, c2, 0.3);
-
-                // ── Cabeça ────────────────────────────────────────────────
-                const headR = W * 0.34;
-                const headY = torsoY - headR * 1.85;
-                glossyEllipse(0, headY, headR, headR * 1.08, c1, c2);
-
-                // Orelhas
-                glossyEllipse(-headR + 1, headY, 6, 9, c2, c1);
-                glossyEllipse(headR - 1, headY, 6, 9, c2, c1);
-
-                // Olhos
-                const eyeY = headY - headR * 0.1;
-                const blink = Math.sin(Date.now() / 2800) > 0.92 ? 0.15 : 1;
-                [-1, 1].forEach(side => {
-                    // Branco do olho
-                    ctx.fillStyle = "white";
-                    ctx.shadowBlur = 6;
-                    ctx.shadowColor = "rgba(255,255,255,0.8)";
-                    ctx.beginPath();
-                    ctx.ellipse(side * headR * 0.38, eyeY, 6, 7 * blink, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.shadowBlur = 0;
-
-                    // Íris
-                    ctx.fillStyle = "rgba(30,20,60,0.9)";
-                    ctx.beginPath();
-                    ctx.ellipse(side * headR * 0.38, eyeY + 1, 3.5, 4.5 * blink, 0, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    // Brilho
-                    ctx.fillStyle = "white";
-                    ctx.beginPath();
-                    ctx.arc(side * headR * 0.38 - 1.5, eyeY - 2, 1.5, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-
-                // Boca (sorriso DORF)
-                ctx.strokeStyle = "rgba(30,20,60,0.7)";
-                ctx.lineWidth = 2;
-                ctx.lineCap = "round";
-                ctx.beginPath();
-                ctx.arc(0, eyeY + headR * 0.38, headR * 0.3, 0.15, Math.PI - 0.15);
-                ctx.stroke();
-
-                // Sobrancelhas
-                [-1, 1].forEach(side => {
-                    ctx.strokeStyle = "rgba(30,20,60,0.65)";
-                    ctx.lineWidth = 2.5;
-                    ctx.lineCap = "round";
-                    ctx.beginPath();
-                    const bx = side * headR * 0.38;
-                    ctx.moveTo(bx - side * 5, eyeY - 10);
-                    ctx.lineTo(bx + side * 5, eyeY - 8);
-                    ctx.stroke();
-                });
-
-                // ── Speculares extras no topo da cabeça ──────────────────
-                ctx.fillStyle = "rgba(255,255,255,0.25)";
-                ctx.beginPath();
-                ctx.ellipse(-headR * 0.15, headY - headR * 0.5, headR * 0.3, headR * 0.18, -0.4, 0, Math.PI * 2);
-                ctx.fill();
-
-                ctx.restore();
-            }
-
-            function draw() {
-                if (dorfState.screen !== "fight" && dorfState.screen !== "over") return;
-
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                ctx.save();
-                if (dorfState.shake > 1) {
-                    ctx.translate((Math.random() - 0.5) * dorfState.shake, (Math.random() - 0.5) * dorfState.shake);
-                }
-
-                // Cenário Glossy
-                const floorGrad = ctx.createLinearGradient(0, 380, 0, canvas.height);
-                floorGrad.addColorStop(0, "rgba(255,255,255,0.4)");
-                floorGrad.addColorStop(1, "rgba(255,255,255,0.1)");
-                ctx.fillStyle = floorGrad;
-                ctx.fillRect(0, 380, canvas.width, 100);
-
-                ctx.strokeStyle = "rgba(255,255,255,0.8)";
-                ctx.lineWidth = 4;
-                ctx.beginPath(); ctx.moveTo(0, 380); ctx.lineTo(canvas.width, 380); ctx.stroke();
-
-                // Desenhar lutadores
-                drawEntity(dorfState.player);
-                drawEntity(dorfState.cpu);
-
-                // Partículas de Impacto
-                dorfState.particles.forEach(pt => {
-                    ctx.globalAlpha = pt.life;
-                    ctx.fillStyle = pt.color;
-                    ctx.shadowBlur = 10;
-                    ctx.shadowColor = pt.color;
-                    ctx.beginPath();
-                    ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2);
-                    ctx.fill();
-                });
-                ctx.restore();
-
-                update();
-                requestAnimationFrame(draw);
-            }
-
-            draw();
+    const canvas = document.getElementById("dorf-canvas");
+    const ctx = canvas.getContext("2d");
+
+    const FLOOR_Y = 380;
+    const GRAVITY = 0.85;
+    const JUMP_FORCE = -18;
+
+    // ── Estado global da luta ────────────────────────────────────────────────
+    let gameOver = false;
+    let winner = null;   // 'player' | 'cpu'
+    let koFlash = 0;      // frames do flash branco no K.O.
+
+    dorfState.particles = dorfState.particles || [];
+    dorfState.hitstop = 0;
+    dorfState.shake = 0;
+
+    // ── Fábrica de entidade ──────────────────────────────────────────────────
+    function makeEntity(x, side, charObj) {
+        return {
+            x, y: FLOOR_Y, vx: 0, vy: 0,
+            w: 75, h: 145,
+            health: 100, maxHealth: 100,
+            side,
+            char: charObj,
+            state: 'idle',
+            attackTimer: 0, attackType: null,
+            isStunned: 0, isBlocking: false,
+            combo: 0, comboTimer: 0,
+            hitLanded: false,   // evita double-hit no mesmo swing
+        };
+    }
+
+    dorfState.player = makeEntity(150, 1, CHARS[charIndex]);
+    dorfState.cpu = makeEntity(675, -1, CHARS[(charIndex + 1) % CHARS.length]);
+
+    // ── Input ────────────────────────────────────────────────────────────────
+    const keys = {};
+    const pressed = {};    // detecta borda de subida (keydown único)
+
+    window.onkeydown = e => {
+        if (!keys[e.code]) pressed[e.code] = true;
+        keys[e.code] = true;
+        // Previne scroll da página
+        if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space"].includes(e.code))
+            e.preventDefault();
+    };
+    window.onkeyup = e => { keys[e.code] = false; };
+
+    // Clique no botão de restart desenhado no canvas
+    canvas.addEventListener('click', function onCanvasClick(e) {
+        if (!gameOver) return;
+        const rect = canvas.getBoundingClientRect();
+        const mx = (e.clientX - rect.left) * (canvas.width / rect.width);
+        const my = (e.clientY - rect.top) * (canvas.height / rect.height);
+        const bx = canvas.width / 2 - 110;
+        const by = canvas.height / 2 + 70;
+        if (mx > bx && mx < bx + 220 && my > by && my < by + 48) {
+            canvas.removeEventListener('click', onCanvasClick);
+            if (window.dorfShowTitle) dorfShowTitle();
         }
+    });
+
+    // ── IA do CPU ────────────────────────────────────────────────────────────
+    const ai = {
+        phase: 'approach',  // approach | pressure | retreat | bait
+        timer: 0,
+        reactionDelay: 0,
+        aggro: 0.55 + Math.random() * 0.35,     // 0.55–0.90
+        skill: 0.40 + Math.random() * 0.45,     // quão bem bloqueia
+    };
+
+    function updateCPU() {
+        const c = dorfState.cpu;
+        const p = dorfState.player;
+        if (c.isStunned > 0 || c.state === 'attack') return;
+
+        c.side = p.x > c.x ? 1 : -1;
+
+        const dist = Math.abs((c.x + c.w / 2) - (p.x + p.w / 2));
+        const onGround = c.y >= FLOOR_Y;
+
+        // -- Reação defensiva ao ataque do jogador --
+        if (ai.reactionDelay > 0) { ai.reactionDelay--; return; }
+
+        if (p.state === 'attack' && dist < 140 && onGround) {
+            if (Math.random() < ai.skill) {
+                c.isBlocking = true;
+                c.vx *= 0.2;
+                c.state = 'idle';
+                return;
+            }
+            // Dash para fora do alcance
+            if (Math.random() < ai.aggro * 0.3) {
+                c.vx = -c.side * 6;
+                c.state = 'move';
+                return;
+            }
+        }
+        c.isBlocking = false;
+
+        // -- Troca de fase --
+        ai.timer--;
+        if (ai.timer <= 0) {
+            const r = Math.random();
+            if (dist > 220) ai.phase = 'approach';
+            else if (dist < 55) ai.phase = r < 0.55 ? 'retreat' : 'pressure';
+            else {
+                if (r < ai.aggro * 0.55) ai.phase = 'pressure';
+                else if (r < 0.72) ai.phase = 'approach';
+                else ai.phase = 'bait';
+            }
+            ai.timer = 18 + Math.random() * 30;
+            ai.reactionDelay = Math.floor(Math.random() * 7 + 2);
+            return;
+        }
+
+        switch (ai.phase) {
+            case 'approach':
+                if (dist > 90) { c.vx = c.side * 5; c.state = 'move'; }
+                else ai.phase = 'pressure';
+                break;
+
+            case 'pressure':
+                c.vx *= 0.6; c.state = 'idle';
+                // Ataque
+                if (dist < 120 && Math.random() < ai.aggro * 0.09) {
+                    c.state = 'attack';
+                    c.attackType = Math.random() < ai.aggro ? 'light' : 'heavy';
+                    c.attackTimer = 0;
+                    c.hitLanded = false;
+                    ai.timer = 25;
+                }
+                // Salto ofensivo
+                if (onGround && dist < 180 && Math.random() < 0.012)
+                    c.vy = JUMP_FORCE;
+                break;
+
+            case 'retreat':
+                c.vx = -c.side * 4.5; c.state = 'move';
+                if (onGround && Math.random() < 0.018) c.vy = JUMP_FORCE;
+                break;
+
+            case 'bait':
+                // Anda devagar para provocar, depois contra-ataca
+                c.vx = c.side * 1.5; c.state = 'move';
+                if (p.state === 'attack' && dist < 150) {
+                    ai.phase = 'pressure';
+                    ai.timer = 10;
+                }
+                break;
+        }
+    }
+
+    // ── Partículas ───────────────────────────────────────────────────────────
+    function spawnParticles(x, y, color, count, spread = 18) {
+        for (let i = 0; i < count; i++) {
+            dorfState.particles.push({
+                x, y,
+                vx: (Math.random() - 0.5) * spread,
+                vy: (Math.random() - 0.5) * spread - 4,
+                life: 1,
+                size: Math.random() * 5 + 2,
+                color,
+            });
+        }
+    }
+
+    // ── Colisão de ataque ────────────────────────────────────────────────────
+    function checkAttack(attacker, target) {
+        // Só processa no frame exato de impacto e uma vez por swing
+        const impactFrame = attacker.attackType === 'heavy' ? 12 : 6;
+        if (attacker.state !== 'attack') return;
+        if (attacker.attackTimer !== impactFrame) return;
+        if (attacker.hitLanded) return;
+
+        // Hitbox do ataque
+        const range = attacker.attackType === 'heavy' ? 95 : 68;
+        const hbX = attacker.side === 1
+            ? attacker.x + attacker.w
+            : attacker.x - range;
+        const hbY = attacker.y - 140;
+        const hbH = 130;
+
+        // Hitbox do alvo (caixa mais forgiving que o sprite)
+        const tLeft = target.x + 8;
+        const tRight = target.x + target.w - 8;
+        const tTop = target.y - 140;
+
+        const hit = hbX < tRight && hbX + range > tLeft &&
+            hbY < target.y && hbY + hbH > tTop;
+        if (!hit) return;
+
+        attacker.hitLanded = true;
+
+        const baseDmg = attacker.attackType === 'heavy' ? 13 : 5;
+        const power = attacker.char.power || 1;
+        const kbX = attacker.side * (attacker.attackType === 'heavy' ? 16 : 8);
+        const kbY = attacker.attackType === 'heavy' ? -10 : -3;
+
+        if (target.isBlocking) {
+            // Chip damage + faísca
+            target.health -= baseDmg * power * 0.08;
+            target.vx = kbX * 0.35;
+            dorfState.shake = 3;
+            spawnParticles(target.x + target.w / 2, target.y - 80, "#b0e0ff", 7, 10);
+        } else {
+            // Sistema de combo
+            attacker.comboTimer = 95;
+            attacker.combo++;
+            const comboMult = 1 + Math.min(attacker.combo - 1, 5) * 0.08;
+
+            target.health -= baseDmg * power * comboMult;
+            target.vx = kbX;
+            target.vy = kbY;
+            target.isStunned = attacker.attackType === 'heavy' ? 20 : 10;
+            target.state = 'idle';
+            target.isBlocking = false;
+
+            dorfState.hitstop = attacker.attackType === 'heavy' ? 7 : 3;
+            dorfState.shake = attacker.attackType === 'heavy' ? 15 : 5;
+
+            const hitX = attacker.side === 1 ? target.x + 10 : target.x + target.w - 10;
+            spawnParticles(hitX, target.y - 75, attacker.char.secondary || "#fff",
+                attacker.attackType === 'heavy' ? 28 : 14);
+
+            // Flash branco no K.O.
+            if (target.health <= 0) koFlash = 20;
+        }
+
+        updateHUD();
+    }
+
+    // ── HUD ──────────────────────────────────────────────────────────────────
+    function updateHUD() {
+        const p1Hp = Math.max(0, dorfState.player.health);
+        const p2Hp = Math.max(0, dorfState.cpu.health);
+
+        ["hp-player", "hp-cpu"].forEach((id, i) => {
+            const el = document.getElementById(id);
+            if (el) el.style.width = (i === 0 ? p1Hp : p2Hp) + "%";
+        });
+
+        const tp1 = document.getElementById("p1-percent");
+        const tp2 = document.getElementById("p2-percent");
+        if (tp1) tp1.innerText = Math.ceil(p1Hp) + "%";
+        if (tp2) tp2.innerText = Math.ceil(p2Hp) + "%";
+
+        if (!gameOver && (p1Hp <= 0 || p2Hp <= 0)) {
+            gameOver = true;
+            winner = p1Hp <= 0 ? 'cpu' : 'player';
+            dorfState.screen = "over";
+        }
+    }
+
+    // ── Update principal ─────────────────────────────────────────────────────
+    function update() {
+        if (gameOver) return;
+
+        // Hitstop — congela tudo
+        if (dorfState.hitstop > 0) { dorfState.hitstop--; return; }
+
+        const p = dorfState.player;
+        const c = dorfState.cpu;
+
+        // Timers de combo
+        [p, c].forEach(e => {
+            if (e.comboTimer > 0) e.comboTimer--;
+            else e.combo = 0;
+        });
+
+        // Stun
+        [p, c].forEach(e => { if (e.isStunned > 0) e.isStunned--; });
+
+        // Entrada do jogador
+        if (p.isStunned <= 0 && p.state !== 'attack') {
+            p.isBlocking = keys["ArrowDown"] && p.y >= FLOOR_Y;
+
+            if (!p.isBlocking) {
+                if (keys["ArrowRight"]) { p.vx = 7; p.side = 1; p.state = 'move'; }
+                else if (keys["ArrowLeft"]) { p.vx = -7; p.side = -1; p.state = 'move'; }
+                else { p.vx *= 0.75; p.state = 'idle'; }
+
+                // Pulo (ArrowUp ou Space)
+                if ((pressed["ArrowUp"] || pressed["Space"]) && p.y >= FLOOR_Y)
+                    p.vy = JUMP_FORCE;
+
+                // Ataque leve (Z)
+                if (pressed["KeyZ"]) {
+                    p.state = 'attack'; p.attackType = 'light';
+                    p.attackTimer = 0; p.hitLanded = false;
+                }
+                // Ataque pesado (X)
+                if (pressed["KeyX"]) {
+                    p.state = 'attack'; p.attackType = 'heavy';
+                    p.attackTimer = 0; p.hitLanded = false;
+                }
+            } else {
+                p.vx *= 0.35; p.state = 'idle';
+            }
+        } else if (p.isStunned > 0) {
+            p.isBlocking = false;
+        }
+
+        // IA do CPU
+        updateCPU();
+
+        // Física
+        [p, c].forEach(e => {
+            e.vy += GRAVITY;
+            e.x += e.vx;
+            e.y += e.vy;
+
+            // Chão
+            if (e.y >= FLOOR_Y) { e.y = FLOOR_Y; e.vy = 0; }
+
+            // Paredes da arena
+            e.x = Math.max(10, Math.min(canvas.width - e.w - 10, e.x));
+
+            // Ciclo de ataque
+            if (e.state === 'attack') {
+                e.attackTimer++;
+                const dur = e.attackType === 'heavy' ? 32 : 18;
+                if (e.attackTimer >= dur) { e.state = 'idle'; e.attackTimer = 0; }
+            }
+
+            // Atrito no chão
+            if (e.y >= FLOOR_Y && e.state !== 'move') e.vx *= 0.78;
+        });
+
+        // Separação de corpos sobrepostos
+        const overlap = (p.x + p.w) - c.x;
+        if (overlap > 0 && p.x < c.x) {
+            const push = overlap * 0.25;
+            p.x -= push; c.x += push;
+        }
+
+        checkAttack(p, c);
+        checkAttack(c, p);
+
+        // Decay do shake
+        if (dorfState.shake > 0) dorfState.shake *= 0.80;
+
+        // Partículas
+        dorfState.particles.forEach(pt => {
+            pt.x += pt.vx; pt.y += pt.vy;
+            pt.vy += 0.4; pt.vx *= 0.94;
+            pt.life -= 0.032;
+        });
+        dorfState.particles = dorfState.particles.filter(pt => pt.life > 0);
+
+        // Limpa bordas de tecla no fim do frame
+        for (const k in pressed) delete pressed[k];
+    }
+
+    // ── Tela de Game Over (canvas) ────────────────────────────────────────────
+    function drawGameOver() {
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const isWin = winner === 'player';
+
+        // Overlay escuro
+        ctx.fillStyle = "rgba(0,0,0,0.78)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Glow central
+        const glow = ctx.createRadialGradient(cx, cy - 30, 5, cx, cy - 30, 240);
+        glow.addColorStop(0, isWin ? "rgba(56,189,248,0.25)" : "rgba(239,68,68,0.25)");
+        glow.addColorStop(1, "rgba(0,0,0,0)");
+        ctx.fillStyle = glow;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        ctx.save();
+        ctx.textAlign = "center";
+
+        // "K.O."
+        ctx.font = "bold 88px monospace";
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "#000";
+        ctx.strokeText("K.O.", cx, cy - 30);
+        ctx.fillStyle = isWin ? "#38bdf8" : "#ef4444";
+        ctx.shadowBlur = 30;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.fillText("K.O.", cx, cy - 30);
+        ctx.shadowBlur = 0;
+
+        // Mensagem de resultado
+        ctx.font = "bold 26px monospace";
+        ctx.fillStyle = "#fff";
+        ctx.shadowBlur = 12;
+        ctx.shadowColor = isWin ? "#38bdf8" : "#ef4444";
+        ctx.fillText(isWin ? "✦ VOCÊ VENCEU! ✦" : "✦ CPU VENCEU! ✦", cx, cy + 30);
+        ctx.shadowBlur = 0;
+
+        // Sub-texto
+        ctx.font = "14px monospace";
+        ctx.fillStyle = "rgba(255,255,255,0.55)";
+        ctx.fillText(isWin ? "Adversário eliminado" : "Tente novamente!", cx, cy + 58);
+
+        // Botão Jogar Novamente
+        const bw = 220, bh = 48;
+        const bx = cx - bw / 2, by = cy + 78;
+
+        ctx.fillStyle = "rgba(255,255,255,0.12)";
+        ctx.strokeStyle = "rgba(255,255,255,0.45)";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.roundRect(bx, by, bw, bh, 8); ctx.fill(); ctx.stroke();
+
+        ctx.font = "bold 15px monospace";
+        ctx.fillStyle = "#fff";
+        ctx.letterSpacing = "2px";
+        ctx.fillText("↩  JOGAR NOVAMENTE", cx, by + 30);
+        ctx.letterSpacing = "0px";
+
+        ctx.restore();
+    }
+
+    // ── Contador de combo na tela ─────────────────────────────────────────────
+    function drawCombo(entity, isPlayer) {
+        if (entity.combo < 2 || entity.comboTimer <= 0) return;
+        const x = isPlayer ? 90 : canvas.width - 90;
+        const alpha = Math.min(1, entity.comboTimer / 40);
+        const scale = 1 + Math.max(0, (95 - entity.comboTimer) / 95) * 0.5;
+
+        ctx.save();
+        ctx.globalAlpha = alpha;
+        ctx.textAlign = "center";
+        ctx.translate(x, 90);
+        ctx.scale(scale, scale);
+
+        ctx.font = `bold ${30 + entity.combo * 2}px monospace`;
+        ctx.fillStyle = "#f59e0b";
+        ctx.shadowBlur = 20; ctx.shadowColor = "#f59e0b";
+        ctx.fillText(`${entity.combo}✕ COMBO`, 0, 0);
+        ctx.shadowBlur = 0;
+
+        ctx.font = "12px monospace";
+        ctx.fillStyle = "rgba(255,255,255,0.8)";
+        ctx.fillText("COMBO", 0, 18);
+        ctx.restore();
+    }
+
+    // ── drawEntity (sem alteração visual) ────────────────────────────────────
+    function drawEntity(e) {
+        ctx.save();
+
+        const t = Date.now() / 1000;
+        const U = 22;
+
+        const isIdle = e.state === 'idle';
+        const isMove = e.state === 'move';
+        const isAttack = e.state === 'attack';
+        const isHeavy = e.attackType === 'heavy';
+        const atk = e.attackTimer;
+
+        const walkPhase = isMove ? t * 6.5 : 0;
+        const breathe = isIdle ? Math.sin(t * 2) * 1.5 : 0;
+        const bounceY = isMove ? Math.abs(Math.sin(walkPhase)) * -U * 0.2 : 0;
+
+        ctx.translate(e.x + e.w / 2, e.y + bounceY);
+        if (e.side === -1) ctx.scale(-1, 1);
+
+        const cPrimary = e.char.color;
+        const cSecondary = e.char.secondary;
+        const cSkin = "#e8c9a0";
+        const cSkinDark = "#c4975e";
+        const cHair = "#1a1a2e";
+        const ACCENT = "#38bdf8";
+
+        const Y_HIP = -U * 3.4;
+        const Y_WAIST = -U * 4.4;
+        const Y_CHEST = -U * 5.4;
+        const Y_SHOULDER = -U * 5.7;
+        const Y_NECK = -U * 6.1;
+        const Y_HEAD = -U * 7.1;
+
+        const vGrad = (x, y1, y2, c1, c2) => {
+            const g = ctx.createLinearGradient(x, y1, x, y2);
+            g.addColorStop(0, c1); g.addColorStop(1, c2);
+            return g;
+        };
+
+        const sphereGrad = (cx, cy, r, cLight, cDark) => {
+            const g = ctx.createRadialGradient(cx - r * 0.3, cy - r * 0.3, r * 0.05, cx, cy, r);
+            g.addColorStop(0, cLight); g.addColorStop(1, cDark);
+            return g;
+        };
+
+        function limb(x1, y1, x2, y2, thickness, cTop, cBot) {
+            const dx = x2 - x1, dy = y2 - y1, len = Math.hypot(dx, dy);
+            const nx = -dy / len, ny = dx / len, t2 = thickness / 2;
+            ctx.beginPath();
+            ctx.moveTo(x1 + nx * t2, y1 + ny * t2);
+            ctx.lineTo(x2 + nx * (t2 * 0.7), y2 + ny * (t2 * 0.7));
+            ctx.arc(x2, y2, t2 * 0.7, Math.atan2(ny, nx), Math.atan2(-ny, -nx));
+            ctx.lineTo(x1 - nx * t2, y1 - ny * t2);
+            ctx.arc(x1, y1, t2, Math.atan2(-ny, -nx), Math.atan2(ny, nx));
+            ctx.closePath();
+            ctx.fillStyle = vGrad(0, Math.min(y1, y2), Math.max(y1, y2), cTop, cBot);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(0,0,0,0.3)"; ctx.lineWidth = 1; ctx.stroke();
+        }
+
+        function joint(cx, cy, r, cLight, cDark) {
+            ctx.fillStyle = sphereGrad(cx, cy, r, cLight, cDark);
+            ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+        }
+
+        // Sombra
+        ctx.save();
+        ctx.translate(0, -bounceY);
+        ctx.fillStyle = "rgba(0,0,0,0.25)";
+        ctx.beginPath(); ctx.ellipse(0, 0, 30 + bounceY * 0.5, 6, 0, 0, Math.PI * 2); ctx.fill();
+        ctx.restore();
+
+        // Pernas
+        function drawLeg(pivotX, swingDeg, kneeBendDeg, isFront) {
+            const thighLen = U * 1.5, shinLen = U * 1.5, footLen = U * 0.8;
+            const thighA = swingDeg * Math.PI / 180;
+            const kneeX = pivotX + Math.sin(thighA) * thighLen;
+            const kneeY = Y_HIP + Math.cos(thighA) * thighLen;
+            const shinA = thighA - kneeBendDeg * Math.PI / 180;
+            const ankleX = kneeX + Math.sin(shinA) * shinLen;
+            const ankleY = Math.min(-U * 0.4 - bounceY, kneeY + Math.cos(shinA) * shinLen);
+            const cT = isFront ? cPrimary : cSecondary;
+            const cB = isFront ? cSecondary : cPrimary;
+
+            limb(pivotX, Y_HIP, kneeX, kneeY, U * 0.68, cT, cB);
+            joint(kneeX, kneeY, U * 0.36, cT, cB);
+            limb(kneeX, kneeY, ankleX, ankleY, U * 0.52, cT, cB);
+
+            ctx.fillStyle = vGrad(0, ankleY, ankleY + U * 0.2, cB, cT);
+            ctx.beginPath();
+            ctx.roundRect(ankleX - U * 0.2, ankleY, footLen + U * 0.1, U * 0.3, [3, 8, 8, 3]);
+            ctx.fill();
+            ctx.strokeStyle = "rgba(0,0,0,0.3)"; ctx.lineWidth = 1.5; ctx.stroke();
+        }
+
+        const legSwing = isMove ? Math.sin(walkPhase) * 35 : 0;
+        const kneeBendFront = isMove ? Math.max(0, Math.sin(walkPhase) * 50) : 5;
+        const kneeBendBack = isMove ? Math.max(0, -Math.sin(walkPhase) * 50) : 5;
+        drawLeg(-U * 0.25, -legSwing, kneeBendBack, false);
+        drawLeg(U * 0.25, legSwing, kneeBendFront, true);
+
+        // Torso
+        const breathY = breathe;
+        const chestW = U * 1.15, hipW = U * 0.95;
+
+        if (isAttack && isHeavy) {
+            const prog = Math.min(atk / 12, 1);
+            const ext = prog - (atk > 12 ? Math.min((atk - 12) / 12, 1) : 0);
+            ctx.rotate(ext * 0.3);
+        }
+
+        ctx.fillStyle = vGrad(0, Y_SHOULDER + breathY, Y_HIP, cPrimary, cSecondary);
+        ctx.beginPath();
+        ctx.moveTo(hipW, Y_HIP);
+        ctx.bezierCurveTo(hipW + U * 0.1, Y_WAIST, chestW, Y_WAIST + breathY, chestW, Y_CHEST + breathY);
+        ctx.lineTo(chestW, Y_SHOULDER + breathY);
+        ctx.lineTo(-chestW, Y_SHOULDER + breathY);
+        ctx.bezierCurveTo(-chestW, Y_WAIST + breathY, -hipW - U * 0.1, Y_WAIST, -hipW, Y_HIP);
+        ctx.closePath();
+        ctx.fill();
+        ctx.strokeStyle = "rgba(0,0,0,0.3)"; ctx.lineWidth = 1.5; ctx.stroke();
+
+        ctx.fillStyle = "rgba(255,255,255,0.08)";
+        [[-U * 0.3, -0.3], [U * 0.3, 0.3]].forEach(([x, rot]) => {
+            ctx.beginPath(); ctx.ellipse(x, Y_CHEST + breathY + U * 0.4, U * 0.5, U * 0.35, rot, 0, Math.PI * 2); ctx.fill();
+        });
+
+        ctx.shadowBlur = 15; ctx.shadowColor = ACCENT;
+        ctx.fillStyle = sphereGrad(0, Y_WAIST + breathY + U * 0.3, U * 0.55, "#fff", ACCENT);
+        ctx.beginPath(); ctx.arc(0, Y_WAIST + breathY + U * 0.3, U * 0.55, 0, Math.PI * 2); ctx.fill();
+        ctx.shadowBlur = 0;
+
+        // Braços
+        function drawArm(pivotX, pivotY, shoulderDeg, elbowBendDeg, isFront, showFist) {
+            const upperLen = U * 1.0, foreLen = U * 0.9;
+            const sA = shoulderDeg * Math.PI / 180;
+            const elbowX = pivotX + Math.sin(sA) * upperLen;
+            const elbowY = pivotY + Math.cos(sA) * upperLen;
+            const totalA = sA + elbowBendDeg * Math.PI / 180;
+            const wristX = elbowX + Math.sin(totalA) * foreLen;
+            const wristY = elbowY + Math.cos(totalA) * foreLen;
+            const cT = isFront ? cPrimary : cSecondary;
+            const cB = isFront ? cSecondary : cPrimary;
+
+            limb(pivotX, pivotY, elbowX, elbowY, U * 0.5, cT, cB);
+            joint(elbowX, elbowY, U * 0.27, cT, cB);
+            limb(elbowX, elbowY, wristX, wristY, U * 0.42, cT, cB);
+
+            if (showFist) {
+                ctx.fillStyle = sphereGrad(wristX, wristY, U * 0.38, cT, cB);
+                ctx.beginPath(); ctx.roundRect(wristX - U * 0.35, wristY - U * 0.28, U * 0.7, U * 0.52, 5); ctx.fill();
+                ctx.strokeStyle = "rgba(0,0,0,0.4)"; ctx.lineWidth = 1; ctx.stroke();
+            } else {
+                ctx.fillStyle = sphereGrad(wristX, wristY, U * 0.3, cSkin, cSkinDark);
+                ctx.beginPath(); ctx.ellipse(wristX, wristY, U * 0.3, U * 0.38, -totalA, 0, Math.PI * 2); ctx.fill();
+            }
+            return { wristX, wristY, totalA };
+        }
+
+        const shoulderY = Y_SHOULDER + breathY;
+        const armPivotX = U * 1.15;
+
+        if (isAttack && !isHeavy) {
+            const prog = Math.min(atk / (15 * 0.4), 1);
+            const retract = atk > 6 ? Math.min((atk - 6) / 9, 1) : 0;
+            const ext = prog - retract;
+
+            drawArm(-armPivotX, shoulderY, 15, 80, false, true);
+            joint(-armPivotX, shoulderY, U * 0.38, cSecondary, cPrimary);
+
+            const res = drawArm(armPivotX, shoulderY, 10 + ext * 80, 40 - ext * 40, true, true);
+            joint(armPivotX, shoulderY, U * 0.38, cPrimary, cSecondary);
+
+            if (ext > 0.6) {
+                ctx.globalAlpha = (ext - 0.6) / 0.4;
+                ctx.strokeStyle = "#fff"; ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.moveTo(res.wristX + 10, res.wristY - 20); ctx.lineTo(res.wristX + 40, res.wristY - 20); ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+
+        } else if (isAttack && isHeavy) {
+            let hShoulder, hElbow;
+            if (atk < 8) { const p = atk / 8; hShoulder = 10 + p * 150; hElbow = 20 + p * 70; }
+            else if (atk < 14) { const p = (atk - 8) / 6; hShoulder = 160 - p * 130; hElbow = 90 - p * 80; }
+            else { const p = Math.min((atk - 14) / 10, 1); hShoulder = 30 - p * 20; hElbow = 10 + p * 10; }
+
+            drawArm(-armPivotX, shoulderY, hShoulder - 10, hElbow, false, true);
+            joint(-armPivotX, shoulderY, U * 0.38, cSecondary, cPrimary);
+            const res = drawArm(armPivotX, shoulderY, hShoulder, hElbow, true, true);
+            joint(armPivotX, shoulderY, U * 0.38, cPrimary, cSecondary);
+
+            if (atk > 12 && atk < 18) {
+                const blastP = (atk - 12) / 6;
+                ctx.save(); ctx.translate(res.wristX, -bounceY); ctx.scale(1, 0.3);
+                ctx.fillStyle = `rgba(56,189,248,${1 - blastP})`;
+                ctx.beginPath(); ctx.arc(0, 0, 40 + blastP * 80, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+
+        } else {
+            const armSwing = isMove ? Math.sin(walkPhase + Math.PI) * 25 : 0;
+            const swingBend = s => isMove ? Math.max(10, s * Math.sin(walkPhase) * 30 + 10) : 15;
+
+            drawArm(-armPivotX, shoulderY, -armSwing + 10, swingBend(-1), false, false);
+            joint(-armPivotX, shoulderY, U * 0.38, cSecondary, cPrimary);
+            drawArm(armPivotX, shoulderY, armSwing + 10, swingBend(1), true, false);
+            joint(armPivotX, shoulderY, U * 0.38, cPrimary, cSecondary);
+        }
+
+        // Pescoço
+        ctx.fillStyle = vGrad(0, Y_NECK + breathY, Y_SHOULDER + breathY, cSkin, cSkinDark);
+        ctx.beginPath(); ctx.roundRect(-U * 0.2, Y_NECK + breathY, U * 0.4, U * 0.5, 3); ctx.fill();
+
+        // Cabeça
+        const hCY = Y_HEAD + breathY, hRx = U * 0.72, hRy = U * 0.88;
+        ctx.fillStyle = sphereGrad(0, hCY, Math.max(hRx, hRy), cSkin, cSkinDark);
+        ctx.beginPath(); ctx.ellipse(0, hCY, hRx, hRy, 0, 0, Math.PI * 2); ctx.fill();
+
+        ctx.fillStyle = cHair;
+        ctx.beginPath(); ctx.ellipse(0, hCY - hRy * 0.3, hRx * 0.95, hRy * 0.7, 0, Math.PI, 0); ctx.fill();
+
+        const eyeY = hCY - hRy * 0.06, eyeSpacing = hRx * 0.4;
+        const browTilt = isAttack ? 0.35 : 0.1;
+        [-1, 1].forEach(s => {
+            ctx.strokeStyle = cHair; ctx.lineWidth = 2.8; ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(s * eyeSpacing - s * U * 0.26, eyeY - U * 0.55 - s * browTilt * U * 0.1);
+            ctx.lineTo(s * eyeSpacing + s * U * 0.18, eyeY - U * 0.45 + s * browTilt * U * 0.1);
+            ctx.stroke();
+        });
+
+        const blink = Math.sin(Date.now() / 3100) > 0.94 ? 0.12 : 1;
+        [-1, 1].forEach(s => {
+            const ex = s * eyeSpacing;
+            ctx.fillStyle = "white"; ctx.beginPath(); ctx.ellipse(ex, eyeY, U * 0.24, U * 0.22 * blink, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = cPrimary; ctx.beginPath(); ctx.ellipse(ex, eyeY + U * 0.02, U * 0.15, U * 0.16 * blink, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = "#000"; ctx.beginPath(); ctx.ellipse(ex, eyeY + U * 0.03, U * 0.08, U * 0.10 * blink, 0, 0, Math.PI * 2); ctx.fill();
+        });
+
+        ctx.strokeStyle = "rgba(0,0,0,0.2)"; ctx.lineWidth = 1.5;
+        ctx.beginPath(); ctx.moveTo(0, eyeY + U * 0.1); ctx.quadraticCurveTo(U * 0.08, eyeY + U * 0.5, U * 0.05, eyeY + U * 0.52); ctx.stroke();
+
+        const mouthY = eyeY + hRy * 0.52;
+        ctx.strokeStyle = "rgba(30,10,10,0.6)";
+        ctx.beginPath(); ctx.moveTo(-U * 0.2, mouthY); ctx.quadraticCurveTo(0, mouthY + (isAttack ? -0.1 : 0.2) * U, U * 0.2, mouthY); ctx.stroke();
+
+        // Escudo
+        if (e.isBlocking) {
+            ctx.globalAlpha = 0.6;
+            const sg = ctx.createRadialGradient(U * 0.8, Y_WAIST, 10, U * 0.8, Y_WAIST, U * 3);
+            sg.addColorStop(0, "rgba(255,255,255,0.8)");
+            sg.addColorStop(0.3, "rgba(56,189,248,0.4)");
+            sg.addColorStop(1, "rgba(56,189,248,0)");
+            ctx.fillStyle = sg;
+            ctx.beginPath(); ctx.ellipse(U * 0.6, Y_WAIST, U * 2.2, U * 3.5, 0, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = "rgba(255,255,255,0.3)"; ctx.lineWidth = 1;
+            for (let i = 0; i < 3; i++) { ctx.beginPath(); ctx.arc(U * 0.8, Y_WAIST + (i - 1) * 30, 15, 0, Math.PI * 2); ctx.stroke(); }
+            ctx.globalAlpha = 1;
+        }
+
+        ctx.restore();
+    }
+
+    // ── Loop de renderização ─────────────────────────────────────────────────
+    function draw() {
+        if (dorfState.screen !== "fight" && dorfState.screen !== "over") return;
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Flash branco do K.O.
+        if (koFlash > 0) {
+            ctx.fillStyle = `rgba(255,255,255,${koFlash / 20})`;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            koFlash--;
+        }
+
+        ctx.save();
+        if (dorfState.shake > 1) {
+            ctx.translate(
+                (Math.random() - 0.5) * dorfState.shake,
+                (Math.random() - 0.5) * dorfState.shake
+            );
+        }
+
+        // Piso
+        const floorGrad = ctx.createLinearGradient(0, FLOOR_Y, 0, canvas.height);
+        floorGrad.addColorStop(0, "rgba(255,255,255,0.4)");
+        floorGrad.addColorStop(1, "rgba(255,255,255,0.1)");
+        ctx.fillStyle = floorGrad;
+        ctx.fillRect(0, FLOOR_Y, canvas.width, 100);
+        ctx.strokeStyle = "rgba(255,255,255,0.8)"; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.moveTo(0, FLOOR_Y); ctx.lineTo(canvas.width, FLOOR_Y); ctx.stroke();
+
+        drawEntity(dorfState.player);
+        drawEntity(dorfState.cpu);
+
+        // Partículas
+        dorfState.particles.forEach(pt => {
+            ctx.globalAlpha = pt.life;
+            ctx.fillStyle = pt.color;
+            ctx.shadowBlur = 8; ctx.shadowColor = pt.color;
+            ctx.beginPath(); ctx.arc(pt.x, pt.y, pt.size, 0, Math.PI * 2); ctx.fill();
+        });
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        ctx.restore();
+
+        // Combo (fora do shake)
+        drawCombo(dorfState.player, true);
+        drawCombo(dorfState.cpu, false);
+
+        if (gameOver) drawGameOver();
+
+        if (!gameOver) update();
+
+        requestAnimationFrame(draw);
+    }
+
+    draw();
+}
 
 
         function openGlossyWare() {
@@ -9432,3 +9738,4 @@ onclick="revealMine('${winId}',${i},this)">
     </script>
 </body>
 </html>
+
