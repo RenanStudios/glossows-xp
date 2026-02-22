@@ -8869,30 +8869,69 @@ onclick="revealMine('${winId}',${i},this)">
             }
         }
 
-        function musicPlay(winId) {
-            const audio = document.getElementById(`audio-${winId}`);
-            const playBtn = document.getElementById(`play-${winId}`);
+        // ===== Controle de conquista: 5 minutos contínuos =====
+const musicAchievement = {
+    requiredTime: 300, // 5 minutos = 300 segundos
+    currentTime: 0,
+    interval: null,
+    unlocked: false
+};
 
-            if (audio.paused) {
-                audio.play();
-                playBtn.classList.remove("paused");
-                playBtn.innerText = "⏸";
-                unlockAchievement("music_time");
-            } else {
-                audio.pause();
-                playBtn.classList.add("paused");
-                playBtn.innerText = "▶";
-            }
+function startMusicTimer() {
+    if (musicAchievement.unlocked) return;
 
-            audio.ontimeupdate = () => updateProgress(winId);
-            audio.onloadedmetadata = () => updateDuration(winId);
-            audio.onended = () => {
-                playBtn.classList.add("paused");
-                playBtn.innerText = "▶";
-            };
+    stopMusicTimer();
 
-            enableThumbDrag(winId);
+    musicAchievement.interval = setInterval(() => {
+        musicAchievement.currentTime++;
+
+        if (musicAchievement.currentTime >= musicAchievement.requiredTime) {
+            musicAchievement.unlocked = true;
+            stopMusicTimer();
+            unlockAchievement("music_5min");
         }
+    }, 1000);
+}
+
+function stopMusicTimer(reset = true) {
+    clearInterval(musicAchievement.interval);
+    musicAchievement.interval = null;
+
+    if (reset && !musicAchievement.unlocked) {
+        musicAchievement.currentTime = 0;
+    }
+}
+
+        function musicPlay(winId) {
+    const audio = document.getElementById(`audio-${winId}`);
+    const playBtn = document.getElementById(`play-${winId}`);
+
+    if (audio.paused) {
+        audio.play();
+        playBtn.classList.remove("paused");
+        playBtn.innerText = "⏸";
+
+        startMusicTimer(); // começa contar
+
+    } else {
+        audio.pause();
+        playBtn.classList.add("paused");
+        playBtn.innerText = "▶";
+
+        stopMusicTimer(); // pausa reseta
+    }
+
+    audio.ontimeupdate = () => updateProgress(winId);
+    audio.onloadedmetadata = () => updateDuration(winId);
+
+    audio.onended = () => {
+        playBtn.classList.add("paused");
+        playBtn.innerText = "▶";
+        stopMusicTimer(); // terminou = reseta
+    };
+
+    enableThumbDrag(winId);
+}
 
         function updateProgress(winId) {
             const audio = document.getElementById(`audio-${winId}`);
@@ -8923,16 +8962,19 @@ onclick="revealMine('${winId}',${i},this)">
         }
 
         function seekMusic(e, winId) {
-            const audio = document.getElementById(`audio-${winId}`);
-            const bar = e.currentTarget;
+    const audio = document.getElementById(`audio-${winId}`);
+    const bar = e.currentTarget;
 
-            const rect = bar.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const percent = clickX / rect.width;
+    const rect = bar.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percent = clickX / rect.width;
 
-            audio.currentTime = percent * audio.duration;
-            updateProgress(winId);
-        }
+    audio.currentTime = percent * audio.duration;
+
+    stopMusicTimer(); // buscar posição quebra continuidade
+
+    updateProgress(winId);
+}
 
         function musicBack(winId) {
             document.getElementById(`audio-${winId}`).currentTime = 0;
@@ -8996,27 +9038,27 @@ onclick="revealMine('${winId}',${i},this)">
         let currentTrackIndex = 0;
 
         function updateTrack(winId) {
-            const track = tracks[currentTrackIndex];
-            const audio = document.getElementById(`audio-${winId}`);
-            const cover = document.getElementById(`cover-${winId}`);
-            const title = document.getElementById(`title-${winId}`);
-            const playBtn = document.getElementById(`play-${winId}`);
+    const track = tracks[currentTrackIndex];
+    const audio = document.getElementById(`audio-${winId}`);
+    const cover = document.getElementById(`cover-${winId}`);
+    const title = document.getElementById(`title-${winId}`);
+    const playBtn = document.getElementById(`play-${winId}`);
 
-            audio.src = track.src;
-            cover.src = track.cover;
-            title.innerText = track.title;
+    stopMusicTimer(); // troca música = perde progresso
 
-            audio.pause();
-            audio.currentTime = 0;
-            playBtn.innerText = "▶";
-            playBtn.classList.add("paused");
+    audio.src = track.src;
+    cover.src = track.cover;
+    title.innerText = track.title;
 
-            // Atualiza a barra de progresso zerada
-            updateProgress(winId);
+    audio.pause();
+    audio.currentTime = 0;
+    playBtn.innerText = "▶";
+    playBtn.classList.add("paused");
 
-            // Espera o áudio carregar os metadados antes de atualizar a duração
-            audio.onloadedmetadata = () => updateDuration(winId);
-        }
+    updateProgress(winId);
+
+    audio.onloadedmetadata = () => updateDuration(winId);
+}
 
         function nextTrack(winId) {
             currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
@@ -9431,4 +9473,5 @@ onclick="revealMine('${winId}',${i},this)">
 
     </script>
 </body>
+
 </html>
