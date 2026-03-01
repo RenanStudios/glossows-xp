@@ -30,8 +30,31 @@
 
         /* Wallpapers */
         .bg-default {
+            position: relative;
+            overflow: hidden;
             background: linear-gradient( 135deg, #0b0014 0%, #2e003e 30%, #001540 60%, #003366 80%, #00aaff 100% );
         }
+
+            /* Camada de Bokeh */
+            .bg-default::before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background: radial-gradient(circle at 15% 25%, rgba(255,255,255,0.25) 0%, transparent 40%), radial-gradient(circle at 75% 20%, rgba(0,200,255,0.35) 0%, transparent 45%), radial-gradient(circle at 60% 70%, rgba(255,255,255,0.2) 0%, transparent 40%), radial-gradient(circle at 30% 80%, rgba(0,170,255,0.3) 0%, transparent 50%), radial-gradient(circle at 85% 60%, rgba(255,255,255,0.15) 0%, transparent 45%);
+                filter: blur(40px);
+                opacity: 0.9;
+            }
+
+            /* Camada extra de glow profundo */
+            .bg-default::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                pointer-events: none;
+                background: radial-gradient(circle at 50% 50%, rgba(0,180,255,0.15), transparent 60%);
+                filter: blur(80px);
+            }
 
         .bg-vista {
             position: relative;
@@ -97,16 +120,74 @@
             }
 
         .wallpaper-thumb.bg-vista {
-            background: linear-gradient( to bottom, #6bb6ff 0%, #8fd1ff 46%, #9adf95 50%, #5aa14a 100% );
+            position: relative;
+            overflow: hidden;
+            background:
+            /* Morro curvado (mini versão) */
+            radial-gradient( ellipse 140% 90% at 50% 115%, #68c828 0%, #5cb820 25%, #4ea010 45%, #2e7000 75%, transparent 100% ),
+            /* Céu real do Vista */
+            linear-gradient( to bottom, #1856b4 0%, #3278d8 35%, #62a8ee 55%, #90cefa 70% );
         }
 
         .bg-dark {
-            background: linear-gradient( to bottom, #3a3a3a 0%, #1c1c1c 50%, #0a0a0a 100% );
+            background:
+            /* Efeito Bokeh (Círculos de luz desfocados) */
+            radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.05) 0%, transparent 15%), radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.03) 0%, transparent 20%), radial-gradient(circle at 50% 60%, rgba(255, 255, 255, 0.04) 0%, transparent 12%), radial-gradient(circle at 10% 85%, rgba(255, 255, 255, 0.02) 0%, transparent 18%),
+            /* Linhas curvas vetoriais nítidas e tecnológicas */
+            radial-gradient(ellipse 150% 60% at 50% 100%, transparent 45%, rgba(255, 255, 255, 0.08) 45.1%, transparent 45.5%), radial-gradient(ellipse 120% 80% at 50% 110%, transparent 50%, rgba(255, 255, 255, 0.05) 50.1%, transparent 50.8%),
+            /* Curva vetorial principal de alto contraste */
+            radial-gradient(ellipse 180% 100% at 0% 110%, transparent 40%, rgba(0, 0, 0, 0.6) 40.2%, rgba(20, 20, 20, 0.8) 60%, transparent 60.5%),
+            /* Gradiente base escuro profundo */
+            linear-gradient( 160deg, #2a2a2a 0%, #121212 50%, #000000 100% );
+        }
+
+        /* ─── Thumbnail Dark Tech (High Contrast) ─── */
+        .wallpaper-thumb.bg-dark {
+            position: relative;
+            overflow: hidden;
+            background:
+            /* Bokeh mais visível */
+            radial-gradient( circle at 25% 30%, rgba(255,255,255,0.12) 0%, transparent 30% ), radial-gradient( circle at 75% 25%, rgba(255,255,255,0.10) 0%, transparent 35% ),
+            /* Linha vetorial mais grossa */
+            radial-gradient( ellipse 170% 80% at 50% 115%, transparent 46%, rgba(255,255,255,0.15) 48%, transparent 50% ),
+            /* Curva escura bem marcada */
+            radial-gradient( ellipse 200% 110% at -15% 120%, transparent 35%, rgba(0,0,0,0.9) 50%, transparent 70% ),
+            /* Base mais contrastada */
+            linear-gradient( 160deg, #3a3a3a 0%, #141414 50%, #000000 100% );
         }
 
         .bg-ubuntu {
-            background: radial-gradient(circle at top, rgba(255,255,255,0.08), transparent 60%), radial-gradient(circle at bottom, rgba(0,0,0,0.35), transparent 65%), radial-gradient(circle, #8a724c 0%, #635134 100%);
+            background-color: #635134;
+            background-image:
+            /* Linhas vetoriais de brilho (Swooshes finos e dinâmicos) */
+            radial-gradient(ellipse 150% 150% at 0% 0%, transparent 48%, rgba(255, 210, 160, 0.3) 48.2%, transparent 49.5%), radial-gradient(ellipse 180% 120% at 100% 100%, transparent 52%, rgba(255, 190, 120, 0.2) 52.2%, transparent 53.5%),
+            /* Formas vetoriais curvas principais (Sólidas e muito aparentes) */
+            radial-gradient(ellipse 140% 160% at 100% -10%, transparent 45%, #9b7a48 45.2%, #9b7a48 65%, transparent 65.2%), radial-gradient(ellipse 150% 140% at -10% 110%, transparent 40%, #765932 40.2%, #765932 60%, transparent 60.2%), radial-gradient(ellipse 110% 150% at 30% 120%, transparent 50%, rgba(138, 102, 58, 0.9) 50.2%, rgba(138, 102, 58, 0.9) 75%, transparent 75.2%),
+            /* Curvas secundárias de interseção (Trazem profundidade e sombras vetoriais) */
+            radial-gradient(circle at 110% 60%, transparent 55%, rgba(60, 40, 20, 0.5) 55.2%, rgba(60, 40, 20, 0.5) 75%, transparent 75.2%), radial-gradient(circle at -10% 40%, transparent 50%, rgba(185, 145, 95, 0.35) 50.2%, rgba(185, 145, 95, 0.35) 70%, transparent 70.2%),
+            /* Focos de luz e sombra suaves ao fundo */
+            radial-gradient(circle at 75% 25%, rgba(190, 145, 90, 0.5) 0%, transparent 60%), radial-gradient(circle at 25% 75%, rgba(40, 25, 15, 0.8) 0%, transparent 70%),
+            /* Base rica e linear inspirada na paleta clássica */
+            linear-gradient(135deg, #a48252 0%, #635134 50%, #3e2b18 100%);
         }
+
+        /* ─── Thumbnail Ubuntu ─── */
+        .wallpaper-thumb.bg-ubuntu {
+            position: relative;
+            overflow: hidden;
+            background:
+            /* Curva principal clara */
+            radial-gradient( ellipse 160% 120% at 110% -20%, transparent 45%, #9b7a48 46%, #9b7a48 70%, transparent 71% ),
+            /* Curva escura inferior */
+            radial-gradient( ellipse 150% 120% at -20% 120%, transparent 40%, #765932 41%, #765932 65%, transparent 66% ),
+            /* Sombra profunda lateral */
+            radial-gradient( circle at 120% 60%, rgba(60,40,20,0.5) 0%, transparent 60% ),
+            /* Luz quente superior */
+            radial-gradient( circle at 70% 25%, rgba(255,190,120,0.4) 0%, transparent 60% ),
+            /* Base clássica Ubuntu */
+            linear-gradient( 135deg, #a48252 0%, #635134 50%, #3e2b18 100% );
+        }
+
         /* Wallpaper Binbows7 – Aero Refinado */
         .bg-binbows7 {
             position: relative;
@@ -217,39 +298,57 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
+            animation: logo-intro 1s cubic-bezier(0.22, 1, 0.36, 1) both;
         }
 
-        .loading-orb {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            position: relative;
-            background: radial-gradient( circle at 35% 30%, rgba(255,255,255,0.95) 0%, #4facfe 30%, #1a6fd8 60%, #0a3a8f 100% );
-            /* HALO AZUL SUAVE */
-            box-shadow: 0 0 35px rgba(90,176,255,0.75), 0 0 80px rgba(40,120,255,0.45), 0 14px 40px rgba(0,0,0,0.6), inset 0 -4px 8px rgba(0,0,0,0.3);
-            animation: orb-pulse 2s ease-in-out infinite;
-        }
-
-            .loading-orb::before {
-                content: "";
-                position: absolute;
-                top: 6%;
-                left: 10%;
-                width: 80%;
-                height: 45%;
-                border-radius: 50%;
-                background: linear-gradient( to bottom, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.35) 40%, rgba(255,255,255,0) 100% );
-                pointer-events: none;
+        @keyframes logo-intro {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(40px);
+                filter: blur(12px);
             }
 
-        @keyframes orb-pulse {
+            60% {
+                opacity: 1;
+                filter: blur(0px);
+            }
+
+            80% {
+                transform: scale(1.06) translateY(-4px);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                filter: blur(0px);
+            }
+        }
+
+        /* Orb removido — logo direto, maior */
+        .loading-orb {
+            display: contents; /* desativa o orb como container visual */
+        }
+
+            .loading-orb img {
+                width: 110px !important;
+                height: 110px !important;
+                position: static !important;
+                top: unset !important;
+                left: unset !important;
+                transform: none !important;
+                z-index: unset !important;
+                filter: drop-shadow(0 0 24px rgba(90, 176, 255, 0.85)) drop-shadow(0 0 60px rgba(40, 120, 255, 0.5)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.55)) !important;
+                animation: logo-glow 2.5s ease-in-out infinite;
+            }
+
+        @keyframes logo-glow {
             0%, 100% {
-                box-shadow: 0 0 35px rgba(80,160,255,0.75), 0 0 80px rgba(50,120,255,0.45), 0 12px 40px rgba(0,0,0,0.6), inset 0 -4px 8px rgba(0,0,0,0.3);
+                filter: drop-shadow(0 0 18px rgba(90, 176, 255, 0.75)) drop-shadow(0 0 50px rgba(40, 120, 255, 0.4)) drop-shadow(0 8px 20px rgba(0, 0, 0, 0.5));
             }
 
             50% {
-                box-shadow: 0 0 55px rgba(90,180,255,0.95), 0 0 120px rgba(60,150,255,0.65), 0 16px 50px rgba(0,0,0,0.65), inset 0 -4px 8px rgba(0,0,0,0.3);
+                filter: drop-shadow(0 0 32px rgba(100, 195, 255, 1)) drop-shadow(0 0 90px rgba(60, 150, 255, 0.7)) drop-shadow(0 10px 28px rgba(0, 0, 0, 0.55));
             }
         }
 
@@ -7404,7 +7503,7 @@
                                                 <b>Sistema:</b> Glossows XP
                                             </div>
                                             <div class="hub-panel">
-                                                <b>Versão:</b> 3.0.40
+                                                <b>Versão:</b> 4.5.10
                                             </div>
                                             <div class="hub-panel">
                                                 <b>Build:</b> Service Pack 3
@@ -9913,7 +10012,7 @@ onclick="revealMine('${winId}',${i},this)">
                             response = "";
                         }
                         else if (cmdClean === 'ver') {
-                            response = "Glossows XP Professional [Versão 3.0.40]";
+                            response = "Glossows XP Professional [Versão 4.5.10]";
                         }
                         else if (cmdClean.startsWith('echo ')) {
                             response = fullCmd.substring(5);
