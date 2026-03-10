@@ -12128,50 +12128,188 @@ onclick="revealMine('${winId}',${i},this)">
             }
 
             function drawHUD() {
-                // Pontuação Flutuante
-                ctx.fillStyle = 'white';
-                ctx.font = 'bold 32px Arial';
+                const cx = canvas.width / 2;
+
+                // ── Placar flutuante com badge skeuomórfico ──────────────────────
+                const scoreW = 110, scoreH = 52, scoreX = cx - scoreW / 2, scoreY = 18;
+
+                // Sombra projetada
+                ctx.shadowColor = 'rgba(0,0,0,0.45)';
+                ctx.shadowBlur = 18;
+                ctx.shadowOffsetY = 6;
+
+                // Corpo da badge — gradiente metálico escuro
+                const badgeGrad = ctx.createLinearGradient(scoreX, scoreY, scoreX, scoreY + scoreH);
+                badgeGrad.addColorStop(0, '#2a2a3e');
+                badgeGrad.addColorStop(0.45, '#1a1a2e');
+                badgeGrad.addColorStop(1, '#0d0d1a');
+                ctx.fillStyle = badgeGrad;
+                ctx.beginPath();
+                ctx.roundRect(scoreX, scoreY, scoreW, scoreH, 14);
+                ctx.fill();
+
+                ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+                // Borda brilhante (stroke)
+                const borderGrad = ctx.createLinearGradient(scoreX, scoreY, scoreX, scoreY + scoreH);
+                borderGrad.addColorStop(0, 'rgba(255,255,255,0.35)');
+                borderGrad.addColorStop(0.5, 'rgba(255,255,255,0.08)');
+                borderGrad.addColorStop(1, 'rgba(255,255,255,0.18)');
+                ctx.strokeStyle = borderGrad;
+                ctx.lineWidth = 1.2;
+                ctx.beginPath();
+                ctx.roundRect(scoreX + 0.6, scoreY + 0.6, scoreW - 1.2, scoreH - 1.2, 14);
+                ctx.stroke();
+
+                // Reflexo glossy superior
+                const glossGrad = ctx.createLinearGradient(scoreX, scoreY + 2, scoreX, scoreY + scoreH * 0.52);
+                glossGrad.addColorStop(0, 'rgba(255,255,255,0.18)');
+                glossGrad.addColorStop(1, 'rgba(255,255,255,0.0)');
+                ctx.fillStyle = glossGrad;
+                ctx.beginPath();
+                ctx.roundRect(scoreX + 2, scoreY + 2, scoreW - 4, scoreH * 0.5, [12, 12, 0, 0]);
+                ctx.fill();
+
+                // Texto do score
                 ctx.textAlign = 'center';
-                ctx.shadowColor = 'rgba(0,0,0,0.5)';
-                ctx.shadowBlur = 5;
-                ctx.fillText(score, canvas.width / 2, 60);
+                ctx.shadowColor = 'rgba(80,180,255,0.7)';
+                ctx.shadowBlur = 10;
+                ctx.fillStyle = '#e8f4ff';
+                ctx.font = 'bold 26px "SF Pro Display", "Helvetica Neue", sans-serif';
+                ctx.fillText(score, cx, scoreY + 35);
                 ctx.shadowBlur = 0;
 
-                if (gameOver) {
-                    ctx.fillStyle = 'rgba(0,0,0,0.4)';
-                    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    const cx = canvas.width / 2;
-                    const cy = canvas.height / 2;
+                // ── Tela de Game Over ────────────────────────────────────────────
+                if (!gameOver) return;
 
-                    // Painel
-                    ctx.fillStyle = '#fff';
-                    ctx.shadowBlur = 20;
-                    ctx.beginPath();
-                    if (ctx.roundRect) ctx.roundRect(cx - 90, cy - 60, 180, 140, 15);
-                    ctx.fill();
+                // Overlay com blur visual
+                ctx.fillStyle = 'rgba(5,5,18,0.72)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                    ctx.fillStyle = '#333';
-                    ctx.font = 'bold 18px Arial';
-                    ctx.fillText("FIM DE JOGO", cx, cy - 20);
-                    ctx.font = '24px Arial';
-                    ctx.fillText(score, cx, cy + 15);
+                const cy = canvas.height / 2;
+                const panW = 230, panH = 190, panX = cx - panW / 2, panY = cy - panH / 2;
 
-                    // Botão Reiniciar
-                    const bx = cx - btnW / 2;
-                    const by = cy + 40;
-                    const btnGrad = ctx.createLinearGradient(bx, by, bx, by + btnH);
-                    btnGrad.addColorStop(0, '#4facfe');
-                    btnGrad.addColorStop(1, '#005bea');
-                    ctx.fillStyle = btnGrad;
-                    ctx.beginPath();
-                    if (ctx.roundRect) ctx.roundRect(bx, by, btnW, btnH, 10);
-                    ctx.fill();
+                // ── Painel principal ─────────────────────────────────────────────
+                // Sombra suave
+                ctx.shadowColor = 'rgba(0,0,0,0.7)';
+                ctx.shadowBlur = 40;
+                ctx.shadowOffsetY = 12;
 
-                    ctx.fillStyle = 'white';
-                    ctx.font = 'bold 16px Arial';
-                    ctx.fillText("REINICIAR", cx, by + 28);
-                }
+                const panGrad = ctx.createLinearGradient(panX, panY, panX, panY + panH);
+                panGrad.addColorStop(0, '#1e2235');
+                panGrad.addColorStop(0.5, '#151828');
+                panGrad.addColorStop(1, '#0e111e');
+                ctx.fillStyle = panGrad;
+                ctx.beginPath();
+                ctx.roundRect(panX, panY, panW, panH, 22);
+                ctx.fill();
+
+                ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+                // Borda metálica
+                const panBorder = ctx.createLinearGradient(panX, panY, panX, panY + panH);
+                panBorder.addColorStop(0, 'rgba(255,255,255,0.3)');
+                panBorder.addColorStop(0.4, 'rgba(255,255,255,0.07)');
+                panBorder.addColorStop(1, 'rgba(255,255,255,0.15)');
+                ctx.strokeStyle = panBorder;
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.roundRect(panX + 0.75, panY + 0.75, panW - 1.5, panH - 1.5, 22);
+                ctx.stroke();
+
+                // Reflexo glossy superior do painel
+                const panGloss = ctx.createLinearGradient(panX, panY + 3, panX, panY + panH * 0.46);
+                panGloss.addColorStop(0, 'rgba(255,255,255,0.13)');
+                panGloss.addColorStop(1, 'rgba(255,255,255,0.0)');
+                ctx.fillStyle = panGloss;
+                ctx.beginPath();
+                ctx.roundRect(panX + 3, panY + 3, panW - 6, panH * 0.44, [20, 20, 0, 0]);
+                ctx.fill();
+
+                // ── Título "FIM DE JOGO" ──────────────────────────────────────────
+                // Linha decorativa com gradiente acima do título
+                const lineGrad = ctx.createLinearGradient(cx - 60, 0, cx + 60, 0);
+                lineGrad.addColorStop(0, 'rgba(80,180,255,0)');
+                lineGrad.addColorStop(0.5, 'rgba(80,180,255,0.7)');
+                lineGrad.addColorStop(1, 'rgba(80,180,255,0)');
+                ctx.strokeStyle = lineGrad;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(cx - 60, panY + 44);
+                ctx.lineTo(cx + 60, panY + 44);
+                ctx.stroke();
+
+                ctx.shadowColor = 'rgba(80,180,255,0.5)';
+                ctx.shadowBlur = 8;
+                ctx.fillStyle = '#a8c8f0';
+                ctx.font = 'bold 13px "SF Pro Display", "Helvetica Neue", sans-serif';
+                ctx.letterSpacing = '0.15em';
+                ctx.fillText('FIM  DE  JOGO', cx, panY + 38);
+                ctx.shadowBlur = 0;
+
+                // ── Pontuação ─────────────────────────────────────────────────────
+                // Label pequeno
+                ctx.fillStyle = 'rgba(160,180,210,0.65)';
+                ctx.font = '11px "SF Pro Display", "Helvetica Neue", sans-serif';
+                ctx.fillText('PONTUAÇÃO', cx, panY + 72);
+
+                // Número grande com brilho
+                ctx.shadowColor = 'rgba(255,255,255,0.5)';
+                ctx.shadowBlur = 14;
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 44px "SF Pro Display", "Helvetica Neue", sans-serif';
+                ctx.fillText(score, cx, panY + 118);
+                ctx.shadowBlur = 0;
+
+                // ── Botão REINICIAR ───────────────────────────────────────────────
+                const bx = cx - btnW / 2, by = panY + panH - btnH - 18;
+
+                // Sombra do botão
+                ctx.shadowColor = 'rgba(0,120,255,0.5)';
+                ctx.shadowBlur = 16;
+                ctx.shadowOffsetY = 4;
+
+                // Corpo do botão — azul profundo skeuomórfico
+                const btnBase = ctx.createLinearGradient(bx, by, bx, by + btnH);
+                btnBase.addColorStop(0, '#4aa8ff');
+                btnBase.addColorStop(0.48, '#1a6fd4');
+                btnBase.addColorStop(0.52, '#155fbb');
+                btnBase.addColorStop(1, '#0d3f8a');
+                ctx.fillStyle = btnBase;
+                ctx.beginPath();
+                ctx.roundRect(bx, by, btnW, btnH, 12);
+                ctx.fill();
+
+                ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
+
+                // Borda do botão
+                const btnBorder = ctx.createLinearGradient(bx, by, bx, by + btnH);
+                btnBorder.addColorStop(0, 'rgba(255,255,255,0.5)');
+                btnBorder.addColorStop(1, 'rgba(0,0,0,0.3)');
+                ctx.strokeStyle = btnBorder;
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.roundRect(bx + 0.5, by + 0.5, btnW - 1, btnH - 1, 12);
+                ctx.stroke();
+
+                // Reflexo glossy do botão
+                const btnGloss = ctx.createLinearGradient(bx, by + 1, bx, by + btnH * 0.52);
+                btnGloss.addColorStop(0, 'rgba(255,255,255,0.32)');
+                btnGloss.addColorStop(1, 'rgba(255,255,255,0.0)');
+                ctx.fillStyle = btnGloss;
+                ctx.beginPath();
+                ctx.roundRect(bx + 2, by + 2, btnW - 4, btnH * 0.5, [10, 10, 0, 0]);
+                ctx.fill();
+
+                // Texto do botão com sombra interna simulada
+                ctx.shadowColor = 'rgba(0,0,60,0.6)';
+                ctx.shadowBlur = 3;
+                ctx.shadowOffsetY = 1;
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 15px "SF Pro Display", "Helvetica Neue", sans-serif';
+                ctx.fillText('REINICIAR', cx, by + btnH * 0.64);
+                ctx.shadowBlur = 0; ctx.shadowOffsetY = 0;
             }
 
             function loop() {
