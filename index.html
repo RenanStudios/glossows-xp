@@ -7990,35 +7990,190 @@
 
                 case 'settings':
                     return `
-<div class="settings-window">
+<div style="padding: 8px; font-family: 'Tahoma', sans-serif; font-size: 11px;">
+    <link rel="stylesheet" href="https://unpkg.com/xp.css">
 
-                                <div class="settings-header">
-                                    <h2>Aparência</h2>
-                                    <span class="settings-sub">Personalize o visual do sistema</span>
-                                </div>
+    <!-- Cabeçalho estilo Painel de Controle XP -->
+    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #aca899;">
+        <img src="https://win98icons.alexmeub.com/icons/png/display_properties-4.png" width="32" height="32" style="image-rendering: pixelated;" onerror="this.style.display='none'">
+        <div>
+            <div style="font-size: 13px; font-weight: bold; color: #003399;">Aparência e Temas</div>
+            <div style="color: #555; font-size: 11px;">Personalize o visual do sistema</div>
+        </div>
+    </div>
 
-                                <div class="wallpaper-grid">
-                                    <button onclick="setWallpaper(0)" class="wallpaper-card holo">
-                                        <span>Holo</span>
-                                    </button>
-                                    <button onclick="setWallpaper(1)" class="wallpaper-card vista">
-                                        <span>Vista</span>
-                                    </button>
-                                    <button onclick="setWallpaper(2)" class="wallpaper-card dark">
-                                        <span>Dark</span>
-                                    </button>
-                                    <button onclick="setWallpaper(3)" class="wallpaper-card ubuntu">
-                                        <span>Ubuntu</span>
-                                    </button>
-                                    <button onclick="setWallpaper(4)" class="wallpaper-card binbows7 large">
-                                        <span>Binbows 7</span>
-                                    </button>
-                                </div>
+    <!-- Área principal com fieldset XP -->
+    <fieldset>
+        <legend>Papel de Parede da Área de Trabalho</legend>
+        <p style="margin: 0 0 8px 0; color: #444;">Selecione um tema para personalizar sua experiência:</p>
 
-                                <div class="settings-footer">
-                                    Glossows XP &nbsp;•&nbsp; Service Pack 3
-                                </div>
+        <!-- Grid de wallpapers -->
+        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px;">
 
+            <button onclick="setWallpaper(0)" style="
+                height: 64px;
+                background: linear-gradient(135deg, #1a002e 0%, #4b0082 50%, #0055cc 100%);
+                border: 2px solid #84b5e8;
+                cursor: pointer;
+                display: flex; align-items: flex-end; justify-content: flex-start;
+                padding: 4px 6px; font-size: 10px; font-weight: bold; color: #fff;
+                text-shadow: 1px 1px 2px #000;
+                position: relative; overflow: hidden;
+            ">
+                <span style="
+                    position: absolute; inset: 0;
+                    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 8px);
+                "></span>
+                Holo
+            </button>
+
+            <button onclick="setWallpaper(1)" style="
+    height:64px;
+    position:relative;
+    overflow:hidden;
+
+    background:
+    radial-gradient(ellipse 140% 90% at 50% 115%, #68c828 0%, #5cb820 25%, #4ea010 45%, #2e7000 75%, transparent 100%),
+    linear-gradient(to bottom, #1856b4 0%, #3278d8 35%, #62a8ee 55%, #90cefa 70%);
+
+    border:2px solid #2f6fbf;
+    border-radius:6px;
+    cursor:pointer;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-start;
+
+    padding:4px 6px;
+    font-size:10px;
+    font-weight:bold;
+    color:#ffffff;
+    text-shadow:1px 1px 2px rgba(0,0,0,0.6);
+">
+Vista
+</button>
+
+            <button onclick="setWallpaper(2)" style="
+    height:64px;
+    position:relative;
+    overflow:hidden;
+
+    background:
+    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 0%, transparent 15%),
+    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 20%),
+    radial-gradient(circle at 50% 60%, rgba(255,255,255,0.04) 0%, transparent 12%),
+    radial-gradient(circle at 10% 85%, rgba(255,255,255,0.02) 0%, transparent 18%),
+
+    radial-gradient(ellipse 150% 60% at 50% 100%, transparent 45%, rgba(255,255,255,0.08) 45.1%, transparent 45.5%),
+    radial-gradient(ellipse 120% 80% at 50% 110%, transparent 50%, rgba(255,255,255,0.05) 50.1%, transparent 50.8%),
+
+    radial-gradient(ellipse 180% 100% at 0% 110%, transparent 40%, rgba(0,0,0,0.6) 40.2%, rgba(20,20,20,0.8) 60%, transparent 60.5%),
+
+    linear-gradient(160deg, #2a2a2a 0%, #121212 50%, #000000 100%);
+
+    border:2px solid #333;
+    border-radius:6px;
+    cursor:pointer;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-start;
+
+    padding:4px 6px;
+    font-size:10px;
+    font-weight:bold;
+    color:#00ff88;
+    text-shadow:0 0 6px #00ff88;
+">
+Dark
+</button>
+
+            <button onclick="setWallpaper(3)" style="
+    height:64px;
+    position:relative;
+    overflow:hidden;
+
+    background-color:#635134;
+    background-image:
+    radial-gradient(ellipse 150% 150% at 0% 0%, transparent 48%, rgba(255,210,160,0.3) 48.2%, transparent 49.5%),
+    radial-gradient(ellipse 180% 120% at 100% 100%, transparent 52%, rgba(255,190,120,0.2) 52.2%, transparent 53.5%),
+
+    radial-gradient(ellipse 140% 160% at 100% -10%, transparent 45%, #9b7a48 45.2%, #9b7a48 65%, transparent 65.2%),
+    radial-gradient(ellipse 150% 140% at -10% 110%, transparent 40%, #765932 40.2%, #765932 60%, transparent 60.2%),
+    radial-gradient(ellipse 110% 150% at 30% 120%, transparent 50%, rgba(138,102,58,0.9) 50.2%, rgba(138,102,58,0.9) 75%, transparent 75.2%),
+
+    radial-gradient(circle at 110% 60%, transparent 55%, rgba(60,40,20,0.5) 55.2%, rgba(60,40,20,0.5) 75%, transparent 75.2%),
+    radial-gradient(circle at -10% 40%, transparent 50%, rgba(185,145,95,0.35) 50.2%, rgba(185,145,95,0.35) 70%, transparent 70.2%),
+
+    radial-gradient(circle at 75% 25%, rgba(190,145,90,0.5) 0%, transparent 60%),
+    radial-gradient(circle at 25% 75%, rgba(40,25,15,0.8) 0%, transparent 70%),
+
+    linear-gradient(135deg, #a48252 0%, #635134 50%, #3e2b18 100%);
+
+    border:2px solid #6f5530;
+    border-radius:6px;
+    cursor:pointer;
+
+    display:flex;
+    align-items:flex-end;
+    justify-content:flex-start;
+
+    padding:4px 6px;
+    font-size:10px;
+    font-weight:bold;
+    color:#ffffff;
+    text-shadow:1px 1px 2px #000;
+">
+Ubuntu
+</button>
+        </div>
+
+        <!-- Botão grande Binbows 7 -->
+        <button onclick="setWallpaper(4)" style="
+    width:100%;
+    height:56px;
+    position:relative;
+    overflow:hidden;
+
+    background:
+    radial-gradient(ellipse 60% 55% at 16% 90%, rgba(100,185,255,0.60), transparent 58%),
+    radial-gradient(ellipse 38% 38% at 50% 47%, rgba(175,220,255,0.20), transparent 68%),
+    radial-gradient(ellipse 30% 25% at 82% 12%, rgba(130,200,255,0.14), transparent 65%),
+    linear-gradient(168deg,#092f70 0%,#0c58b8 28%,#1a8aea 50%,#0d5ebc 70%,#061f50 100%);
+
+    border:2px solid #6aa6e6;
+    border-radius:6px;
+    cursor:pointer;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+
+    font-size:12px;
+    font-weight:bold;
+    color:#fff;
+    text-shadow:1px 1px 3px #003;
+    letter-spacing:0.5px;
+">
+    <span style="font-size:18px;">🪟</span>
+    Binbows 7
+</button>
+    </fieldset>
+
+    <!-- Rodapé estilo XP -->
+    <div style="
+        margin-top: 10px;
+        padding: 6px 8px;
+        background: #ece9d8;
+        border: 1px solid #aca899;
+        border-radius: 0;
+        display: flex; align-items: center; justify-content: space-between;
+        font-size: 10px; color: #444;
+    ">
+        <span>Glossows XP &nbsp;•&nbsp; Service Pack 3</span>
+        <button onclick="" style="font-size: 10px; padding: 2px 10px;">OK</button>
+    </div>
 </div>
 `;
 
@@ -8527,43 +8682,119 @@
 `;
                 case 'breakout':
                     return `
-<div class="flex flex-col h-full" style="background:#07080b; font-family:'Segoe UI',sans-serif; color:#e6f7ff;">
+<div class="flex flex-col h-full" style="
+    background:linear-gradient(180deg,#06070a,#05060a);
+    font-family:'Segoe UI',system-ui,sans-serif;
+    color:#e6f7ff;
+">
 
-    <!-- HUD -->
-    <div style="display:flex; align-items:center; gap:8px; padding:5px 10px;
-                background:#0f1724; border-bottom:1px solid #1a2a3a; flex-shrink:0;">
-        <div style="background:#081725; padding:4px 10px; border-radius:10px; font-size:11px;">
-            Vidas: <b id="br-lives-${winId}">3</b>
-        </div>
-        <div style="background:#081725; padding:4px 10px; border-radius:10px; font-size:11px;">
-            Fase: <b id="br-level-${winId}">1</b>/5
-        </div>
-        <div style="background:#081725; padding:4px 10px; border-radius:10px; font-size:11px;">
-            Pontos: <b id="br-score-${winId}">0</b>
-        </div>
-        <button onclick="initBreakout('${winId}')"
-            style="margin-left:auto; background:linear-gradient(180deg,#1b6d9a,#0b3b55);
-                   border:none; padding:4px 10px; border-radius:8px; color:#eaffff;
-                   cursor:pointer; font-size:11px; box-shadow:0 4px 10px #0006;">
-            ↺ Reiniciar
-        </button>
-    </div>
+<!-- HUD -->
+<div style="
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:6px 12px;
+    background:linear-gradient(180deg,#121b28,#0b121c);
+    border-bottom:1px solid #1c2a3b;
+    flex-shrink:0;
+    box-shadow:0 3px 12px rgba(0,0,0,.6);
+">
 
-    <!-- Canvas -->
-    <div style="flex:1; display:flex; align-items:center; justify-content:center;
-                background:#07080b; overflow:hidden;">
-        <canvas id="br-canvas-${winId}" width="520" height="370"
-            style="border-radius:12px; cursor:none;
-                   background:linear-gradient(180deg,#021017 0%,#03131a 50%,#000 100%);
-                   box-shadow:0 10px 30px rgba(0,0,0,.9), inset 0 8px 28px #ffffff05;">
-        </canvas>
-    </div>
+<div style="
+    background:linear-gradient(180deg,#0c1b2b,#071420);
+    padding:4px 12px;
+    border-radius:12px;
+    font-size:11px;
+    border:1px solid #1b3146;
+    box-shadow:inset 0 0 8px rgba(255,255,255,.04);
+">
+Vidas <b id="br-lives-${winId}">3</b>
+</div>
 
-    <!-- Poderes ativos -->
-    <div id="br-powers-${winId}"
-         style="display:flex; gap:6px; padding:4px 8px; background:#0f1724;
-                min-height:26px; flex-wrap:wrap; align-items:center; flex-shrink:0;">
-    </div>
+<div style="
+    background:linear-gradient(180deg,#0c1b2b,#071420);
+    padding:4px 12px;
+    border-radius:12px;
+    font-size:11px;
+    border:1px solid #1b3146;
+    box-shadow:inset 0 0 8px rgba(255,255,255,.04);
+">
+Fase <b id="br-level-${winId}">1</b>/5
+</div>
+
+<div style="
+    background:linear-gradient(180deg,#0c1b2b,#071420);
+    padding:4px 12px;
+    border-radius:12px;
+    font-size:11px;
+    border:1px solid #1b3146;
+    box-shadow:inset 0 0 8px rgba(255,255,255,.04);
+">
+Pontos <b id="br-score-${winId}">0</b>
+</div>
+
+<button onclick="initBreakout('${winId}')"
+style="
+    margin-left:auto;
+    background:linear-gradient(180deg,#2c86b3,#0c4c6e);
+    border:1px solid #2f6f95;
+    padding:4px 12px;
+    border-radius:9px;
+    color:#eaffff;
+    cursor:pointer;
+    font-size:11px;
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.25),
+        0 4px 12px rgba(0,0,0,.7);
+    transition:all .15s ease;
+"
+onmouseover="this.style.filter='brightness(1.1)'"
+onmouseout="this.style.filter='brightness(1)'"
+>
+↺ Reiniciar
+</button>
+
+</div>
+
+<!-- Canvas -->
+<div style="
+    flex:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:radial-gradient(circle at center,#05131a,#02070b);
+    overflow:hidden;
+">
+
+<canvas id="br-canvas-${winId}" width="520" height="370"
+style="
+    border-radius:14px;
+    cursor:none;
+    background:linear-gradient(180deg,#03131b 0%,#021017 45%,#000 100%);
+    border:1px solid #10283a;
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.95),
+        inset 0 0 40px rgba(0,180,255,.04),
+        inset 0 8px 30px rgba(255,255,255,.03);
+">
+</canvas>
+
+</div>
+
+<!-- Poderes ativos -->
+<div id="br-powers-${winId}"
+style="
+    display:flex;
+    gap:6px;
+    padding:5px 10px;
+    background:linear-gradient(180deg,#121b28,#0b121c);
+    border-top:1px solid #1c2a3b;
+    min-height:26px;
+    flex-wrap:wrap;
+    align-items:center;
+    flex-shrink:0;
+">
+</div>
 
 </div>`;
                 case 'paint':
@@ -9275,24 +9506,39 @@ onclick="revealMine('${winId}',${i},this)">
                 moveTo(px) { this.targetX = clamp(px - this.w / 2, 6, W - this.w - 6); }
                 update(dt) { this.x = lerp(this.x, this.targetX, clamp(dt * 0.35, 0, 1)); if (this.laserCooldown > 0) this.laserCooldown -= dt; }
                 draw() {
-                    // glow under paddle
+                    // 1. Base - Teal-escuro (Glow removido)
                     ctx.save();
-                    ctx.shadowColor = '#0ef'; ctx.shadowBlur = 18;
+                    // ShadowColor e ShadowBlur foram removidos para eliminar o brilho
                     rr(ctx, this.x, this.y, this.w, this.h, 12);
+
                     const g = ctx.createLinearGradient(this.x, this.y, this.x, this.y + this.h);
-                    g.addColorStop(0, '#0b6b67'); g.addColorStop(0.45, '#063a38'); g.addColorStop(1, '#021a19');
-                    ctx.fillStyle = g; ctx.fill();
+                    // Mantendo a paleta teal-escuro original
+                    g.addColorStop(0, '#0b6b67');
+                    g.addColorStop(0.45, '#063a38');
+                    g.addColorStop(1, '#021a19');
+
+                    ctx.fillStyle = g;
+                    ctx.fill();
                     ctx.restore();
-                    // shine
-                    ctx.beginPath(); rr(ctx, this.x + 5, this.y + 2, this.w - 10, this.h * 0.42, 8);
-                    ctx.fillStyle = 'rgba(255,255,255,0.11)'; ctx.fill();
-                    // edge
-                    ctx.strokeStyle = 'rgba(20,220,200,0.35)'; ctx.lineWidth = 1.5;
-                    rr(ctx, this.x + 1, this.y + 1, this.w - 2, this.h - 2, 11); ctx.stroke();
-                    // wide indicator stripe
+
+                    // 2. Glossy Shine (Brilho superior sutil)
+                    ctx.beginPath();
+                    rr(ctx, this.x + 5, this.y + 2, this.w - 10, this.h * 0.42, 8);
+                    ctx.fillStyle = 'rgba(255,255,255,0.11)';
+                    ctx.fill();
+
+                    // 3. Borda interna/Edge
+                    ctx.strokeStyle = 'rgba(20,220,200,0.35)';
+                    ctx.lineWidth = 1.5;
+                    rr(ctx, this.x + 1, this.y + 1, this.w - 2, this.h - 2, 11);
+                    ctx.stroke();
+
+                    // 4. Indicador de Power-up (Opcional)
                     if (st.powerInsts.some(i => i.type === 'wide')) {
-                        ctx.strokeStyle = 'rgba(255,220,60,0.6)'; ctx.lineWidth = 2;
-                        rr(ctx, this.x + 2, this.y + 2, this.w - 4, this.h - 4, 10); ctx.stroke();
+                        ctx.strokeStyle = 'rgba(255,220,60,0.6)';
+                        ctx.lineWidth = 2;
+                        rr(ctx, this.x + 2, this.y + 2, this.w - 4, this.h - 4, 10);
+                        ctx.stroke();
                     }
                 }
             }
