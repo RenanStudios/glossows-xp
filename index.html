@@ -7989,193 +7989,316 @@
                                                                         </div>`;
 
                 case 'settings':
-                    return `
-    <link rel="stylesheet" href="https://unpkg.com/xp.css">
+    return `
+<div class="settings-window">
+    <style>
+        .settings-window {
+            font-family: Tahoma, 'MS Sans Serif', sans-serif;
+            font-size: 11px;
+            background: #ECE9D8;
+            color: #000;
+            padding: 0;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
 
-    <!-- Cabeçalho estilo Painel de Controle XP -->
-    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #aca899;">
-        <img src="https://win98icons.alexmeub.com/icons/png/display_properties-4.png" width="32" height="32" style="image-rendering: pixelated;" onerror="this.style.display='none'">
-        <div>
-            <div style="font-size: 13px; font-weight: bold; color: #003399;">Aparência e Temas</div>
-            <div style="color: #555; font-size: 11px;">Personalize o visual do sistema</div>
+        /* ── Barra de título XP ── */
+        .xp-titlebar {
+            background: linear-gradient(to bottom, #0A246A 0%, #3A6EA5 4%, #245EDC 10%, #3C81F3 50%, #245EDC 90%, #0A246A 100%);
+            padding: 3px 6px 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+        }
+        .xp-titlebar-icon {
+            width: 15px; height: 15px;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" fill="%23FF0000"/><rect x="9" y="1" width="6" height="6" fill="%2300CC00"/><rect x="1" y="9" width="6" height="6" fill="%230000FF"/><rect x="9" y="9" width="6" height="6" fill="%23FFCC00"/></svg>') center/contain no-repeat;
+        }
+        .xp-titlebar-text {
+            color: #fff;
+            font-weight: bold;
+            font-size: 11px;
+            text-shadow: 1px 1px 2px #000a;
+            flex: 1;
+        }
+        .xp-titlebar-btns {
+            display: flex; gap: 2px;
+        }
+        .xp-titlebar-btns button {
+            width: 21px; height: 21px;
+            background: linear-gradient(to bottom, #3C81F3, #245EDC);
+            border: 1px solid #1A3A8A;
+            border-radius: 3px;
+            color: #fff;
+            font-size: 11px;
+            font-family: Marlett, Tahoma, sans-serif;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .xp-titlebar-btns button:hover { background: linear-gradient(to bottom,#5A9EFF,#3A6ED8); }
+        .xp-titlebar-btns .xp-close { background: linear-gradient(to bottom,#EA4040,#C02020); }
+        .xp-titlebar-btns .xp-close:hover { background: linear-gradient(to bottom,#FF6060,#DD3030); }
+
+        /* ── Corpo ── */
+        .xp-body {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── Painel lateral azul ── */
+        .xp-sidebar {
+            width: 160px;
+            background: linear-gradient(to bottom, #2B5BC4 0%, #1A3EA0 100%);
+            padding: 12px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .xp-sidebar-title {
+            color: #fff;
+            font-weight: bold;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 4px 6px 8px;
+            border-bottom: 1px solid #5580DD;
+            margin-bottom: 4px;
+        }
+        .xp-sidebar-link {
+            color: #BFD7FF;
+            font-size: 11px;
+            padding: 3px 6px;
+            cursor: pointer;
+            border-radius: 2px;
+            text-decoration: underline;
+        }
+        .xp-sidebar-link:hover { color: #fff; background: #3A5CC4; }
+
+        /* ── Área principal ── */
+        .xp-content {
+            flex: 1;
+            padding: 14px 16px;
+            overflow-y: auto;
+            background: #ECE9D8;
+        }
+
+        /* ── Cabeçalho de seção ── */
+        .xp-section-header {
+            background: linear-gradient(to right, #245EDC, #6EA8F8);
+            color: #fff;
+            font-weight: bold;
+            font-size: 12px;
+            padding: 4px 10px;
+            margin-bottom: 10px;
+            border-radius: 0;
+        }
+
+        /* ── Grid de wallpapers ── */
+        .wallpaper-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
+        .wallpaper-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 0;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-family: Tahoma, sans-serif;
+            font-size: 11px;
+        }
+        .wallpaper-thumb {
+            width: 80px; height: 52px;
+            border: 2px solid #7B9ECC;
+            box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #5A7AAA inset;
+            position: relative;
+            overflow: hidden;
+        }
+        .wallpaper-card:hover .wallpaper-thumb {
+            border-color: #0A246A;
+            box-shadow: 1px 1px 0 #fff inset, -1px -1px 0 #0A246A inset, 0 0 0 1px #245EDC;
+        }
+        .wallpaper-card.selected .wallpaper-thumb {
+            border-color: #0A246A;
+            outline: 1px dotted #000;
+            outline-offset: 2px;
+        }
+        .wallpaper-card span {
+            color: #000;
+        }
+        .wallpaper-card.large .wallpaper-thumb {
+            width: 80px; height: 52px;
+        }
+
+        /* Cores dos temas */
+        .wallpaper-card.holo    .wallpaper-thumb { background: linear-gradient(135deg,#00FFFF 0%,#0088BB 50%,#003344 100%); }
+        .wallpaper-card.vista   .wallpaper-thumb { background: linear-gradient(135deg,#5588CC 0%,#AACCEE 50%,#DDEEFF 100%); }
+        .wallpaper-card.dark    .wallpaper-thumb { background: linear-gradient(135deg,#111 0%,#333 50%,#555 100%); }
+        .wallpaper-card.ubuntu  .wallpaper-thumb { background: linear-gradient(135deg,#5E2750 0%,#E95420 100%); }
+        .wallpaper-card.binbows7 .wallpaper-thumb { background: linear-gradient(160deg,#1565C0 0%,#42A5F5 40%,#81D4FA 60%,#E3F2FD 100%); }
+
+        /* ── Checkbox row XP style ── */
+        .xp-checkbox-row {
+            display: flex; align-items: center; gap: 6px;
+            margin-bottom: 6px;
+        }
+        .xp-checkbox-row input[type=checkbox] {
+            width: 13px; height: 13px;
+            border: 2px inset #888;
+            background: #fff;
+            appearance: auto;
+        }
+
+        /* ── Botões XP ── */
+        .xp-btn {
+            background: linear-gradient(to bottom, #FAFAFA 0%, #E8E8E8 45%, #D4D0C8 46%, #EEEEE6 100%);
+            border-top: 1px solid #fff;
+            border-left: 1px solid #fff;
+            border-right: 1px solid #7B7B6B;
+            border-bottom: 1px solid #7B7B6B;
+            box-shadow: 1px 1px 0 #AEA894, inset 1px 1px 0 #fff;
+            font-family: Tahoma, sans-serif;
+            font-size: 11px;
+            padding: 3px 14px;
+            cursor: pointer;
+            min-width: 75px;
+        }
+        .xp-btn:hover {
+            border-color: #245EDC;
+            box-shadow: 1px 1px 0 #245EDC, inset 1px 1px 0 #fff;
+        }
+        .xp-btn:active {
+            background: linear-gradient(to bottom, #D4D0C8, #E8E8E8);
+            border-top: 1px solid #7B7B6B;
+            border-left: 1px solid #7B7B6B;
+            border-right: 1px solid #fff;
+            border-bottom: 1px solid #fff;
+        }
+        .xp-btn.default {
+            border: 2px solid #245EDC;
+        }
+
+        /* ── Separador ── */
+        .xp-separator {
+            border: none;
+            border-top: 1px solid #AEA894;
+            border-bottom: 1px solid #fff;
+            margin: 10px 0;
+        }
+
+        /* ── Rodapé ── */
+        .xp-footer {
+            background: #D4D0C8;
+            border-top: 1px solid #AEA894;
+            padding: 4px 10px;
+            font-size: 10px;
+            color: #444;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .xp-statusbar-icon {
+            width: 14px; height: 14px;
+            background: linear-gradient(135deg,#4CAF50,#1B5E20);
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+    </style>
+
+    <!-- Titlebar -->
+    <div class="xp-titlebar">
+        <div class="xp-titlebar-icon"></div>
+        <span class="xp-titlebar-text">Propriedades de Vídeo</span>
+        <div class="xp-titlebar-btns">
+            <button title="Minimizar">_</button>
+            <button title="Maximizar">□</button>
+            <button class="xp-close" title="Fechar">✕</button>
         </div>
     </div>
 
-    <!-- Área principal com fieldset XP -->
-    <fieldset>
-        <legend>Papel de Parede da Área de Trabalho</legend>
-        <p style="margin: 0 0 8px 0; color: #444;">Selecione um tema para personalizar sua experiência:</p>
-
-        <!-- Grid de wallpapers -->
-        <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 8px;">
-
-            <button onclick="setWallpaper(0)" style="
-                height: 64px;
-                background: linear-gradient(135deg, #1a002e 0%, #4b0082 50%, #0055cc 100%);
-                border: 2px solid #84b5e8;
-                cursor: pointer;
-                display: flex; align-items: flex-end; justify-content: flex-start;
-                padding: 4px 6px; font-size: 10px; font-weight: bold; color: #fff;
-                text-shadow: 1px 1px 2px #000;
-                position: relative; overflow: hidden;
-            ">
-                <span style="
-                    position: absolute; inset: 0;
-                    background: repeating-linear-gradient(45deg, rgba(255,255,255,0.05) 0px, rgba(255,255,255,0.05) 2px, transparent 2px, transparent 8px);
-                "></span>
-                Holo
-            </button>
-
-            <button onclick="setWallpaper(1)" style="
-    height:64px;
-    position:relative;
-    overflow:hidden;
-
-    background:
-    radial-gradient(ellipse 140% 90% at 50% 115%, #68c828 0%, #5cb820 25%, #4ea010 45%, #2e7000 75%, transparent 100%),
-    linear-gradient(to bottom, #1856b4 0%, #3278d8 35%, #62a8ee 55%, #90cefa 70%);
-
-    border:2px solid #2f6fbf;
-    border-radius:6px;
-    cursor:pointer;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:flex-start;
-
-    padding:4px 6px;
-    font-size:10px;
-    font-weight:bold;
-    color:#ffffff;
-    text-shadow:1px 1px 2px rgba(0,0,0,0.6);
-">
-Vista
-</button>
-
-            <button onclick="setWallpaper(2)" style="
-    height:64px;
-    position:relative;
-    overflow:hidden;
-
-    background:
-    radial-gradient(circle at 20% 30%, rgba(255,255,255,0.05) 0%, transparent 15%),
-    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.03) 0%, transparent 20%),
-    radial-gradient(circle at 50% 60%, rgba(255,255,255,0.04) 0%, transparent 12%),
-    radial-gradient(circle at 10% 85%, rgba(255,255,255,0.02) 0%, transparent 18%),
-
-    radial-gradient(ellipse 150% 60% at 50% 100%, transparent 45%, rgba(255,255,255,0.08) 45.1%, transparent 45.5%),
-    radial-gradient(ellipse 120% 80% at 50% 110%, transparent 50%, rgba(255,255,255,0.05) 50.1%, transparent 50.8%),
-
-    radial-gradient(ellipse 180% 100% at 0% 110%, transparent 40%, rgba(0,0,0,0.6) 40.2%, rgba(20,20,20,0.8) 60%, transparent 60.5%),
-
-    linear-gradient(160deg, #2a2a2a 0%, #121212 50%, #000000 100%);
-
-    border:2px solid #333;
-    border-radius:6px;
-    cursor:pointer;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:flex-start;
-
-    padding:4px 6px;
-    font-size:10px;
-    font-weight:bold;
-    color:#00ff88;
-    text-shadow:0 0 6px #00ff88;
-">
-Dark
-</button>
-
-            <button onclick="setWallpaper(3)" style="
-    height:64px;
-    position:relative;
-    overflow:hidden;
-
-    background-color:#635134;
-    background-image:
-    radial-gradient(ellipse 150% 150% at 0% 0%, transparent 48%, rgba(255,210,160,0.3) 48.2%, transparent 49.5%),
-    radial-gradient(ellipse 180% 120% at 100% 100%, transparent 52%, rgba(255,190,120,0.2) 52.2%, transparent 53.5%),
-
-    radial-gradient(ellipse 140% 160% at 100% -10%, transparent 45%, #9b7a48 45.2%, #9b7a48 65%, transparent 65.2%),
-    radial-gradient(ellipse 150% 140% at -10% 110%, transparent 40%, #765932 40.2%, #765932 60%, transparent 60.2%),
-    radial-gradient(ellipse 110% 150% at 30% 120%, transparent 50%, rgba(138,102,58,0.9) 50.2%, rgba(138,102,58,0.9) 75%, transparent 75.2%),
-
-    radial-gradient(circle at 110% 60%, transparent 55%, rgba(60,40,20,0.5) 55.2%, rgba(60,40,20,0.5) 75%, transparent 75.2%),
-    radial-gradient(circle at -10% 40%, transparent 50%, rgba(185,145,95,0.35) 50.2%, rgba(185,145,95,0.35) 70%, transparent 70.2%),
-
-    radial-gradient(circle at 75% 25%, rgba(190,145,90,0.5) 0%, transparent 60%),
-    radial-gradient(circle at 25% 75%, rgba(40,25,15,0.8) 0%, transparent 70%),
-
-    linear-gradient(135deg, #a48252 0%, #635134 50%, #3e2b18 100%);
-
-    border:2px solid #6f5530;
-    border-radius:6px;
-    cursor:pointer;
-
-    display:flex;
-    align-items:flex-end;
-    justify-content:flex-start;
-
-    padding:4px 6px;
-    font-size:10px;
-    font-weight:bold;
-    color:#ffffff;
-    text-shadow:1px 1px 2px #000;
-">
-Ubuntu
-</button>
+    <!-- Body -->
+    <div class="xp-body">
+        <!-- Sidebar -->
+        <div class="xp-sidebar">
+            <div class="xp-sidebar-title">Consulte também</div>
+            <div class="xp-sidebar-link">🖥 Resolução de tela</div>
+            <div class="xp-sidebar-link">🎨 Cores do sistema</div>
+            <div class="xp-sidebar-link">🖱 Ponteiro do mouse</div>
+            <div class="xp-sidebar-link">🔊 Sons e áudio</div>
         </div>
 
-        <!-- Botão grande Binbows 7 -->
-        <button onclick="setWallpaper(4)" style="
-    width:100%;
-    height:56px;
-    position:relative;
-    overflow:hidden;
+        <!-- Main content -->
+        <div class="xp-content">
+            <div class="xp-section-header">Plano de Fundo da Área de Trabalho</div>
 
-    background:
-    radial-gradient(ellipse 60% 55% at 16% 90%, rgba(100,185,255,0.60), transparent 58%),
-    radial-gradient(ellipse 38% 38% at 50% 47%, rgba(175,220,255,0.20), transparent 68%),
-    radial-gradient(ellipse 30% 25% at 82% 12%, rgba(130,200,255,0.14), transparent 65%),
-    linear-gradient(168deg,#092f70 0%,#0c58b8 28%,#1a8aea 50%,#0d5ebc 70%,#061f50 100%);
+            <p style="margin:0 0 8px; font-size:11px;">
+                Selecione um plano de fundo para a Área de Trabalho do <b>Glossows XP</b>.<br>
+                Para posicionar a imagem, selecione sua posição na lista abaixo.
+            </p>
 
-    border:2px solid #6aa6e6;
-    border-radius:6px;
-    cursor:pointer;
+            <div class="wallpaper-grid">
+                <button onclick="setWallpaper(0)" class="wallpaper-card holo">
+                    <div class="wallpaper-thumb"></div>
+                    <span>Holo</span>
+                </button>
+                <button onclick="setWallpaper(1)" class="wallpaper-card vista">
+                    <div class="wallpaper-thumb"></div>
+                    <span>Vista</span>
+                </button>
+                <button onclick="setWallpaper(2)" class="wallpaper-card dark">
+                    <div class="wallpaper-thumb"></div>
+                    <span>Dark</span>
+                </button>
+                <button onclick="setWallpaper(3)" class="wallpaper-card ubuntu">
+                    <div class="wallpaper-thumb"></div>
+                    <span>Ubuntu</span>
+                </button>
+                <button onclick="setWallpaper(4)" class="wallpaper-card binbows7 large">
+                    <div class="wallpaper-thumb"></div>
+                    <span>Binbows 7</span>
+                </button>
+            </div>
 
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:8px;
+            <hr class="xp-separator">
 
-    font-size:12px;
-    font-weight:bold;
-    color:#fff;
-    text-shadow:1px 1px 3px #003;
-    letter-spacing:0.5px;
-">
-    <span style="font-size:18px;">🪟</span>
-    Binbows 7
-</button>
-    </fieldset>
+            <div class="xp-checkbox-row">
+                <input type="checkbox" id="xp-stretch" checked>
+                <label for="xp-stretch">Expandir para preencher a tela</label>
+            </div>
+            <div class="xp-checkbox-row">
+                <input type="checkbox" id="xp-center">
+                <label for="xp-center">Centralizar imagem</label>
+            </div>
 
-    <!-- Rodapé estilo XP -->
-    <div style="
-        margin-top: 10px;
-        padding: 6px 8px;
-        background: #ece9d8;
-        border: 1px solid #aca899;
-        border-radius: 0;
-        display: flex; align-items: center; justify-content: space-between;
-        font-size: 10px; color: #444;
-    ">
-        <span>Glossows XP &nbsp;•&nbsp; Service Pack 3</span>
-        <button onclick="" style="font-size: 10px; padding: 2px 10px;">OK</button>
+            <hr class="xp-separator">
+
+            <div style="display:flex; gap:6px; justify-content:flex-end; margin-top:4px;">
+                <button class="xp-btn default" onclick="">OK</button>
+                <button class="xp-btn" onclick="">Cancelar</button>
+                <button class="xp-btn" onclick="">Aplicar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Status bar -->
+    <div class="xp-footer">
+        <span><span class="xp-statusbar-icon"></span> Glossows XP &nbsp;•&nbsp; Service Pack 3</span>
+        <span style="color:#666;">Aparência e Temas</span>
     </div>
 </div>
 `;
-
                 case 'filemanager':
                     return `
 <style>
@@ -12732,4 +12855,5 @@ onclick="revealMine('${winId}',${i},this)">
     </script>
 </body>
 </html>
+
 
