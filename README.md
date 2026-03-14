@@ -79,13 +79,13 @@ Acesse o **Doogly** e pesquise para desbloquear:
 
 O Glossows XP possui **40+ conquistas** divididas em 5 raridades, cada uma concedendo XP ao jogador. O progresso é salvo automaticamente via `localStorage`.
 
-| Raridade | Cor |
-|---|---|
-| 🟢 Common | Verde |
-| 🔵 Uncommon | Azul |
-| 🟣 Rare | Roxo |
-| 🟡 Epic | Dourado |
-| 🔴 Legendary | Vermelho |
+| Raridade     | Cor     |
+| ------------ | ------- |
+| ⚪ Common     | Cinza   |
+| 🟢 Uncommon  | Verde   |
+| 🔵 Rare      | Azul    |
+| 🟣 Epic      | Roxo    |
+| 🟡 Legendary | Dourado |
 
 ---
 
