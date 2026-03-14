@@ -25,7 +25,6 @@ cd glossows-xp
 # Abra o index.html no seu navegador preferido
 ```
 
-> ⚠️ Algumas funcionalidades (como carregar imagens locais no Paint) podem exigir um servidor local. Use a extensão **Live Server** no VS Code ou rode `npx serve .` na pasta do projeto.
 
 ---
 
