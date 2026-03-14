@@ -2,7 +2,7 @@
 
 > Um sistema operacional fictício rodando direto no navegador, construído com HTML, CSS e JavaScript puro.
 
-![Glossows XP](img/os_logo.png)
+![Glossows XP](img/print1.png)
 
 ---
 
