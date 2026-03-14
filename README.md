@@ -12,32 +12,21 @@
 
 ---
 
-## 🚀 Como Rodar
-
-Não precisa instalar nada. Basta abrir o `index.html` no navegador.
-
-```bash
-# Clone o repositório
-git clone https://github.com/seu-usuario/glossows-xp.git
-
-# Abra o arquivo
-cd glossows-xp
-# Abra o index.html no seu navegador preferido
-```
-
-
----
 
 ## 📁 Estrutura de Arquivos
 
 ```
 glossows-xp/
-├── index.html      # Estrutura HTML do sistema
-├── style.css       # Todos os estilos (skeuomorphismo, wallpapers, janelas)
-├── script.js       # Lógica do sistema, apps e conquistas
-└── img/
-    ├── icon.png
-    └── os_logo.png
+├── index.html        # Estrutura principal do sistema
+├── style.css         # Estilos do sistema (skeuomorfismo, janelas, wallpapers)
+├── script.js         # Lógica do sistema, apps, eventos e conquistas
+├── README.md         # Informações e documentação do projeto
+│
+├── img/              # Imagens do sistema
+│
+├── audio/            # Sons do sistema (Player de Música)
+│
+└── fonts/            # Fontes usadas na interface
 ```
 
 ---
