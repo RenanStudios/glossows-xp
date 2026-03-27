@@ -3703,6 +3703,7 @@
                 setTimeout(() => startGlossyBird(`glossyBird-${winId}`), 50);
             }
             if (appId === 'breakout') setTimeout(() => initBreakout(winId), 50);
+            if (appId === 'glossplay') setTimeout(() => initGlossPlay(winId), 50);
 
             const games = ["tetris", "snake", "ttt", "mines", "glossybird", "breakout"];
 
@@ -5400,7 +5401,7 @@ onclick="revealMine('${winId}',${i},this)">
 // ==============================
 
 const gpVideos = [
-    { title: 'Pool Day', src: 'videos/poolday.mp4' }
+    { title: 'Pool Day', src: 'videos/poolday.mp4' } // relativo ao index.html
 ];
 
 const gpCurrentIndex = {};
