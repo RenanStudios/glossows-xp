@@ -16,6 +16,7 @@
             { id: 'tetris', name: 'Tetris', icon: 'fa-cubes', color: 'text-teal-300' },
             { id: 'hub', name: 'Glossows Hub', icon: 'fa-desktop', color: 'text-blue-600' },
             { id: 'breakout', name: 'Breakout', icon: 'fa-table-tennis-paddle-ball', color: 'text-cyan-400' },
+            { id: 'glossplay', name: 'GlossPlay', icon: 'fa-film', color: 'text-sky-400' },
         ];
         const ACHIEVEMENTS = [
 
@@ -3448,7 +3449,7 @@
                                                                 <b>Sistema:</b> Glossows XP
                                                             </div>
                                                             <div class="hub-panel">
-                                                                <b>Versão:</b> 5.0.10
+                                                                <b>Versão:</b> 6.4.70
                                                             </div>
                                                             <div class="hub-panel">
                                                                 <b>Build:</b> Service Pack 3
@@ -3490,6 +3491,36 @@
                 }).join("")}
                                                 </div>
                                                 `;
+            }
+
+            if (section === 'credits') {
+                el.innerHTML = `
+        <h2 style="font-size:16px; color:#2b5797; margin-bottom:10px;">Créditos</h2>
+
+        <div class="hub-panel">
+            <b>👨‍💻 Desenvolvedor</b><br>
+            Renan Studios — design, código e conceito do Glossows XP
+        </div>
+
+        <div class="hub-panel">
+            <b>🎵 Trilha Sonora</b><br>
+            <i>Rafflesia Online</i> — por <a href="#" style="color:#2b5797;">Xploshi</a>
+        </div>
+
+        <div class="hub-panel">
+            <b>🎨 Ícones</b><br>
+            <a href="https://fontawesome.com" style="color:#2b5797;">Font Awesome</a> — biblioteca de ícones
+        </div>
+
+        <div class="hub-panel">
+            <b>💨 Estilização</b><br>
+            <a href="https://tailwindcss.com" style="color:#2b5797;">Tailwind CSS</a> — framework de CSS utilitário
+        </div>
+
+        <div style="margin-top:15px; font-size:11px; color:#888; text-align:center;">
+            Glossows XP © Renan Studios • Todos os direitos reservados
+        </div>
+    `;
             }
         }
 
@@ -4633,6 +4664,66 @@
 
                                     </div>
 `;
+                case 'glossplay':
+                    return `
+<div class="glossplay skin-gp-default" id="glossplay-${winId}">
+    <div class="gp-header">
+        <span class="gp-logo"><i class="fas fa-film" style="margin-right:6px;font-size:11px"></i>GlossPlay</span>
+        <span class="gp-nowplaying" id="gp-title-${winId}">Nenhum vídeo carregado</span>
+        <div class="gp-skins-wrap">
+            <button class="gp-skin-btn" onclick="gpToggleSkins('${winId}')">Skins ▾</button>
+            <div class="gp-skins-menu" id="gp-skins-${winId}">
+                <button onclick="gpSetSkin('skin-gp-default', '${winId}')">
+                    <span class="gp-skin-thumb gp-thumb-default"></span>Aero
+                </button>
+                <button onclick="gpSetSkin('skin-gp-cinema', '${winId}')">
+                    <span class="gp-skin-thumb gp-thumb-cinema"></span>Cinema
+                </button>
+                <button onclick="gpSetSkin('skin-gp-aquarium', '${winId}')">
+                    <span class="gp-skin-thumb gp-thumb-aquarium"></span>Aqua
+                </button>
+                <button onclick="gpSetSkin('skin-gp-country', '${winId}')">
+    <span class="gp-skin-thumb gp-thumb-country"></span>Country
+</button>
+            </div>
+        </div>
+    </div>
+    <div class="gp-video-area">
+        <video id="gp-video-${winId}" class="gp-video"></video>
+        <div class="gp-placeholder" id="gp-placeholder-${winId}">
+            <div class="gp-center-logo">
+                <i class="fas fa-film gp-film-icon"></i>
+                <div class="gp-empty-text">Nenhum vídeo disponível</div>
+                <div class="gp-empty-sub">Adicione arquivos .mp4 na pasta videos/</div>
+            </div>
+        </div>
+    </div>
+    <div class="gp-controls">
+        <div class="gp-seekbar-area">
+            <div class="gp-seekbar" id="gp-seekbar-${winId}" onclick="gpSeek(event, '${winId}')">
+                <div class="gp-seekfill" id="gp-seekfill-${winId}"></div>
+                <div class="gp-seekthumb" id="gp-seekthumb-${winId}"></div>
+            </div>
+            <div class="gp-time">
+                <span id="gp-current-${winId}">0:00</span>
+                <span id="gp-duration-${winId}">0:00</span>
+            </div>
+        </div>
+        <div class="gp-btnrow">
+            <button class="gp-btn" onclick="gpPrev('${winId}')"><i class="fas fa-backward"></i></button>
+            <button class="gp-btn gp-playbtn" id="gp-play-${winId}" onclick="gpTogglePlay('${winId}')"><i class="fas fa-play"></i></button>
+            <button class="gp-btn" onclick="gpNext('${winId}')"><i class="fas fa-forward"></i></button>
+            <div class="gp-vol-area">
+                <i class="fas fa-volume-up gp-volich"></i>
+                <input type="range" class="gp-volume" id="gp-vol-${winId}"
+                       min="0" max="1" step="0.05" value="1"
+                       oninput="gpVol(this, '${winId}')">
+            </div>
+            <button class="gp-btn gp-fs-btn" onclick="gpFullscreen('${winId}')"><i class="fas fa-expand"></i></button>
+        </div>
+    </div>
+</div>`;
+
                 case 'breakout':
                     return `
 <div class="flex flex-col h-full" style="
@@ -4978,6 +5069,7 @@ style="
                                                             <div class="hub-btn" onclick="hubSelect('${winId}','uptime')">⏱ Tempo ligado</div>
                                                             <div class="hub-btn" onclick="hubSelect('${winId}','xp')">⭐ XP do Usuário</div>
                                                             <div class="hub-btn" onclick="hubSelect('${winId}','achievements')">🏆 Conquistas</div>
+                                                            <div class="hub-btn" onclick="hubSelect('${winId}','credits')">🎖️ Créditos</div>
                                                             <button onclick="resetAchievements()" class="hub-reset-btn">
                                                 Resetar Conquistas
 </button>
@@ -5303,6 +5395,251 @@ onclick="revealMine('${winId}',${i},this)">
             }
         }
 
+// ==============================
+// GLOSSPLAY — VIDEO PLAYER
+// ==============================
+
+const gpVideos = [
+    { title: 'Pool Day', src: 'videos/poolday.mp4' }
+];
+
+const gpCurrentIndex = {};
+
+function initGlossPlay(winId) {
+    gpCurrentIndex[winId] = 0;
+    const video = document.getElementById(`gp-video-${winId}`);
+    if (!video || gpVideos.length === 0) return;
+
+    gpLoadVideo(winId, 0);
+    video.addEventListener('timeupdate', () => gpUpdateSeek(winId));
+    video.addEventListener('loadedmetadata', () => gpUpdateDuration(winId));
+    video.addEventListener('ended', () => gpNext(winId));
+}
+
+function gpLoadVideo(winId, index) {
+    if (!gpVideos.length) return;
+    const video = document.getElementById(`gp-video-${winId}`);
+    const placeholder = document.getElementById(`gp-placeholder-${winId}`);
+    const titleEl = document.getElementById(`gp-title-${winId}`);
+    const playBtn = document.getElementById(`gp-play-${winId}`);
+    const track = gpVideos[index];
+
+    video.src = track.src;
+    video.load();
+    video.onerror = () => console.error('GlossPlay: erro ao carregar vídeo →', video.src, video.error);
+    if (placeholder) placeholder.style.display = 'none';
+    if (titleEl) titleEl.textContent = track.title;
+    if (playBtn) playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    gpCurrentIndex[winId] = index;
+}
+
+function gpTogglePlay(winId) {
+    if (!gpVideos.length) return;
+    const video = document.getElementById(`gp-video-${winId}`);
+    const playBtn = document.getElementById(`gp-play-${winId}`);
+    if (!video || !playBtn) return;
+
+    if (video.paused) {
+        video.play()
+            .then(() => {
+                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+            })
+            .catch(err => {
+                console.warn('GlossPlay: falha ao reproduzir:', err);
+                playBtn.innerHTML = '<i class="fas fa-play"></i>';
+            });
+    } else {
+        video.pause();
+        playBtn.innerHTML = '<i class="fas fa-play"></i>';
+    }
+}
+
+function gpNext(winId) {
+    if (!gpVideos.length) return;
+    gpLoadVideo(winId, (gpCurrentIndex[winId] + 1) % gpVideos.length);
+}
+
+function gpPrev(winId) {
+    if (!gpVideos.length) return;
+    const prev = (gpCurrentIndex[winId] - 1 + gpVideos.length) % gpVideos.length;
+    gpLoadVideo(winId, prev);
+}
+
+function gpSeek(e, winId) {
+    const video = document.getElementById(`gp-video-${winId}`);
+    const bar = document.getElementById(`gp-seekbar-${winId}`);
+    if (!video || !video.duration) return;
+    const rect = bar.getBoundingClientRect();
+    const pct = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    video.currentTime = pct * video.duration;
+    gpUpdateSeek(winId);
+}
+
+function gpUpdateSeek(winId) {
+    const video = document.getElementById(`gp-video-${winId}`);
+    const fill = document.getElementById(`gp-seekfill-${winId}`);
+    const thumb = document.getElementById(`gp-seekthumb-${winId}`);
+    const current = document.getElementById(`gp-current-${winId}`);
+    if (!video || !video.duration) return;
+    const pct = (video.currentTime / video.duration) * 100;
+    if (fill) fill.style.width = pct + '%';
+    if (thumb) thumb.style.left = pct + '%';
+    if (current) current.textContent = gpFormatTime(video.currentTime);
+}
+
+function gpUpdateDuration(winId) {
+    const video = document.getElementById(`gp-video-${winId}`);
+    const dur = document.getElementById(`gp-duration-${winId}`);
+    if (!video || !dur) return;
+    dur.textContent = gpFormatTime(video.duration);
+}
+
+function gpVol(input, winId) {
+    const video = document.getElementById(`gp-video-${winId}`);
+    if (video) video.volume = parseFloat(input.value);
+}
+
+function gpFullscreen(winId) {
+    const video = document.getElementById(`gp-video-${winId}`);
+    if (!video) return;
+    if (video.requestFullscreen) video.requestFullscreen();
+    else if (video.webkitRequestFullscreen) video.webkitRequestFullscreen();
+}
+
+function gpFormatTime(s) {
+    if (!s || isNaN(s)) return '0:00';
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60).toString().padStart(2, '0');
+    return `${m}:${sec}`;
+}
+
+function gpToggleSkins(winId) {
+    const menu = document.getElementById(`gp-skins-${winId}`);
+    if (!menu) return;
+    menu.style.display = menu.style.display === 'flex' ? 'none' : 'flex';
+}
+
+/* ── Vaga-lumes bokeh — canvas animado ── */
+function gpStartFireflies(winId) {
+    const el = document.getElementById(`glossplay-${winId}`);
+    if (!el) return;
+    gpStopFireflies(winId);
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'gp-firefly-canvas';
+    canvas.id = `gp-fireflies-${winId}`;
+    el.appendChild(canvas);
+
+    const ctx = canvas.getContext('2d');
+
+    // Cada vaga-lume: posição normalizada 0-1, velocidade, pulso de alpha
+    const flies = Array.from({ length: 22 }, () => ({
+        x: Math.random(),
+        y: Math.random(),
+        coreR: 1.2 + Math.random() * 2.2,      // raio do núcleo
+        glowR: 10 + Math.random() * 22,        // raio do halo bokeh
+        alpha: 0.08 + Math.random() * 0.65,
+        alphaDir: Math.random() > 0.5 ? 1 : -1,
+        alphaSpeed: 0.004 + Math.random() * 0.012,
+        vx: (Math.random() - 0.5) * 0.00025,
+        vy: (Math.random() - 0.5) * 0.00018,
+        hue: 105 + Math.random() * 50,        // verde 105-155
+        sat: 80 + Math.random() * 20,
+    }));
+
+    function resize() {
+        canvas.width = el.offsetWidth;
+        canvas.height = el.offsetHeight;
+    }
+    resize();
+
+    const ro = new ResizeObserver(resize);
+    ro.observe(el);
+
+    function draw() {
+        const W = canvas.width, H = canvas.height;
+        ctx.clearRect(0, 0, W, H);
+
+        for (const f of flies) {
+            // Pulso de alpha
+            f.alpha += f.alphaSpeed * f.alphaDir;
+            if (f.alpha >= 0.88) { f.alpha = 0.88; f.alphaDir = -1; }
+            if (f.alpha <= 0.04) { f.alpha = 0.04; f.alphaDir = 1; }
+
+            // Deriva lenta — wrap nas bordas
+            f.x += f.vx;
+            f.y += f.vy;
+            if (f.x < -0.02) f.x = 1.02;
+            if (f.x > 1.02) f.x = -0.02;
+            if (f.y < -0.02) f.y = 1.02;
+            if (f.y > 1.02) f.y = -0.02;
+
+            const cx = f.x * W;
+            const cy = f.y * H;
+            const { hue: h, sat: s, alpha: a } = f;
+
+            // ── Halo bokeh (gradiente radial largo e suave) ──
+            const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, f.glowR);
+            glow.addColorStop(0, `hsla(${h}, ${s}%, 68%, ${a * 0.75})`);
+            glow.addColorStop(0.25, `hsla(${h}, ${s}%, 58%, ${a * 0.40})`);
+            glow.addColorStop(0.6, `hsla(${h}, ${s}%, 48%, ${a * 0.12})`);
+            glow.addColorStop(1, `hsla(${h}, ${s}%, 40%, 0)`);
+            ctx.beginPath();
+            ctx.arc(cx, cy, f.glowR, 0, Math.PI * 2);
+            ctx.fillStyle = glow;
+            ctx.fill();
+
+            // ── Anel intermediário (dá volume ao bokeh) ──
+            const mid = ctx.createRadialGradient(cx, cy, f.coreR * 0.8, cx, cy, f.glowR * 0.45);
+            mid.addColorStop(0, `hsla(${h + 15}, 95%, 80%, ${a * 0.25})`);
+            mid.addColorStop(1, `hsla(${h},      90%, 60%, 0)`);
+            ctx.beginPath();
+            ctx.arc(cx, cy, f.glowR * 0.45, 0, Math.PI * 2);
+            ctx.fillStyle = mid;
+            ctx.fill();
+
+            // ── Núcleo brilhante ──
+            const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, f.coreR);
+            core.addColorStop(0, `hsla(${h + 25}, 100%, 96%, ${a})`);
+            core.addColorStop(0.5, `hsla(${h + 10}, 100%, 82%, ${a * 0.85})`);
+            core.addColorStop(1, `hsla(${h},       95%, 65%, 0)`);
+            ctx.beginPath();
+            ctx.arc(cx, cy, f.coreR, 0, Math.PI * 2);
+            ctx.fillStyle = core;
+            ctx.fill();
+        }
+
+        canvas._animId = requestAnimationFrame(draw);
+    }
+
+    draw();
+    canvas._ro = ro;
+}
+
+function gpStopFireflies(winId) {
+    const canvas = document.getElementById(`gp-fireflies-${winId}`);
+    if (!canvas) return;
+    cancelAnimationFrame(canvas._animId);
+    if (canvas._ro) canvas._ro.disconnect();
+    canvas.remove();
+}
+
+/* ── gpSetSkin atualizado ── */
+function gpSetSkin(skin, winId) {
+    const el = document.getElementById(`glossplay-${winId}`);
+    if (!el) return;
+    el.classList.remove('skin-gp-default', 'skin-gp-cinema', 'skin-gp-aquarium', 'skin-gp-country');
+    el.classList.add(skin);
+
+    if (skin === 'skin-gp-country') {
+        gpStartFireflies(winId);
+    } else {
+        gpStopFireflies(winId);
+    }
+
+    const menu = document.getElementById(`gp-skins-${winId}`);
+    if (menu) menu.style.display = 'none';
+}
         function initBreakout(winId) {
             const win = document.getElementById(winId);
             if (!win) return;
@@ -7268,7 +7605,7 @@ onclick="revealMine('${winId}',${i},this)">
                             response = "";
                         }
                         else if (cmdClean === 'ver') {
-                            response = "Glossows XP Professional [Versão 5.0.10]";
+                            response = "Glossows XP Professional [Versão 6.4.70]";
                         }
                         else if (cmdClean.startsWith('echo ')) {
                             response = fullCmd.substring(5);
@@ -7663,24 +8000,75 @@ onclick="revealMine('${winId}',${i},this)">
                 }
         }
 
-        function lose(winId) {
-            clearInterval(minesGames[winId].timer);
-            minesGames[winId].bombs.forEach(i => {
-                const b = document.querySelector(
-                    `#mines-${winId} button[data-index="${i}"]`);
-                if (b) b.classList.add("mine");
-            });
-            alert("💥 Game Over");
-        }
+function showGameMessage(winId, type, text) {
+    const board = document.querySelector(`#mines-${winId}`);
+    if (!board) return;
 
-        function checkWin(winId) {
-            const g = minesGames[winId];
-            if (g.revealed.size === 64 - g.bombs.size) {
-                clearInterval(g.timer);
-                alert("🎉 Vitória!");
-                unlockAchievement("mines_win");
-            }
-        }
+    const existing = board.querySelector(".mines-message");
+    if (existing) existing.remove();
+
+    const msg = document.createElement("div");
+    msg.className = `mines-message mines-message--${type}`;
+    msg.textContent = text;
+
+    Object.assign(msg.style, {
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%) scale(0.8)",
+        padding: "14px 28px",
+        borderRadius: "8px",
+        fontWeight: "700",
+        fontSize: "1.2rem",
+        letterSpacing: "0.03em",
+        zIndex: "10",
+        pointerEvents: "none",
+        opacity: "0",
+        transition: "opacity 0.2s ease, transform 0.2s ease",
+        background: type === "lose" ? "#c0392b" : "#27ae60",
+        color: "#fff",
+        boxShadow: "0 4px 20px rgba(0,0,0,0.35)",
+    });
+
+    // Garante que o container tenha position relativa
+    if (getComputedStyle(board).position === "static") {
+        board.style.position = "relative";
+    }
+
+    board.appendChild(msg);
+
+    // Força reflow antes de animar
+    requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+            msg.style.opacity = "1";
+            msg.style.transform = "translate(-50%, -50%) scale(1)";
+        });
+        setTimeout(() => {
+            msg.style.opacity = "0";
+            msg.style.transform = "translate(-50%, -50%) scale(0.8)";
+            setTimeout(() => msg.remove(), 200);
+        }, 2500);
+    });
+}
+
+function lose(winId) {
+    clearInterval(minesGames[winId].timer);
+    minesGames[winId].bombs.forEach(i => {
+        const b = document.querySelector(
+            `#mines-${winId} button[data-index="${i}"]`);
+        if (b) b.classList.add("mine");
+    });
+    showGameMessage(winId, "lose", "Game Over");
+}
+
+function checkWin(winId) {
+    const g = minesGames[winId];
+    if (g.revealed.size === 64 - g.bombs.size) {
+        clearInterval(g.timer);
+        showGameMessage(winId, "win", "Vitoria!");
+        unlockAchievement("mines_win");
+    }
+}
 
         function musicPlay(winId) {
             const audio = document.getElementById(`audio-${winId}`);
