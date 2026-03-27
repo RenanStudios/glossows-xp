@@ -51,7 +51,7 @@ glossows-xp/
 | 🟦 **Tetris** | Tetris completo com pontuação |
 | 🖥️ **Glossows Hub** | Central de conquistas e XP |
 | 🏓 **Breakout** | Jogo de Breakout com fases |
-| 🎞️ **???** | Novo App Chegando! |
+| 🎞️ **GlossPlay** | Video Player com animações do Renanzinho |
 
 ### 🔒 Jogos Secretos (via Doogly)
 
