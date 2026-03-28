@@ -2885,6 +2885,7 @@
     height: 100%;
     object-fit: contain;
     display: block;
+    z-index: 2;
 }
 
 /* Placeholder quando não há vídeo */
@@ -2895,6 +2896,7 @@
     align-items: center;
     justify-content: center;
     background: radial-gradient(ellipse 80% 60% at 50% 65%, #010d24 0%, #000508 100%);
+    z-index: 2;
 }
 
 .gp-center-logo {
@@ -3191,269 +3193,395 @@
    Sobrescreve apenas os tokens visuais, estrutura permanece
    ============================================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=Bebas+Neue&display=swap');
+
+/* ══════════════════════════════════════════════
+   SKIN — GP CINEMA  ·  Hollywood Clássico
+   Mahogany · Veludo · Ouro Âmbar · Grão de Filme
+   ══════════════════════════════════════════════ */
 
 .glossplay.skin-gp-cinema {
-    background: #08030a;
-    font-family: 'EB Garamond', Georgia, serif;
+    background: #0d0406;
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    position: relative;
 }
 
-    /* Grain cinematográfico */
+    /* ── Grão cinematográfico animado ── */
     .glossplay.skin-gp-cinema::after {
         content: '';
         position: absolute;
         inset: 0;
         pointer-events: none;
-        z-index: 10;
-        opacity: 0.028;
-        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-        background-size: 200px 200px;
+        z-index: 20;
+        opacity: 0.055;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+        background-size: 180px 180px;
+        mix-blend-mode: screen;
+        animation: grain-shift 0.12s steps(1) infinite;
     }
 
-    /* Atmosfera bordô/dourada */
-    .glossplay.skin-gp-cinema::before {
-        background: radial-gradient(ellipse 60% 30% at 8% 92%, rgba(160,40,20,0.13) 0%, transparent 70%), radial-gradient(ellipse 60% 30% at 92% 92%, rgba(160,40,20,0.13) 0%, transparent 70%), radial-gradient(ellipse 80% 20% at 50% 100%, rgba(210,140,30,0.06) 0%, transparent 60%), radial-gradient(ellipse 50% 25% at 50% 0%, rgba(180,100,20,0.04) 0%, transparent 70%);
+@keyframes grain-shift {
+    0% {
+        background-position: 0 0;
     }
 
-    /* Cabeçalho */
-    .glossplay.skin-gp-cinema .gp-header {
-        background: linear-gradient(180deg, #1a0508 0%, #110305 100%);
-        border-bottom: 1px solid rgba(180,90,20,0.30);
-        box-shadow: 0 1px 0 rgba(210,150,40,0.10), 0 4px 18px rgba(0,0,0,0.7);
+    10% {
+        background-position: -5% -10%;
     }
 
-        .glossplay.skin-gp-cinema .gp-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1.5px;
-            background: linear-gradient(90deg, transparent 0%, rgba(200,155,50,0.5) 20%, rgba(230,185,70,0.85) 50%, rgba(200,155,50,0.5) 80%, transparent 100%);
-        }
-
-    .glossplay.skin-gp-cinema .gp-logo {
-        font-family: 'Oswald', sans-serif;
-        font-size: 13px;
-        font-weight: 700;
-        letter-spacing: 0.22em;
-        background: linear-gradient(180deg, #f0d878 0%, #c8942e 40%, #a06818 75%, #c89230 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 1px 6px rgba(200,140,30,0.35));
+    20% {
+        background-position: -15% 5%;
     }
 
-    .glossplay.skin-gp-cinema .gp-nowplaying {
-        font-family: 'EB Garamond', Georgia, serif;
-        font-style: italic;
-        color: rgba(210,165,90,0.55);
-        border-left: 1px solid rgba(180,100,30,0.32);
+    30% {
+        background-position: 7% -20%;
     }
 
-    .glossplay.skin-gp-cinema .gp-skin-btn {
-        border-color: rgba(180,100,30,0.30);
-        color: rgba(200,155,60,0.65);
+    40% {
+        background-position: -5% 15%;
     }
 
-        .glossplay.skin-gp-cinema .gp-skin-btn:hover {
-            color: #f0d070;
-        }
-
-    .glossplay.skin-gp-cinema .gp-skins-menu {
-        background: rgba(10,4,3,0.97);
-        border-color: rgba(160,90,25,0.35);
+    50% {
+        background-position: -20% 5%;
     }
 
-        .glossplay.skin-gp-cinema .gp-skins-menu button {
-            color: rgba(200,155,70,0.75);
-        }
+    60% {
+        background-position: 15% 0;
+    }
 
-            .glossplay.skin-gp-cinema .gp-skins-menu button:hover {
-                background: rgba(160,80,20,0.22);
-                color: #f0d070;
-            }
+    70% {
+        background-position: 0 10%;
+    }
 
-    /* Cortinas laterais */
-    .glossplay.skin-gp-cinema .gp-video-area::before {
+    80% {
+        background-position: 3% 35%;
+    }
+
+    90% {
+        background-position: -10% 10%;
+    }
+
+    100% {
+        background-position: 0 0;
+    }
+}
+
+/* ── Luz ambiente: lustre central + apliques laterais ── */
+.glossplay.skin-gp-cinema::before {
+    background:
+    /* Lustre central no topo */
+    radial-gradient(ellipse 55% 22% at 50% 0%, rgba(210,155,50,0.11) 0%, transparent 70%),
+    /* Apliques laterais quentes */
+    radial-gradient(ellipse 30% 45% at 4% 55%, rgba(200,100,30,0.13) 0%, transparent 65%), radial-gradient(ellipse 30% 45% at 96% 55%, rgba(200,100,30,0.13) 0%, transparent 65%),
+    /* Glow da tela na base */
+    radial-gradient(ellipse 70% 25% at 50% 100%, rgba(220,165,60,0.09) 0%, transparent 65%),
+    /* Vinheta de canto escura */
+    radial-gradient(ellipse 50% 50% at 0% 0%, rgba(80,10,5,0.30) 0%, transparent 55%), radial-gradient(ellipse 50% 50% at 100% 0%, rgba(80,10,5,0.30) 0%, transparent 55%);
+}
+
+/* ══ CABEÇALHO ══════════════════════════════════ */
+.glossplay.skin-gp-cinema .gp-header {
+    background: linear-gradient(180deg, #1c0608 0%, #150406 60%, #0f0304 100%);
+    border-bottom: 1px solid rgba(160,80,20,0.28);
+    box-shadow: 0 1px 0 rgba(220,165,55,0.12), 0 6px 24px rgba(0,0,0,0.80);
+    position: relative;
+}
+
+    /* Friso dourado decorativo no topo */
+    .glossplay.skin-gp-cinema .gp-header::before {
         content: '';
         position: absolute;
         top: 0;
-        bottom: 0;
         left: 0;
-        width: 22px;
-        z-index: 2;
-        pointer-events: none;
-        background: linear-gradient(90deg, rgba(90,8,8,0.75) 0%, rgba(70,5,5,0.45) 55%, transparent 100%);
+        right: 0;
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, rgba(160,100,30,0.4) 8%, rgba(210,165,55,0.75) 22%, rgba(240,200,80,0.95) 50%, rgba(210,165,55,0.75) 78%, rgba(160,100,30,0.4) 92%, transparent 100%);
     }
 
-    .glossplay.skin-gp-cinema .gp-video-area::after {
+    /* Friso inferior mais sutil */
+    .glossplay.skin-gp-cinema .gp-header::after {
+        content: '';
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, rgba(180,110,30,0.35) 30%, rgba(200,140,40,0.55) 50%, rgba(180,110,30,0.35) 70%, transparent 100%);
+    }
+
+/* ── Logo ── */
+.glossplay.skin-gp-cinema .gp-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.30em;
+    text-transform: uppercase;
+    background: linear-gradient(180deg, #faeea0 0%, #e8c848 25%, #c08828 55%, #7a5010 80%, #c89030 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 1px 8px rgba(210,150,30,0.50));
+}
+
+.glossplay.skin-gp-cinema .gp-nowplaying {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: 12px;
+    color: rgba(200,148,75,0.50);
+    border-left: 1px solid rgba(170,95,28,0.30);
+}
+
+.glossplay.skin-gp-cinema .gp-skin-btn {
+    border-color: rgba(160,90,25,0.28);
+    color: rgba(195,145,55,0.60);
+}
+
+    .glossplay.skin-gp-cinema .gp-skin-btn:hover {
+        color: #f5d860;
+        text-shadow: 0 0 8px rgba(230,180,50,0.5);
+    }
+
+.glossplay.skin-gp-cinema .gp-skins-menu {
+    background: rgba(8,2,2,0.97);
+    border-color: rgba(150,85,22,0.38);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.85), inset 0 1px 0 rgba(200,145,40,0.12);
+}
+
+    .glossplay.skin-gp-cinema .gp-skins-menu button {
+        color: rgba(195,148,65,0.72);
+        font-family: 'Cormorant Garamond', Georgia, serif;
+        letter-spacing: 0.04em;
+    }
+
+        .glossplay.skin-gp-cinema .gp-skins-menu button:hover {
+            background: rgba(140,65,15,0.28);
+            color: #f0d060;
+        }
+
+/* ══ ÁREA DE VÍDEO — CORTINAS ══════════════════ */
+/* Cortina esquerda — veludo com dobras */
+.glossplay.skin-gp-cinema .gp-video-area::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 28px;
+    z-index: 2;
+    pointer-events: none;
+    background:
+    /* Dobras de veludo */
+    repeating-linear-gradient(180deg, transparent 0px, rgba(0,0,0,0.08) 8px, transparent 16px),
+    /* Gradiente de cortina */
+    linear-gradient(90deg, rgba(95,8,8,0.90) 0%, rgba(75,5,5,0.65) 45%, rgba(50,3,3,0.30) 75%, transparent 100%);
+}
+
+/* Cortina direita */
+.glossplay.skin-gp-cinema .gp-video-area::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 28px;
+    z-index: 2;
+    pointer-events: none;
+    background: repeating-linear-gradient(180deg, transparent 0px, rgba(0,0,0,0.08) 8px, transparent 16px), linear-gradient(270deg, rgba(95,8,8,0.90) 0%, rgba(75,5,5,0.65) 45%, rgba(50,3,3,0.30) 75%, transparent 100%);
+}
+
+/* ══ PLACEHOLDER ════════════════════════════════ */
+.glossplay.skin-gp-cinema .gp-placeholder {
+    background: radial-gradient(ellipse 80% 60% at 50% 45%, #1e0d05 0%, #0a0202 75%, #050101 100%);
+}
+
+    /* Moldura dourada da tela */
+    .glossplay.skin-gp-cinema .gp-placeholder::before {
+        content: '';
+        position: absolute;
+        inset: 12px 28px;
+        border: 1px solid rgba(175,130,55,0.20);
+        border-radius: 1px;
+        box-shadow: inset 0 0 60px rgba(0,0,0,0.85), inset 0 0 20px rgba(0,0,0,0.5), 0 0 0 1px rgba(100,55,15,0.12), 0 0 40px rgba(0,0,0,0.70);
+        pointer-events: none;
+    }
+
+/* Feixe de luz do projetor */
+.glossplay.skin-gp-cinema .gp-center-logo::before {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 3px;
+    height: 70px;
+    background: linear-gradient(180deg, transparent 0%, rgba(220,185,80,0.15) 40%, rgba(240,200,90,0.45) 100%);
+    filter: blur(1px);
+}
+
+.glossplay.skin-gp-cinema .gp-film-icon {
+    background: linear-gradient(160deg, #faeaa8 0%, #d49828 40%, #8a5810 75%, #c8900a 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 28px rgba(210,145,30,0.55)) drop-shadow(0 2px 4px rgba(0,0,0,0.8));
+    font-size: 2.4em !important;
+}
+
+.glossplay.skin-gp-cinema .gp-empty-text {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px;
+    color: rgba(200,150,60,0.60);
+    letter-spacing: 0.30em;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px rgba(200,140,30,0.35);
+}
+
+.glossplay.skin-gp-cinema .gp-empty-sub {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-style: italic;
+    font-size: 12px;
+    color: rgba(145,95,45,0.38);
+    letter-spacing: 0.04em;
+}
+
+/* ══ CONTROLES ══════════════════════════════════ */
+.glossplay.skin-gp-cinema .gp-controls {
+    background: linear-gradient(180deg, #160608 0%, #0e0304 50%, #0a0202 100%);
+    border-top: 1px solid rgba(140,60,15,0.28);
+    box-shadow: inset 0 1px 0 rgba(210,155,50,0.10), 0 -8px 32px rgba(0,0,0,0.80);
+    position: relative;
+}
+
+    /* Friso dourado no topo dos controles */
+    .glossplay.skin-gp-cinema .gp-controls::before {
         content: '';
         position: absolute;
         top: 0;
-        bottom: 0;
+        left: 0;
         right: 0;
-        width: 22px;
-        z-index: 2;
-        pointer-events: none;
-        background: linear-gradient(270deg, rgba(90,8,8,0.75) 0%, rgba(70,5,5,0.45) 55%, transparent 100%);
+        height: 1px;
+        background: linear-gradient(90deg, transparent 0%, rgba(180,120,35,0.40) 20%, rgba(220,170,55,0.70) 50%, rgba(180,120,35,0.40) 80%, transparent 100%);
     }
 
-    /* Placeholder */
-    .glossplay.skin-gp-cinema .gp-placeholder {
-        background: radial-gradient(ellipse 70% 55% at 50% 50%, #1c0e06 0%, #0a0303 100%);
-    }
+/* ══ SEEK BAR — TIRA DE FILME ════════════════════ */
+.glossplay.skin-gp-cinema .gp-seekbar {
+    background: rgba(30,8,4,0.90);
+    border: 1px solid rgba(120,65,15,0.30);
+    border-radius: 2px;
+    overflow: visible;
+    position: relative;
+}
 
-        .glossplay.skin-gp-cinema .gp-placeholder::before {
-            content: '';
-            position: absolute;
-            inset: 10px 22px;
-            border: 1px solid rgba(160,120,50,0.18);
-            border-radius: 1px;
-            box-shadow: inset 0 0 40px rgba(0,0,0,0.8), 0 0 30px rgba(0,0,0,0.6);
-            pointer-events: none;
-        }
-
-    .glossplay.skin-gp-cinema .gp-center-logo::before {
+    /* Perfurações da tira de filme */
+    .glossplay.skin-gp-cinema .gp-seekbar::before {
         content: '';
         position: absolute;
-        top: -40px;
-        width: 2px;
-        height: 50px;
-        background: linear-gradient(180deg, transparent 0%, rgba(230,190,80,0.3) 100%);
+        inset: 0;
+        background: repeating-linear-gradient(90deg, transparent 0px, transparent 12px, rgba(130,70,18,0.22) 12px, rgba(130,70,18,0.22) 13px, transparent 13px, transparent 25px);
+        border-radius: 2px;
+        pointer-events: none;
+        z-index: 1;
     }
 
-    .glossplay.skin-gp-cinema .gp-film-icon {
-        background: linear-gradient(180deg, #ecdba0 0%, #c99830 45%, #7a5010 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        filter: drop-shadow(0 0 22px rgba(200,140,30,0.40));
+    /* Linha dourada no topo da seekbar */
+    .glossplay.skin-gp-cinema .gp-seekbar::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: rgba(180,120,35,0.25);
+        border-radius: 2px 2px 0 0;
     }
 
-    .glossplay.skin-gp-cinema .gp-empty-text {
-        font-family: 'Oswald', sans-serif;
-        color: rgba(200,155,70,0.65);
-        letter-spacing: 0.18em;
-        text-transform: uppercase;
+.glossplay.skin-gp-cinema .gp-seekfill {
+    background: linear-gradient(90deg, #6a2808 0%, #b05818 30%, #d48828 60%, #f0b840 82%, #ffd060 100%);
+    box-shadow: 0 0 10px rgba(220,155,40,0.60), 0 0 3px rgba(240,190,60,0.40);
+    border-radius: 2px;
+    position: relative;
+    z-index: 2;
+}
+
+/* Thumb — lente de projetor */
+.glossplay.skin-gp-cinema .gp-seekthumb {
+    background: radial-gradient(circle at 35% 28%, #fdf0b0 0%, #e8c040 25%, #c08020 55%, #6a3e08 100%);
+    border: 1.5px solid rgba(245,200,80,0.85);
+    box-shadow: 0 0 14px rgba(220,155,35,0.80), 0 0 4px rgba(240,195,60,0.50), inset 0 1px 0 rgba(255,240,160,0.55);
+    z-index: 3;
+}
+
+.glossplay.skin-gp-cinema .gp-time {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    color: rgba(175,120,48,0.55);
+}
+
+/* ══ BOTÕES — VIDRO DE ÂMBAR POLIDO ═════════════ */
+.glossplay.skin-gp-cinema .gp-btn {
+    background: linear-gradient(170deg, rgba(110,48,12,0.92) 0%, rgba(70,28,6,0.88) 47%, rgba(35,12,3,0.95) 50%, rgba(65,26,7,0.88) 100%);
+    border: 1px solid rgba(175,108,32,0.42);
+    color: rgba(220,170,75,0.85);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    box-shadow: inset 0 1px 0 rgba(240,190,70,0.22), inset 0 -1px 0 rgba(0,0,0,0.65), 0 2px 6px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.55);
+    transition: all 0.18s ease;
+}
+
+    /* Reflexo glossy no topo */
+    .glossplay.skin-gp-cinema .gp-btn::before {
+        background: linear-gradient(180deg, rgba(255,220,120,0.22) 0%, rgba(210,155,50,0.08) 45%, rgba(0,0,0,0.00) 100%);
     }
 
-    .glossplay.skin-gp-cinema .gp-empty-sub {
-        font-family: 'EB Garamond', Georgia, serif;
-        font-style: italic;
-        color: rgba(150,100,50,0.4);
+    .glossplay.skin-gp-cinema .gp-btn:hover {
+        background: linear-gradient(170deg, rgba(155,72,18,0.96) 0%, rgba(105,48,10,0.92) 47%, rgba(55,20,4,0.97) 50%, rgba(100,45,10,0.92) 100%);
+        border-color: rgba(220,162,52,0.70);
+        color: #f5d865;
+        text-shadow: 0 0 8px rgba(230,175,50,0.55);
+        box-shadow: inset 0 1px 0 rgba(248,205,85,0.32), 0 3px 10px rgba(0,0,0,0.72), 0 0 18px rgba(200,128,28,0.28);
     }
 
-    /* Controles */
-    .glossplay.skin-gp-cinema .gp-controls {
-        background: linear-gradient(180deg, #130508 0%, #0c0306 100%);
-        border-top: 1px solid rgba(160,70,20,0.32);
-        box-shadow: inset 0 1px 0 rgba(210,150,50,0.10), 0 -5px 25px rgba(0,0,0,0.75);
+/* ── Play — lente circular ── */
+.glossplay.skin-gp-cinema .gp-playbtn {
+    width: 46px;
+    height: 46px;
+    font-size: 16px;
+    background: radial-gradient(circle at 38% 32%, rgba(175,80,20,0.85) 0%, rgba(120,48,10,0.78) 40%, rgba(55,18,4,0.95) 100%);
+    border: 1.5px solid rgba(215,138,42,0.58);
+    box-shadow: inset 0 1px 0 rgba(248,200,80,0.30), inset 0 -1px 0 rgba(0,0,0,0.55), 0 0 24px rgba(200,115,25,0.35), 0 5px 16px rgba(0,0,0,0.72);
+    color: rgba(240,195,80,0.90);
+}
+
+    .glossplay.skin-gp-cinema .gp-playbtn::before {
+        background: radial-gradient(ellipse at 40% 20%, rgba(255,225,130,0.30) 0%, rgba(210,155,50,0.10) 45%, rgba(0,0,0,0.00) 100%);
     }
 
-        .glossplay.skin-gp-cinema .gp-controls::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent 0%, rgba(195,145,45,0.45) 25%, rgba(225,175,60,0.7) 50%, rgba(195,145,45,0.45) 75%, transparent 100%);
-        }
-
-    /* Seek */
-    .glossplay.skin-gp-cinema .gp-seekbar {
-        border-color: rgba(150,80,20,0.25);
+    .glossplay.skin-gp-cinema .gp-playbtn:hover {
+        background: radial-gradient(circle at 38% 32%, rgba(215,105,28,0.95) 0%, rgba(160,65,15,0.88) 40%, rgba(75,25,5,0.98) 100%);
+        border-color: rgba(248,178,58,0.80);
+        color: #fce870;
+        text-shadow: 0 0 12px rgba(240,190,60,0.75);
+        box-shadow: inset 0 1px 0 rgba(255,220,100,0.40), 0 0 36px rgba(220,140,35,0.55), 0 5px 18px rgba(0,0,0,0.78);
     }
 
-        .glossplay.skin-gp-cinema .gp-seekbar::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: repeating-linear-gradient(90deg, transparent 0px, transparent 18px, rgba(150,80,20,0.12) 18px, rgba(150,80,20,0.12) 19px);
-            border-radius: 2px;
-            pointer-events: none;
-        }
+/* ══ VOLUME ══════════════════════════════════════ */
+.glossplay.skin-gp-cinema .gp-volich {
+    color: rgba(170,115,42,0.52);
+}
 
-    .glossplay.skin-gp-cinema .gp-seekfill {
-        background: linear-gradient(90deg, #7a3010 0%, #c06820 45%, #e8a840 80%, #f5c855 100%);
-        box-shadow: 0 0 8px rgba(220,150,40,0.5);
+.glossplay.skin-gp-cinema .gp-volume {
+    border-color: rgba(140,80,18,0.22);
+}
+
+    .glossplay.skin-gp-cinema .gp-volume::-webkit-slider-thumb {
+        background: radial-gradient(circle at 33% 28%, #faeaa0, #c08022);
+        border: 1px solid rgba(240,195,75,0.68);
+        box-shadow: 0 0 10px rgba(210,145,32,0.65), inset 0 1px 0 rgba(255,235,140,0.4);
     }
 
-    .glossplay.skin-gp-cinema .gp-seekthumb {
-        background: radial-gradient(circle at 35% 28%, #f5e0a0 0%, #d4952a 45%, #7a4808 100%);
-        border: 1.5px solid rgba(240,195,80,0.8);
-        box-shadow: 0 0 10px rgba(210,140,30,0.7), inset 0 1px 0 rgba(255,235,150,0.5);
+    .glossplay.skin-gp-cinema .gp-volume::-moz-range-thumb {
+        background: radial-gradient(circle at 33% 28%, #faeaa0, #c08022);
+        border: 1px solid rgba(240,195,75,0.68);
+        box-shadow: 0 0 10px rgba(210,145,32,0.65);
     }
-
-    .glossplay.skin-gp-cinema .gp-time {
-        font-family: 'Oswald', sans-serif;
-        letter-spacing: 0.08em;
-        color: rgba(185,130,55,0.55);
-    }
-
-    /* Botões */
-    .glossplay.skin-gp-cinema .gp-btn {
-        background: linear-gradient(155deg, rgba(80,40,10,0.95) 0%, rgba(50,20,5,0.90) 49%, rgba(30,10,3,0.95) 50%, rgba(55,25,8,0.90) 100%);
-        border: 1px solid rgba(160,100,30,0.38);
-        color: rgba(210,165,75,0.80);
-        box-shadow: inset 0 1px 0 rgba(230,180,70,0.18), inset 0 -1px 0 rgba(0,0,0,0.6), 0 3px 8px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.5);
-    }
-
-        .glossplay.skin-gp-cinema .gp-btn::before {
-            background: linear-gradient(180deg, rgba(230,180,70,0.18) 0%, rgba(180,120,30,0.04) 100%);
-        }
-
-        .glossplay.skin-gp-cinema .gp-btn::after {
-            content: '';
-            position: absolute;
-            inset: 4px;
-            border-radius: 50%;
-            border: 1px solid rgba(160,100,25,0.18);
-            pointer-events: none;
-        }
-
-        .glossplay.skin-gp-cinema .gp-btn:hover {
-            background: linear-gradient(155deg, rgba(120,65,15,0.98) 0%, rgba(85,40,10,0.92) 49%, rgba(50,20,5,0.96) 50%, rgba(90,45,12,0.92) 100%);
-            border-color: rgba(210,155,50,0.65);
-            color: #f0d070;
-            box-shadow: inset 0 1px 0 rgba(240,195,80,0.28), 0 3px 10px rgba(0,0,0,0.7), 0 0 16px rgba(200,130,30,0.20);
-        }
-
-    .glossplay.skin-gp-cinema .gp-playbtn {
-        width: 46px;
-        height: 46px;
-        font-size: 16px;
-        background: linear-gradient(155deg, rgba(160,70,15,0.92) 0%, rgba(110,45,8,0.88) 49%, rgba(60,18,3,0.95) 50%, rgba(95,38,8,0.88) 100%);
-        border-color: rgba(210,130,40,0.55);
-        box-shadow: inset 0 1px 0 rgba(240,190,70,0.28), 0 0 22px rgba(200,110,25,0.28), 0 6px 14px rgba(0,0,0,0.7);
-    }
-
-        .glossplay.skin-gp-cinema .gp-playbtn:hover {
-            background: linear-gradient(155deg, rgba(200,90,20,0.96) 0%, rgba(150,60,12,0.92) 49%, rgba(85,28,5,0.97) 50%, rgba(140,55,12,0.92) 100%);
-            border-color: rgba(240,165,55,0.75);
-            color: #fce880;
-            box-shadow: inset 0 1px 0 rgba(250,210,90,0.38), 0 0 30px rgba(220,135,35,0.45), 0 6px 16px rgba(0,0,0,0.75);
-        }
-
-    /* Volume */
-    .glossplay.skin-gp-cinema .gp-volich {
-        color: rgba(175,120,45,0.55);
-    }
-
-    .glossplay.skin-gp-cinema .gp-volume {
-        border-color: rgba(150,90,20,0.22);
-    }
-
-        .glossplay.skin-gp-cinema .gp-volume::-webkit-slider-thumb {
-            background: radial-gradient(circle at 33% 28%, #f0d880, #b07020);
-            border: 1px solid rgba(240,200,80,0.65);
-            box-shadow: 0 0 8px rgba(200,140,30,0.6);
-        }
-
-        .glossplay.skin-gp-cinema .gp-volume::-moz-range-thumb {
-            background: radial-gradient(circle at 33% 28%, #f0d880, #b07020);
-            border: 1px solid rgba(240,200,80,0.65);
-            box-shadow: 0 0 8px rgba(200,140,30,0.6);
-        }
 
 /* ── Thumbnail no menu ── */
 .gp-thumb-aquarium {
@@ -3639,48 +3767,47 @@
 
 /* ── Botões — pedras de vidro polidas ── */
 .glossplay.skin-gp-aquarium .gp-btn {
-    background: linear-gradient(175deg, rgba(0,80,90,0.80) 0%, rgba(0,50,60,0.70) 49%, rgba(0,25,35,0.85) 50%, rgba(0,45,55,0.70) 100%);
-    border: 1px solid rgba(0,190,165,0.28);
-    color: rgba(80,230,210,0.82);
-    box-shadow: inset 0 1px 0 rgba(120,245,225,0.20), inset 0 -1px 0 rgba(0,0,0,0.45), 0 3px 8px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.35);
+    background: linear-gradient(175deg, rgba(0,180,160,0.75) 0%, rgba(0,140,130,0.60) 48%, rgba(0,60,70,0.90) 50%, rgba(0,110,105,0.65) 100%);
+    border: 1px solid rgba(0,230,210,0.55);
+    color: rgba(160,255,240,0.95);
+    text-shadow: 0 0 8px rgba(0,230,210,0.6);
+    box-shadow: inset 0 1px 0 rgba(200,255,245,0.45), /* realce topo */
+    inset 0 -1px 0 rgba(0,0,0,0.50), 0 3px 8px rgba(0,0,0,0.55), 0 0 0 1px rgba(0,0,0,0.30), 0 0 12px rgba(0,210,185,0.15); /* halo teal suave */
 }
 
-    /* Reflexo de água na metade superior */
+    /* Reflexo branco-teal na metade superior — estilo "bolha iOS" */
     .glossplay.skin-gp-aquarium .gp-btn::before {
-        background: linear-gradient(180deg, rgba(120,245,225,0.20) 0%, rgba(0,200,180,0.04) 100%);
-    }
-
-    .glossplay.skin-gp-aquarium .gp-btn::after {
-        content: '';
-        position: absolute;
-        inset: 4px;
-        border-radius: 50%;
-        border: 1px solid rgba(0,200,175,0.14);
-        pointer-events: none;
+        background: linear-gradient(180deg, rgba(255,255,255,0.40) 0%, rgba(180,255,245,0.18) 40%, rgba(0,210,190,0.00) 100%);
     }
 
     .glossplay.skin-gp-aquarium .gp-btn:hover {
-        background: linear-gradient(175deg, rgba(0,120,120,0.90) 0%, rgba(0,80,88,0.80) 49%, rgba(0,40,50,0.92) 50%, rgba(0,75,85,0.80) 100%);
-        border-color: rgba(0,230,200,0.52);
-        color: #aaf5e8;
-        box-shadow: inset 0 1px 0 rgba(150,255,235,0.28), 0 3px 10px rgba(0,0,0,0.6), 0 0 16px rgba(0,200,175,0.24);
+        background: linear-gradient(175deg, rgba(0,220,195,0.85) 0%, rgba(0,170,155,0.70) 48%, rgba(0,70,80,0.95) 50%, rgba(0,140,130,0.75) 100%);
+        border-color: rgba(80,255,230,0.75);
+        color: #ccfff6;
+        text-shadow: 0 0 10px rgba(0,240,215,0.8);
+        box-shadow: inset 0 1px 0 rgba(220,255,248,0.55), 0 3px 10px rgba(0,0,0,0.60), 0 0 22px rgba(0,220,195,0.40), 0 0 40px rgba(0,200,175,0.18);
     }
 
-/* Play — bolha grande */
+/* ── Play — bolha grande ── */
 .glossplay.skin-gp-aquarium .gp-playbtn {
     width: 46px;
     height: 46px;
     font-size: 16px;
-    background: linear-gradient(175deg, rgba(0,160,145,0.55) 0%, rgba(0,100,110,0.40) 49%, rgba(0,40,55,0.75) 50%, rgba(0,75,90,0.55) 100%);
-    border-color: rgba(0,210,185,0.45);
-    box-shadow: inset 0 1px 0 rgba(150,255,235,0.28), 0 0 22px rgba(0,200,175,0.28), 0 6px 14px rgba(0,0,0,0.6);
+    background: linear-gradient(175deg, rgba(0,200,180,0.70) 0%, rgba(0,150,140,0.55) 48%, rgba(0,50,65,0.88) 50%, rgba(0,120,115,0.65) 100%);
+    border-color: rgba(0,235,210,0.60);
+    box-shadow: inset 0 1px 0 rgba(200,255,245,0.45), 0 0 28px rgba(0,210,185,0.40), 0 6px 14px rgba(0,0,0,0.60);
 }
 
+    .glossplay.skin-gp-aquarium .gp-playbtn::before {
+        background: linear-gradient(180deg, rgba(255,255,255,0.42) 0%, rgba(160,255,240,0.15) 45%, rgba(0,210,190,0.00) 100%);
+    }
+
     .glossplay.skin-gp-aquarium .gp-playbtn:hover {
-        background: linear-gradient(175deg, rgba(0,200,175,0.65) 0%, rgba(0,140,145,0.50) 49%, rgba(0,60,75,0.88) 50%, rgba(0,115,120,0.60) 100%);
-        border-color: rgba(80,240,215,0.65);
-        color: #d0fff8;
-        box-shadow: inset 0 1px 0 rgba(180,255,240,0.38), 0 0 30px rgba(0,215,190,0.45), 0 6px 16px rgba(0,0,0,0.65);
+        background: linear-gradient(175deg, rgba(0,240,215,0.80) 0%, rgba(0,185,170,0.65) 48%, rgba(0,65,80,0.95) 50%, rgba(0,155,145,0.72) 100%);
+        border-color: rgba(120,255,235,0.80);
+        color: #e0fff9;
+        text-shadow: 0 0 12px rgba(0,245,220,0.9);
+        box-shadow: inset 0 1px 0 rgba(230,255,250,0.55), 0 0 38px rgba(0,230,205,0.58), 0 6px 18px rgba(0,0,0,0.65);
     }
 
 /* ── Volume ── */
@@ -3712,127 +3839,151 @@
 }
 
 /* ============================================================
-   GLOSSPLAY — Skin: Country
-   Estética: Floresta do Donkey Kong Country
-   Verde-escuro profundo, musgoso, vivo — com atmosfera crepuscular
+   GLOSSPLAY — Skin: Country  v2
+   Estética: Donkey Kong Country (SNES 1994) — Kongo Jungle
+   Céu crepuscular púrpura-âmbar · Floresta ACM pré-renderizada
+   Verde profundo com brilho interno · Atmosfera de selva noturna
    ============================================================ */
 
 .glossplay.skin-gp-country {
-    background: #060e06;
+    background: #0a1808;
     font-family: 'Segoe UI', Tahoma, sans-serif;
 }
 
-    /* Bokeh de floresta — verde profundo com rastro de pôr do sol */
+    /* ── Fundo: céu crepuscular DKC com silhueta de floresta ── */
     .glossplay.skin-gp-country::before {
-        background: radial-gradient(ellipse 70% 40% at 15% 90%, rgba(10,120,18,0.14) 0%, transparent 65%), radial-gradient(ellipse 55% 35% at 80% 85%, rgba(8,100,14,0.12) 0%, transparent 60%), radial-gradient(ellipse 80% 20% at 50% 100%, rgba(20,80,10,0.10) 0%, transparent 55%), radial-gradient(ellipse 50% 18% at 50% 0%, rgba(180,130,30,0.06) 0%, transparent 60%), radial-gradient(ellipse 90% 25% at 50% 8%, rgba(100,60,20,0.07) 0%, transparent 50%);
+        background:
+        /* Estrelas finas — pontos de luz */
+        radial-gradient(circle 1px at 8% 12%, rgba(255,240,200,0.55) 0%, transparent 100%), radial-gradient(circle 1px at 19% 7%, rgba(255,245,220,0.45) 0%, transparent 100%), radial-gradient(circle 1px at 33% 14%, rgba(200,220,255,0.40) 0%, transparent 100%), radial-gradient(circle 1px at 51% 5%, rgba(255,240,200,0.50) 0%, transparent 100%), radial-gradient(circle 1px at 67% 10%, rgba(200,220,255,0.45) 0%, transparent 100%), radial-gradient(circle 1px at 78% 4%, rgba(255,245,220,0.40) 0%, transparent 100%), radial-gradient(circle 1px at 91% 16%, rgba(255,240,200,0.35) 0%, transparent 100%), radial-gradient(circle 1px at 44% 20%, rgba(200,220,255,0.30) 0%, transparent 100%),
+        /* Brilho de horizonte âmbar-dourado (pôr do sol DKC) */
+        radial-gradient(ellipse 100% 22% at 50% 52%, rgba(232,184,48,0.18) 0%, rgba(180,100,10,0.10) 45%, transparent 70%), radial-gradient(ellipse 80% 14% at 50% 50%, rgba(200,128,10,0.22) 0%, transparent 60%),
+        /* Glow laranja-mel no horizonte */
+        radial-gradient(ellipse 60% 8% at 50% 50%, rgba(255,180,20,0.28) 0%, transparent 55%),
+        /* Céu: gradiente do DKC — índigo profundo → roxo → azul-acinzentado → dourado */
+        linear-gradient(180deg, #080520 0%, #120828 8%, #1a0e38 16%, #1e1242 22%, #1c1640 28%, #1a1c38 34%, #162030 40%, #142818 47%, #8c7022 50%, /* horizonte âmbar */
+        #c89028 51%, /* fio de ouro */
+        #6a4a10 52%, #1a1a08 56%, #0e1808 62%, #081208 100% );
+        opacity: 1;
     }
 
-    /* Glow de vaga-lume / bioluminescência sutil */
+    /* ── Silhueta de árvores DKC no fundo + vaga-lumes ── */
     .glossplay.skin-gp-country::after {
         content: '';
         position: absolute;
         inset: 0;
         pointer-events: none;
         z-index: 10;
-        background: radial-gradient(circle 3px at 18% 55%, rgba(80,255,60,0.18) 0%, transparent 100%), radial-gradient(circle 2px at 72% 48%, rgba(120,255,80,0.14) 0%, transparent 100%), radial-gradient(circle 2px at 44% 62%, rgba(60,220,50,0.12) 0%, transparent 100%), radial-gradient(circle 3px at 88% 70%, rgba(80,255,60,0.10) 0%, transparent 100%);
-        animation: gp-firefly 7s ease-in-out infinite alternate;
+        background:
+        /* Vaga-lumes flutuantes */
+        radial-gradient(circle 3px at 12% 58%, rgba(80,255,60,0.22) 0%, transparent 100%), radial-gradient(circle 2px at 28% 52%, rgba(140,255,80,0.16) 0%, transparent 100%), radial-gradient(circle 2px at 44% 65%, rgba(60,220,50,0.14) 0%, transparent 100%), radial-gradient(circle 3px at 66% 60%, rgba(100,255,70,0.18) 0%, transparent 100%), radial-gradient(circle 2px at 82% 55%, rgba(80,255,60,0.14) 0%, transparent 100%), radial-gradient(circle 2px at 93% 68%, rgba(120,255,90,0.12) 0%, transparent 100%), radial-gradient(circle 2px at 37% 72%, rgba(60,220,50,0.10) 0%, transparent 100%),
+        /* Névoa de chão — bioluminescência verde-musgo suave */
+        radial-gradient(ellipse 80% 18% at 50% 100%, rgba(10,100,8,0.55) 0%, transparent 70%), radial-gradient(ellipse 60% 12% at 20% 100%, rgba(8,80,6,0.40) 0%, transparent 65%), radial-gradient(ellipse 60% 12% at 80% 100%, rgba(8,80,6,0.40) 0%, transparent 65%);
+        animation: gp-firefly 8s ease-in-out infinite alternate;
     }
 
 @keyframes gp-firefly {
     0% {
-        opacity: 0.4;
+        opacity: 0.45;
         transform: translate(0px, 0px);
     }
 
-    33% {
-        opacity: 0.9;
-        transform: translate(2px, -3px);
+    25% {
+        opacity: 0.80;
+        transform: translate(2px, -4px);
     }
 
-    66% {
-        opacity: 0.5;
-        transform: translate(-2px, 2px);
+    50% {
+        opacity: 0.60;
+        transform: translate(-3px, 2px);
+    }
+
+    75% {
+        opacity: 0.90;
+        transform: translate(1px, -2px);
     }
 
     100% {
-        opacity: 1.0;
-        transform: translate(1px, -1px);
+        opacity: 1.00;
+        transform: translate(-1px, 3px);
     }
 }
 
 /* ── Cabeçalho ── */
 .glossplay.skin-gp-country .gp-header {
-    background: linear-gradient(180deg, rgba(8,22,8,0.98) 0%, rgba(4,14,4,0.96) 100%);
-    border-bottom: 1px solid rgba(30,140,35,0.28);
-    box-shadow: 0 1px 0 rgba(60,200,50,0.08), 0 4px 18px rgba(0,0,0,0.65);
+    background: linear-gradient(180deg, rgba(8,4,24,0.99) 0%, rgba(10,6,28,0.97) 50%, rgba(6,14,6,0.98) 100% );
+    border-bottom: 1px solid rgba(36,160,28,0.22);
+    box-shadow: 0 1px 0 rgba(80,230,50,0.06), 0 4px 24px rgba(0,0,0,0.80), inset 0 -1px 0 rgba(0,60,0,0.30);
     position: relative;
 }
 
-    /* Fio de luz verde no topo do header */
+    /* Fio de luz — horizonte âmbar no topo do header */
     .glossplay.skin-gp-country .gp-header::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 1.5px;
-        background: linear-gradient(90deg, transparent 0%, rgba(40,180,40,0.40) 18%, rgba(80,230,60,0.80) 50%, rgba(40,180,40,0.40) 82%, transparent 100%);
+        height: 2px;
+        background: linear-gradient(90deg, transparent 0%, rgba(100,60,10,0.35) 10%, rgba(180,120,20,0.65) 28%, rgba(80,220,50,0.75) 50%, rgba(180,120,20,0.65) 72%, rgba(100,60,10,0.35) 90%, transparent 100% );
     }
 
 .glossplay.skin-gp-country .gp-logo {
-    background: linear-gradient(180deg, #b8f8a0 0%, #3edc30 38%, #1a8a14 72%, #2fc028 100%);
+    background: linear-gradient(180deg, #e8ffcc 0%, #a0f870 18%, #38dc28 40%, #1a9010 68%, #28b820 88%, #60f040 100% );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    letter-spacing: 0.16em;
-    filter: drop-shadow(0 1px 8px rgba(40,200,30,0.45));
+    letter-spacing: 0.18em;
+    filter: drop-shadow(0 0 6px rgba(50,220,30,0.50)) drop-shadow(0 2px 12px rgba(20,160,10,0.35));
 }
 
 .glossplay.skin-gp-country .gp-nowplaying {
-    color: rgba(80,200,65,0.55);
+    color: rgba(80,200,60,0.50);
     font-style: italic;
-    border-left: 1px solid rgba(30,150,30,0.28);
+    border-left: 1px solid rgba(30,150,22,0.25);
 }
 
 .glossplay.skin-gp-country .gp-skin-btn {
-    border-color: rgba(30,150,30,0.32);
-    color: rgba(70,210,60,0.65);
+    border-color: rgba(30,140,22,0.30);
+    color: rgba(70,210,55,0.60);
 }
 
     .glossplay.skin-gp-country .gp-skin-btn:hover {
-        background: rgba(20,120,20,0.16);
-        color: #b8f8a0;
+        background: rgba(16,100,12,0.18);
+        color: #b0f888;
+        border-color: rgba(60,200,40,0.45);
     }
 
 .glossplay.skin-gp-country .gp-skins-menu {
-    background: rgba(4,10,4,0.98);
-    border-color: rgba(30,150,30,0.32);
+    background: rgba(4,8,4,0.99);
+    border: 1px solid rgba(28,140,20,0.32);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.80), 0 0 0 1px rgba(0,0,0,0.60);
 }
 
     .glossplay.skin-gp-country .gp-skins-menu button {
-        color: rgba(70,210,60,0.75);
+        color: rgba(70,200,55,0.72);
     }
 
         .glossplay.skin-gp-country .gp-skins-menu button:hover {
-            background: rgba(20,120,20,0.22);
-            color: #b8f8a0;
+            background: rgba(16,100,10,0.24);
+            color: #b0f888;
         }
 
-/* ── Área de vídeo ── */
+/* ── Área de vídeo — floresta profunda ── */
 .glossplay.skin-gp-country .gp-video-area {
-    background: radial-gradient(ellipse 95% 75% at 50% 85%, #050e05 0%, #020804 100%);
+    background: radial-gradient(ellipse 70% 50% at 50% 70%, #050e04 0%, #020604 80%, #010302 100%);
+    position: relative;
 }
 
-    /* Sombras de folhagem nas laterais */
+    /* Sombra de folhagem nas laterais — efeito de galhos enquadrando */
     .glossplay.skin-gp-country .gp-video-area::before {
         content: '';
         position: absolute;
         top: 0;
         bottom: 0;
         left: 0;
-        width: 28px;
+        width: 36px;
         z-index: 2;
         pointer-events: none;
-        background: linear-gradient(90deg, rgba(4,30,4,0.82) 0%, rgba(8,50,8,0.50) 50%, transparent 100%);
+        background: linear-gradient(90deg, rgba(2,18,2,0.92) 0%, rgba(4,30,4,0.70) 40%, rgba(6,40,4,0.35) 70%, transparent 100% );
     }
 
     .glossplay.skin-gp-country .gp-video-area::after {
@@ -3841,182 +3992,208 @@
         top: 0;
         bottom: 0;
         right: 0;
-        width: 28px;
+        width: 36px;
         z-index: 2;
         pointer-events: none;
-        background: linear-gradient(270deg, rgba(4,30,4,0.82) 0%, rgba(8,50,8,0.50) 50%, transparent 100%);
+        background: linear-gradient(270deg, rgba(2,18,2,0.92) 0%, rgba(4,30,4,0.70) 40%, rgba(6,40,4,0.35) 70%, transparent 100% );
     }
 
 .glossplay.skin-gp-country .gp-placeholder {
-    background: radial-gradient(ellipse 75% 60% at 50% 55%, #0b1e0a 0%, #040c04 100%);
-}
-
-    /* Moldura de selva */
-    .glossplay.skin-gp-country .gp-placeholder::before {
-        content: '';
-        position: absolute;
-        inset: 8px 16px;
-        border-radius: 3px;
-        border: 1px solid rgba(30,130,25,0.18);
-        box-shadow: inset 0 0 55px rgba(0,60,0,0.60), inset 0 0 6px rgba(40,180,30,0.07), 0 0 30px rgba(0,0,0,0.6);
-        pointer-events: none;
-    }
-
-/* Feixe de luz solar descendo entre as folhas */
-.glossplay.skin-gp-country .gp-center-logo::before {
-    content: '';
-    position: absolute;
-    top: -60px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50px;
-    height: 70px;
-    background: linear-gradient(180deg, rgba(180,220,80,0.10) 0%, rgba(80,200,40,0.06) 55%, transparent 100%);
-    clip-path: polygon(25% 0%, 75% 0%, 100% 100%, 0% 100%);
-    pointer-events: none;
-}
-
-.glossplay.skin-gp-country .gp-film-icon {
-    background: linear-gradient(180deg, #c8ffa0 0%, #28d020 42%, #0e7010 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 0 22px rgba(30,200,20,0.55));
-}
-
-.glossplay.skin-gp-country .gp-empty-text {
-    color: rgba(50,200,40,0.68);
-    letter-spacing: 0.05em;
-}
-
-.glossplay.skin-gp-country .gp-empty-sub {
-    color: rgba(30,130,25,0.42);
-}
-
-/* ── Controles ── */
-.glossplay.skin-gp-country .gp-controls {
-    background: linear-gradient(180deg, rgba(6,18,5,0.98) 0%, rgba(3,10,3,0.99) 100%);
-    border-top: 1px solid rgba(25,130,22,0.28);
-    box-shadow: inset 0 1px 0 rgba(50,200,40,0.09), 0 -4px 24px rgba(0,0,0,0.70);
+    background: radial-gradient(ellipse 65% 55% at 50% 60%, #0c2208 0%, #051008 60%, #020804 100%);
     position: relative;
 }
 
-    /* Fio de raiz luminosa */
+    /* Moldura de selva — luz verde ao redor da tela */
+    .glossplay.skin-gp-country .gp-placeholder::before {
+        content: '';
+        position: absolute;
+        inset: 10px 18px;
+        border-radius: 4px;
+        border: 1px solid rgba(28,120,20,0.20);
+        box-shadow: inset 0 0 80px rgba(0,40,0,0.75), inset 0 0 12px rgba(30,160,20,0.08), inset 0 -20px 40px rgba(0,80,0,0.20), 0 0 40px rgba(0,0,0,0.70);
+        pointer-events: none;
+    }
+
+/* Feixe de luz solar entre folhas (volumétrico) */
+.glossplay.skin-gp-country .gp-center-logo::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 90px;
+    background: linear-gradient(180deg, rgba(200,240,100,0.12) 0%, rgba(100,220,50,0.07) 50%, transparent 100% );
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+    pointer-events: none;
+    filter: blur(2px);
+}
+
+/* Segundo feixe, ligeiramente deslocado */
+.glossplay.skin-gp-country .gp-center-logo::after {
+    content: '';
+    position: absolute;
+    top: -60px;
+    left: calc(50% + 22px);
+    transform: translateX(-50%);
+    width: 30px;
+    height: 60px;
+    background: linear-gradient(180deg, rgba(180,200,80,0.08) 0%, transparent 100% );
+    clip-path: polygon(15% 0%, 85% 0%, 100% 100%, 0% 100%);
+    pointer-events: none;
+    filter: blur(1.5px);
+}
+
+.glossplay.skin-gp-country .gp-film-icon {
+    background: linear-gradient(180deg, #d8ffb8 0%, #70f848 22%, #28d018 50%, #0e7010 80%, #1a9818 100% );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 0 18px rgba(30,200,15,0.60)) drop-shadow(0 0 40px rgba(10,150,5,0.30));
+}
+
+.glossplay.skin-gp-country .gp-empty-text {
+    color: rgba(60,210,45,0.65);
+    letter-spacing: 0.06em;
+    text-shadow: 0 0 18px rgba(20,180,10,0.35);
+}
+
+.glossplay.skin-gp-country .gp-empty-sub {
+    color: rgba(28,130,20,0.38);
+}
+
+/* ── Controles — solo de floresta ── */
+.glossplay.skin-gp-country .gp-controls {
+    background: linear-gradient(180deg, rgba(4,12,3,0.99) 0%, rgba(6,16,4,0.98) 40%, rgba(3, 9,2,1.00) 100% );
+    border-top: 1px solid rgba(22,120,16,0.22);
+    box-shadow: inset 0 1px 0 rgba(50,200,35,0.07), inset 0 2px 8px rgba(0,60,0,0.20), 0 -6px 30px rgba(0,0,0,0.80);
+    position: relative;
+}
+
+    /* Fio de raiz luminosa no topo dos controles */
     .glossplay.skin-gp-country .gp-controls::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 1px;
-        background: linear-gradient(90deg, transparent 0%, rgba(30,160,25,0.38) 22%, rgba(70,230,50,0.72) 50%, rgba(30,160,25,0.38) 78%, transparent 100%);
+        height: 1.5px;
+        background: linear-gradient(90deg, transparent 0%, rgba(20,110,14,0.30) 15%, rgba(50,200,35,0.65) 40%, rgba(100,255,70,0.85) 50%, rgba(50,200,35,0.65) 60%, rgba(20,110,14,0.30) 85%, transparent 100% );
     }
 
-/* ── Seek ── */
+    /* Textura sutil de terra no fundo dos controles */
+    .glossplay.skin-gp-country .gp-controls::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background: repeating-linear-gradient( -45deg, transparent 0px, transparent 6px, rgba(20,60,10,0.04) 6px, rgba(20,60,10,0.04) 7px );
+    }
+
+/* ── Seekbar — tronco de bambu ── */
 .glossplay.skin-gp-country .gp-seekbar {
-    border-color: rgba(22,120,18,0.28);
-    background: rgba(0,80,0,0.10);
+    border-color: rgba(20,110,14,0.30);
+    background: rgba(0,60,0,0.12);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.60), inset 0 0 8px rgba(0,40,0,0.40);
+    position: relative;
 }
 
-    /* Linhas de casca de árvore na seek */
+    /* Nós do bambu / marcações de posição */
     .glossplay.skin-gp-country .gp-seekbar::before {
         content: '';
         position: absolute;
         inset: 0;
-        background: repeating-linear-gradient(90deg, transparent 0px, transparent 16px, rgba(20,100,15,0.14) 16px, rgba(20,100,15,0.14) 17px);
+        background: repeating-linear-gradient(90deg, transparent 0px, transparent 14px, rgba(18,90,12,0.18) 14px, rgba(18,90,12,0.18) 15px );
         border-radius: 2px;
         pointer-events: none;
     }
 
 .glossplay.skin-gp-country .gp-seekfill {
-    background: linear-gradient(90deg, #0a4008 0%, #1a8018 40%, #28cc20 78%, #60f040 100%);
-    box-shadow: 0 0 8px rgba(40,200,20,0.55);
+    background: linear-gradient(90deg, #061a04 0%, #0e4c0a 25%, #1a8a16 55%, #30cc24 80%, #70f048 100% );
+    box-shadow: 0 0 6px rgba(40,200,20,0.45), 0 0 18px rgba(20,160,10,0.25), inset 0 1px 0 rgba(180,255,120,0.20);
 }
 
 .glossplay.skin-gp-country .gp-seekthumb {
-    background: radial-gradient(circle at 33% 28%, #d0ffb8 0%, #28c820 45%, #0a5808 100%);
-    border: 1.5px solid rgba(100,240,70,0.78);
-    box-shadow: 0 0 10px rgba(40,210,20,0.72), inset 0 1px 0 rgba(200,255,160,0.55);
+    background: radial-gradient(circle at 35% 30%, #e0ffcc 0%, #80f858 30%, #28cc1e 60%, #0a6008 100% );
+    border: 1.5px solid rgba(120,255,80,0.82);
+    box-shadow: 0 0 8px rgba(40,220,20,0.75), 0 0 20px rgba(20,180,10,0.35), inset 0 1px 0 rgba(220,255,180,0.60), inset 0 -1px 0 rgba(0,0,0,0.40);
 }
 
 .glossplay.skin-gp-country .gp-time {
-    color: rgba(50,185,40,0.55);
+    color: rgba(50,185,38,0.50);
+    text-shadow: 0 0 8px rgba(20,160,10,0.30);
 }
 
-/* ── Botões — pedaços de tronco polidos ── */
+/* ── Botões — troncos polidos com brilho ACM ── */
 .glossplay.skin-gp-country .gp-btn {
-    background: linear-gradient(165deg, rgba(12,50,10,0.88) 0%, rgba(8,35,7,0.78) 49%, rgba(4,18,4,0.92) 50%, rgba(10,42,9,0.78) 100%);
-    border: 1px solid rgba(28,140,22,0.35);
-    color: rgba(70,220,55,0.85);
-    box-shadow: inset 0 1px 0 rgba(90,240,60,0.18), inset 0 -1px 0 rgba(0,0,0,0.55), 0 3px 8px rgba(0,0,0,0.60), 0 0 0 1px rgba(0,0,0,0.40);
+    background: linear-gradient(165deg, rgba(14, 58,11,0.90) 0%, rgba( 9, 38, 7,0.80) 48%, rgba( 4, 16, 3,0.94) 52%, rgba(11, 48, 9,0.82) 100% );
+    border: 1px solid rgba(30,148,22,0.38);
+    color: rgba(75,225,58,0.88);
+    box-shadow: inset 0 1px 0 rgba(100,255,65,0.22), inset 0 -1px 0 rgba(0,0,0,0.60), inset 1px 0 0 rgba(40,160,20,0.08), 0 3px 10px rgba(0,0,0,0.65), 0 0 0 1px rgba(0,0,0,0.45), 0 0 12px rgba(10,140,5,0.10);
+    transition: all 0.18s ease;
 }
 
     .glossplay.skin-gp-country .gp-btn::before {
-        background: linear-gradient(180deg, rgba(90,240,60,0.18) 0%, rgba(20,160,10,0.04) 100%);
-    }
-
-    .glossplay.skin-gp-country .gp-btn::after {
-        content: '';
-        position: absolute;
-        inset: 4px;
-        border-radius: 50%;
-        border: 1px solid rgba(30,160,20,0.16);
-        pointer-events: none;
+        background: linear-gradient(180deg, rgba(100,255,65,0.22) 0%, rgba( 20,160,10,0.05) 100% );
     }
 
     .glossplay.skin-gp-country .gp-btn:hover {
-        background: linear-gradient(165deg, rgba(20,80,16,0.95) 0%, rgba(14,58,12,0.85) 49%, rgba(6,28,5,0.96) 50%, rgba(16,68,14,0.85) 100%);
-        border-color: rgba(60,210,42,0.58);
+        background: linear-gradient(165deg, rgba(22, 92,17,0.96) 0%, rgba(15, 62,12,0.86) 48%, rgba( 6, 26, 5,0.98) 52%, rgba(18, 78,14,0.88) 100% );
+        border-color: rgba(65,220,44,0.62);
         color: #c8ffa0;
-        box-shadow: inset 0 1px 0 rgba(120,250,80,0.28), 0 3px 10px rgba(0,0,0,0.65), 0 0 16px rgba(30,190,20,0.24);
+        box-shadow: inset 0 1px 0 rgba(140,255,90,0.32), inset 0 -1px 0 rgba(0,0,0,0.65), 0 3px 12px rgba(0,0,0,0.70), 0 0 20px rgba(30,200,15,0.28), 0 0 40px rgba(10,150,5,0.12);
+        text-shadow: 0 0 12px rgba(100,255,60,0.50);
     }
 
-/* Play — folha brilhante */
+/* ── Play — folha brilhante ACM ── */
 .glossplay.skin-gp-country .gp-playbtn {
-    width: 46px;
-    height: 46px;
-    font-size: 16px;
-    background: linear-gradient(165deg, rgba(18,100,14,0.72) 0%, rgba(12,68,10,0.55) 49%, rgba(5,28,4,0.85) 50%, rgba(10,58,8,0.62) 100%);
-    border-color: rgba(44,190,32,0.50);
-    box-shadow: inset 0 1px 0 rgba(120,250,80,0.28), 0 0 22px rgba(30,190,15,0.30), 0 6px 14px rgba(0,0,0,0.62);
+    width: 48px;
+    height: 48px;
+    font-size: 17px;
+    background: linear-gradient(165deg, rgba(20,110,15,0.75) 0%, rgba(13, 74,10,0.58) 48%, rgba( 5, 28, 4,0.90) 52%, rgba(12, 64, 9,0.65) 100% );
+    border-color: rgba(48,200,34,0.55);
+    box-shadow: inset 0 1px 0 rgba(140,255,90,0.30), inset 0 -1px 0 rgba(0,0,0,0.55), 0 0 25px rgba(28,200,14,0.35), 0 0 50px rgba(10,150,5,0.15), 0 6px 16px rgba(0,0,0,0.65);
 }
 
     .glossplay.skin-gp-country .gp-playbtn:hover {
-        background: linear-gradient(165deg, rgba(28,150,20,0.82) 0%, rgba(18,100,14,0.65) 49%, rgba(8,42,6,0.95) 50%, rgba(16,90,12,0.70) 100%);
-        border-color: rgba(80,240,55,0.70);
-        color: #d8ffb8;
-        box-shadow: inset 0 1px 0 rgba(160,255,110,0.38), 0 0 30px rgba(40,220,20,0.48), 0 6px 16px rgba(0,0,0,0.68);
+        background: linear-gradient(165deg, rgba(30,160,22,0.85) 0%, rgba(20,110,15,0.68) 48%, rgba( 8, 44, 6,0.96) 52%, rgba(18,100,13,0.75) 100% );
+        border-color: rgba(88,250,58,0.75);
+        color: #d8ffc0;
+        box-shadow: inset 0 1px 0 rgba(180,255,120,0.40), inset 0 -1px 0 rgba(0,0,0,0.60), 0 0 35px rgba(40,230,18,0.55), 0 0 65px rgba(15,180,8,0.22), 0 6px 18px rgba(0,0,0,0.72);
+        text-shadow: 0 0 14px rgba(140,255,80,0.65);
     }
 
-/* ── Volume ── */
+/* ── Volume — cipó verde ── */
 .glossplay.skin-gp-country .gp-volich {
-    color: rgba(40,190,30,0.52);
+    color: rgba(40,190,28,0.48);
+    text-shadow: 0 0 8px rgba(20,160,10,0.25);
 }
 
 .glossplay.skin-gp-country .gp-volume {
-    border-color: rgba(22,140,16,0.22);
-    background: rgba(0,120,0,0.06);
+    border-color: rgba(20,130,14,0.22);
+    background: rgba(0,100,0,0.07);
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.50);
 }
 
     .glossplay.skin-gp-country .gp-volume::-webkit-slider-thumb {
-        background: radial-gradient(circle at 33% 28%, #c8ffb0, #1aa010);
-        border: 1px solid rgba(100,240,60,0.62);
-        box-shadow: 0 0 8px rgba(40,200,20,0.62);
+        background: radial-gradient(circle at 35% 30%, #d8ffc0, #28c018);
+        border: 1px solid rgba(110,250,65,0.65);
+        box-shadow: 0 0 8px rgba(40,210,18,0.65), 0 0 18px rgba(20,170,8,0.28), inset 0 1px 0 rgba(220,255,180,0.55);
     }
 
     .glossplay.skin-gp-country .gp-volume::-moz-range-thumb {
-        background: radial-gradient(circle at 33% 28%, #c8ffb0, #1aa010);
-        border: 1px solid rgba(100,240,60,0.62);
-        box-shadow: 0 0 8px rgba(40,200,20,0.62);
+        background: radial-gradient(circle at 35% 30%, #d8ffc0, #28c018);
+        border: 1px solid rgba(110,250,65,0.65);
+        box-shadow: 0 0 8px rgba(40,210,18,0.65), 0 0 18px rgba(20,170,8,0.28), inset 0 1px 0 rgba(220,255,180,0.55);
     }
 
-/* Canvas dos vaga-lumes — injetado via JS */
+/* ── Canvas dos vaga-lumes — injetado via JS ── */
 .gp-firefly-canvas {
     position: absolute;
     inset: 0;
     width: 100%;
     height: 100%;
     pointer-events: none;
-    z-index: 5;
+    z-index: 1;
     mix-blend-mode: screen;
 }
 
