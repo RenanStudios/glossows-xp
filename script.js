@@ -5526,48 +5526,50 @@ function gpStartFireflies(winId) {
     if (!el) return;
     gpStopFireflies(winId);
 
+    // ↓ canvas vai dentro da área de vídeo, não no glossplay raiz
+    const videoArea = el.querySelector('.gp-video-area');
+    if (!videoArea) return;
+
     const canvas = document.createElement('canvas');
     canvas.className = 'gp-firefly-canvas';
     canvas.id = `gp-fireflies-${winId}`;
-    el.appendChild(canvas);
+    videoArea.insertBefore(canvas, videoArea.firstChild); // ← primeiro filho = atrás de tudo
 
+    // … resto da função igual, só troca "el" por "videoArea" no ResizeObserver
     const ctx = canvas.getContext('2d');
 
-    // Cada vaga-lume: posição normalizada 0-1, velocidade, pulso de alpha
     const flies = Array.from({ length: 22 }, () => ({
         x: Math.random(),
         y: Math.random(),
-        coreR: 1.2 + Math.random() * 2.2,      // raio do núcleo
-        glowR: 10 + Math.random() * 22,        // raio do halo bokeh
+        coreR: 1.2 + Math.random() * 2.2,
+        glowR: 10 + Math.random() * 22,
         alpha: 0.08 + Math.random() * 0.65,
         alphaDir: Math.random() > 0.5 ? 1 : -1,
         alphaSpeed: 0.004 + Math.random() * 0.012,
         vx: (Math.random() - 0.5) * 0.00025,
         vy: (Math.random() - 0.5) * 0.00018,
-        hue: 105 + Math.random() * 50,        // verde 105-155
+        hue: 105 + Math.random() * 50,
         sat: 80 + Math.random() * 20,
     }));
 
     function resize() {
-        canvas.width = el.offsetWidth;
-        canvas.height = el.offsetHeight;
+        canvas.width = videoArea.offsetWidth;  // ← videoArea
+        canvas.height = videoArea.offsetHeight;
     }
     resize();
 
     const ro = new ResizeObserver(resize);
-    ro.observe(el);
+    ro.observe(videoArea); // ← videoArea
 
     function draw() {
         const W = canvas.width, H = canvas.height;
         ctx.clearRect(0, 0, W, H);
 
         for (const f of flies) {
-            // Pulso de alpha
             f.alpha += f.alphaSpeed * f.alphaDir;
             if (f.alpha >= 0.88) { f.alpha = 0.88; f.alphaDir = -1; }
             if (f.alpha <= 0.04) { f.alpha = 0.04; f.alphaDir = 1; }
 
-            // Deriva lenta — wrap nas bordas
             f.x += f.vx;
             f.y += f.vy;
             if (f.x < -0.02) f.x = 1.02;
@@ -5575,11 +5577,9 @@ function gpStartFireflies(winId) {
             if (f.y < -0.02) f.y = 1.02;
             if (f.y > 1.02) f.y = -0.02;
 
-            const cx = f.x * W;
-            const cy = f.y * H;
+            const cx = f.x * W, cy = f.y * H;
             const { hue: h, sat: s, alpha: a } = f;
 
-            // ── Halo bokeh (gradiente radial largo e suave) ──
             const glow = ctx.createRadialGradient(cx, cy, 0, cx, cy, f.glowR);
             glow.addColorStop(0, `hsla(${h}, ${s}%, 68%, ${a * 0.75})`);
             glow.addColorStop(0.25, `hsla(${h}, ${s}%, 58%, ${a * 0.40})`);
@@ -5590,7 +5590,6 @@ function gpStartFireflies(winId) {
             ctx.fillStyle = glow;
             ctx.fill();
 
-            // ── Anel intermediário (dá volume ao bokeh) ──
             const mid = ctx.createRadialGradient(cx, cy, f.coreR * 0.8, cx, cy, f.glowR * 0.45);
             mid.addColorStop(0, `hsla(${h + 15}, 95%, 80%, ${a * 0.25})`);
             mid.addColorStop(1, `hsla(${h},      90%, 60%, 0)`);
@@ -5599,7 +5598,6 @@ function gpStartFireflies(winId) {
             ctx.fillStyle = mid;
             ctx.fill();
 
-            // ── Núcleo brilhante ──
             const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, f.coreR);
             core.addColorStop(0, `hsla(${h + 25}, 100%, 96%, ${a})`);
             core.addColorStop(0.5, `hsla(${h + 10}, 100%, 82%, ${a * 0.85})`);
