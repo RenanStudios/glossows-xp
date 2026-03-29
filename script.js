@@ -132,6 +132,10 @@
                         setTimeout(() => {
                             screen.style.display = 'none';
                             lockscreen.style.display = 'flex';
+
+                            // Toca o som de startup ao fim do carregamento
+                            const startupSound = new Audio('audio/startup.mp3');
+                            startupSound.play().catch(() => { });
                         }, 800);
                     }, 600);
                 }
@@ -3449,7 +3453,7 @@
                                                                 <b>Sistema:</b> Glossows XP
                                                             </div>
                                                             <div class="hub-panel">
-                                                                <b>Versão:</b> 6.4.70
+                                                                <b>Versão:</b> 6.5.50
                                                             </div>
                                                             <div class="hub-panel">
                                                                 <b>Build:</b> Service Pack 3
@@ -7604,7 +7608,7 @@ function gpSetSkin(skin, winId) {
                             response = "";
                         }
                         else if (cmdClean === 'ver') {
-                            response = "Glossows XP Professional [Versão 6.4.70]";
+                            response = "Glossows XP Professional [Versão 6.5.50]";
                         }
                         else if (cmdClean.startsWith('echo ')) {
                             response = fullCmd.substring(5);
