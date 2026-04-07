@@ -34,6 +34,7 @@
             { id: "wack_first", name: "Primeiro Voo Slime", desc: "Jogou Wackender pela primeira vez.", rarity: "common" },
             { id: "dorf_first_win", name: "Primeiro K.O.", desc: "Venceu uma luta no DORFight.", rarity: "common" },
             { id: "break_first", name: "Quebra-Tijolo Iniciado", desc: "Jogou Breakout pela primeira vez.", rarity: "common" },
+            { id: "fire_first", name: "Bombeiro de Plantão", desc: "Jogou LCD Fire pela primeira vez.", rarity: "common" },
 
             // =========================
             // 🔵 UNCOMMON
@@ -62,6 +63,7 @@
             { id: "wack_1000", name: "Caçador Espacial", desc: "Fez 1000 pontos no Wackender.", rarity: "rare" },
             { id: "dorf_combo_5", name: "Combo Brutal", desc: "Fez um combo de 5 golpes.", rarity: "rare" },
             { id: "break_200", name: "Destruidor de Blocos", desc: "Fez 200 pontos no Breakout.", rarity: "rare" },
+            { id: "fire_10", name: "Resgate em Série", desc: "Salvou 10 pessoas no LCD Fire.", rarity: "rare" },
 
             // =========================
             // 🟡 EPIC
@@ -74,6 +76,7 @@
             { id: "wack_no_bomb", name: "Raiz do Laser", desc: "Terminou uma partida sem usar Smart Bomb.", rarity: "epic" },
             { id: "dorf_perfect", name: "Vitória Perfeita", desc: "Venceu uma luta perder vida.", rarity: "epic" },
             { id: "break_level5", name: "Veterano do Arcade", desc: "Chegou na fase 5 do Breakout.", rarity: "epic" },
+            { id: "fire_25", name: "Herói do Trampolim", desc: "Salvou 25 pessoas no LCD Fire.", rarity: "epic" },
 
             // =========================
             // 🔴 LEGENDARY
@@ -83,6 +86,7 @@
             { id: "gw_survivor", name: "Sistema Instável", desc: "Terminou o jogo com 1 vida restante.", rarity: "legendary" },
             { id: "break_no_miss", name: "Reflexo de Titânio", desc: "Terminou uma fase sem perder nenhuma bola.", rarity: "legendary" },
             { id: "break_master", name: "Mestre do Breakout", desc: "Fez 500 pontos no Breakout.", rarity: "legendary" },
+            { id: "fire_no_miss", name: "Zero Baixas", desc: "Chegou a 10 pontos sem nenhuma falha.", rarity: "legendary" },
             { id: "dorf_heavy_10", name: "Punhos de Ferro", desc: "Acertou 10 ataques pesados em uma luta.", rarity: "legendary" }
 
         ];
@@ -309,6 +313,8 @@
                 openDORFight();
             } else if (value === "wackender") {
                 openWackender();
+            } else if (value === "fire") {
+                openLCDFire();
             }
         }
 
@@ -321,6 +327,8 @@
                 openDORFight();
             } else if (value === "wackender") {
                 openWackender();
+            } else if (value === "fire") {
+                openLCDFire();
             }
         }
 
@@ -1673,6 +1681,13 @@
         function gwClearTimeouts() {
             clearTimeout(gwState.timerId);
             clearTimeout(gwState.currentTimeout);
+            // Expõe cleaner para closeWindow
+            window._gwCleaner = () => {
+                gwState.gameActive = false;
+                gwState.isPlaying = false;
+                clearTimeout(gwState.timerId);
+                clearTimeout(gwState.currentTimeout);
+            };
         }
 
         const gwGames = [
@@ -2320,6 +2335,551 @@
                                                     </div>
                                                 `;
         }
+
+function openLCDFire() {
+    const container = document.getElementById("doogly-content");
+
+    const oldStyle = document.getElementById("fire-style");
+    if (oldStyle) oldStyle.remove();
+
+    const style = document.createElement("style");
+    style.id = "fire-style";
+    style.innerHTML = `
+                @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+ 
+                #fire-wrapper * { box-sizing: border-box; margin: 0; padding: 0; }
+ 
+                #fire-wrapper {
+                    width: 100%; height: 100%;
+                    background: #1c1c1c;
+                    display: flex; align-items: center; justify-content: center;
+                    touch-action: none; user-select: none;
+                }
+ 
+                .fire-console-outer {
+                    width: 100%; max-width: 820px;
+                    background: linear-gradient(160deg,#f0f0f0 0%,#c8c8c8 40%,#a0a0a0 100%);
+                    border-radius: 18px 18px 24px 24px;
+                    padding: 24px 32px 36px;
+                    box-shadow:
+                        inset 0 2px 4px rgba(255,255,255,0.8),
+                        inset -3px -3px 8px rgba(0,0,0,0.2),
+                        0 8px 30px rgba(0,0,0,0.7);
+                    display: flex; flex-direction: column; align-items: center; gap: 20px;
+                }
+ 
+                .fire-console-top {
+                    width: 100%; display: flex; justify-content: space-between; align-items: flex-start;
+                }
+                .fire-brand-left {
+                    font-family: sans-serif; font-size: 11px; font-weight: bold; color: #333; line-height: 1.5;
+                }
+                .fire-brand-badge {
+                    border: 2px solid #333; border-radius: 50%; padding: 2px 6px;
+                    font-size: 10px; display: inline-block; margin-bottom: 2px;
+                }
+ 
+                .fire-screen-bezel {
+                    width: 100%;
+                    background: linear-gradient(145deg,#222 0%,#111 60%,#1a1a1a 100%);
+                    border-radius: 10px;
+                    padding: 18px 24px;
+                    box-shadow:
+                        inset 2px 2px 6px rgba(255,255,255,0.1),
+                        inset -2px -2px 6px rgba(0,0,0,0.8),
+                        0 4px 12px rgba(0,0,0,0.5);
+                }
+ 
+                .fire-screen-inner {
+                    background-color: #8fb08a;
+                    background-image:
+                        radial-gradient(ellipse at 20% 20%,rgba(180,210,170,0.4) 0%,transparent 60%),
+                        radial-gradient(ellipse at 80% 80%,rgba(100,130,100,0.3) 0%,transparent 50%);
+                    border-radius: 4px;
+                    position: relative; overflow: hidden;
+                    aspect-ratio: 3/2;
+                    box-shadow: inset 0 0 30px rgba(0,0,0,0.3),inset 0 0 8px rgba(0,0,0,0.15);
+                    border: 2px solid #1a1a1a;
+                }
+ 
+                #fire-canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; }
+ 
+                .fire-score-overlay {
+                    position: absolute; top: 10px; right: 16px;
+                    font-family: 'VT323', monospace;
+                    font-size: 44px; font-weight: bold;
+                    color: #1a2a18;
+                    text-shadow: 1px 1px 0 rgba(0,0,0,0.15);
+                    letter-spacing: 4px;
+                    pointer-events: none; z-index: 10; line-height: 1;
+                }
+ 
+                #fire-ui-overlay {
+                    position: absolute; inset: 0;
+                    display: flex; flex-direction: column; align-items: center; justify-content: center;
+                    background: rgba(143,176,138,0.92);
+                    z-index: 20;
+                }
+                #fire-ui-overlay h1 {
+                    font-family: 'VT323', monospace;
+                    font-size: 80px; color: #1a2a18;
+                    letter-spacing: 8px; line-height: 1;
+                    margin-bottom: 8px;
+                    text-shadow: 3px 3px 0 rgba(0,0,0,0.2);
+                }
+                #fire-ui-overlay .fire-subtitle {
+                    font-family: 'VT323', monospace; font-size: 22px; color: #2a3a28; margin-bottom: 24px;
+                    letter-spacing: 3px;
+                }
+                #fire-gameover-stats {
+                    display: none; flex-direction: column; align-items: center; margin-bottom: 16px;
+                }
+                #fire-gameover-stats p {
+                    font-family: 'VT323', monospace; font-size: 30px; color: #1a2a18; letter-spacing: 2px;
+                }
+                #fire-start-btn {
+                    font-family: 'VT323', monospace; font-size: 28px; letter-spacing: 2px;
+                    border: 3px solid #1a2a18; color: #1a2a18; background: transparent;
+                    padding: 4px 24px; cursor: pointer;
+                    transition: background 0.1s, color 0.1s;
+                }
+                #fire-start-btn:hover { background: #1a2a18; color: #8fb08a; }
+ 
+                .fire-controls-row {
+                    width: 100%; display: flex; justify-content: space-between; align-items: center;
+                    padding: 0 20px;
+                }
+                .fire-btn-group { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+ 
+                .fire-action-btn {
+                    width: 72px; height: 72px; border-radius: 50%; border: none;
+                    background: radial-gradient(circle at 35% 30%,#e53030 0%,#991111 60%,#6b0000 100%);
+                    box-shadow: 0 6px 0 #5a0000, 0 8px 12px rgba(0,0,0,0.4),
+                                inset 0 2px 4px rgba(255,150,150,0.3);
+                    cursor: pointer; transition: transform 0.05s, box-shadow 0.05s;
+                    -webkit-tap-highlight-color: transparent; outline: none;
+                }
+                .fire-action-btn:active {
+                    transform: translateY(5px);
+                    box-shadow: 0 1px 0 #5a0000, 0 2px 6px rgba(0,0,0,0.4),
+                                inset 0 2px 4px rgba(255,150,150,0.3);
+                }
+                .fire-deco { display: flex; flex-direction: column; gap: 4px; }
+                .fire-deco-bar {
+                    width: 40px; height: 4px; border-radius: 2px;
+                    background: linear-gradient(90deg,#aaa,#888);
+                    box-shadow: inset 0 1px 2px rgba(0,0,0,0.3);
+                }
+                .fire-miss-display {
+                    position: absolute; top: 10px; left: 12px;
+                    font-family: 'VT323', monospace; font-size: 18px;
+                    color: #1a2a18; pointer-events: none; z-index: 10; line-height: 1;
+                }
+            `;
+    document.head.appendChild(style);
+
+    container.innerHTML = `
+                <div id="fire-wrapper">
+                  <div class="fire-console-outer">
+ 
+                    <div class="fire-console-top">
+                      <div class="fire-brand-left">
+                        <span class="fire-brand-badge">LCD MINI-GAME</span><br>
+                        Renan Studios&trade;
+                      </div>
+                    </div>
+ 
+                    <div class="fire-screen-bezel">
+                      <div class="fire-screen-inner">
+                        <canvas id="fire-canvas" width="600" height="400"></canvas>
+                        <div class="fire-score-overlay"><span id="fire-score-display">0000</span></div>
+                        <div class="fire-miss-display" id="fire-miss-display"></div>
+                        <div id="fire-ui-overlay">
+                          <h1>FIRE</h1>
+                          <div class="fire-subtitle">LCD MINI-GAME</div>
+                          <div id="fire-gameover-stats">
+                            <p>FIM DE JOGO</p>
+                            <p>PONTUAÇÃO: <span id="fire-final-score">0000</span></p>
+                          </div>
+                          <button id="fire-start-btn">Start</button>
+                        </div>
+                      </div>
+                    </div>
+ 
+                    <div class="fire-controls-row">
+                      <div class="fire-btn-group">
+                        <button class="fire-action-btn" id="fire-btn-left"></button>
+                      </div>
+                      <div class="fire-deco">
+                        <div class="fire-deco-bar"></div>
+                        <div class="fire-deco-bar"></div>
+                        <div class="fire-deco-bar"></div>
+                      </div>
+                      <div class="fire-btn-group">
+                        <button class="fire-action-btn" id="fire-btn-right"></button>
+                      </div>
+                    </div>
+ 
+                  </div>
+                </div>
+            `;
+
+    initLCDFireLogic();
+}
+
+function initLCDFireLogic() {
+    const canvas = document.getElementById('fire-canvas');
+    const ctx = canvas.getContext('2d');
+    const W = 600, H = 400;
+
+    const LCD_ON = '#1a2a18';
+    const LCD_OFF = 'rgba(26,42,24,0.10)';
+
+    let fState = 'MENU';
+    let fScore = 0;
+    let fMisses = 0;
+    let fTrampPos = 1;
+    let fJumpers = [];
+    let fTickInt = 600;
+    let fLastTick = 0;
+    let fAnimId = null;
+    let fPauseTicks = 0;
+    let fNoMiss = true;   // para conquista fire_no_miss
+    let fFirstPlay = false;  // para conquista fire_first
+
+    // ── Áudio ───────────────────────────────────────────────────
+    let fAudioCtx;
+    function fInitAudio() {
+        if (!fAudioCtx) fAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        if (fAudioCtx.state === 'suspended') fAudioCtx.resume();
+    }
+    function fBeep(freq, dur, type = 'square', vol = 0.08) {
+        if (!fAudioCtx) return;
+        const o = fAudioCtx.createOscillator();
+        const g = fAudioCtx.createGain();
+        o.type = type; o.frequency.value = freq;
+        g.gain.setValueAtTime(vol, fAudioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.001, fAudioCtx.currentTime + dur);
+        o.connect(g); g.connect(fAudioCtx.destination);
+        o.start(); o.stop(fAudioCtx.currentTime + dur);
+    }
+    function fSound(t) {
+        if (t === 'tick') fBeep(180, 0.04);
+        if (t === 'bounce') { fBeep(440, 0.08); setTimeout(() => fBeep(660, 0.06), 70); }
+        if (t === 'miss') fBeep(90, 0.5, 'sawtooth', 0.15);
+        if (t === 'score') { fBeep(880, 0.08); setTimeout(() => fBeep(1100, 0.08), 100); }
+    }
+
+    // ── Layout ──────────────────────────────────────────────────
+    const TX = [148, 298, 448];
+    const TY = 340;
+
+    const PATH = [
+        { x: 52, y: 90, pose: 'stand', check: null },
+        { x: 75, y: 150, pose: 'fall1', check: null },
+        { x: 105, y: 225, pose: 'fall2', check: null },
+        { x: 148, y: 318, pose: 'impact', check: 0 },
+        { x: 185, y: 220, pose: 'rise1', check: null },
+        { x: 215, y: 155, pose: 'rise2', check: null },
+        { x: 245, y: 215, pose: 'fall1', check: null },
+        { x: 298, y: 318, pose: 'impact', check: 1 },
+        { x: 338, y: 215, pose: 'rise1', check: null },
+        { x: 368, y: 145, pose: 'rise2', check: null },
+        { x: 400, y: 215, pose: 'fall2', check: null },
+        { x: 448, y: 318, pose: 'impact', check: 2 },
+        { x: 488, y: 265, pose: 'fly', check: null },
+        { x: 528, y: 295, pose: 'safe', check: null },
+    ];
+    const MISS_POS = { 3: { x: 148, y: 370 }, 7: { x: 298, y: 370 }, 11: { x: 448, y: 370 } };
+
+    // ── Primitivas ──────────────────────────────────────────────
+    function setColor(on) {
+        ctx.strokeStyle = on ? LCD_ON : LCD_OFF;
+        ctx.fillStyle = on ? LCD_ON : LCD_OFF;
+        ctx.lineCap = ctx.lineJoin = 'round';
+    }
+    function circle(x, y, r, on) { setColor(on); ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill(); }
+    function lines(segs, on, lw) { setColor(on); ctx.lineWidth = lw || 3.5; ctx.beginPath(); for (const [x1, y1, x2, y2] of segs) { ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); } ctx.stroke(); }
+    function poly(pts, on, fill = false) { setColor(on); ctx.beginPath(); ctx.moveTo(pts[0][0], pts[0][1]); for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]); if (fill) { ctx.closePath(); ctx.fill(); } else { ctx.stroke(); } }
+
+    // ── Personagem ──────────────────────────────────────────────
+    function drawPerson(x, y, pose, on) {
+        setColor(on);
+        function head(hx, hy, sx = 1, sy = 1, rot = 0) {
+            ctx.save(); ctx.translate(hx, hy); ctx.scale(sx, sy); ctx.rotate(rot);
+            ctx.beginPath();
+            ctx.moveTo(-4, 9);
+            ctx.arc(-2, -2, 10, Math.PI * 0.6, Math.PI * 1.85);
+            ctx.quadraticCurveTo(9, -11, 13, -6);
+            ctx.quadraticCurveTo(14, -4, 11, -2);
+            ctx.quadraticCurveTo(3, -1, 1, 2);
+            ctx.quadraticCurveTo(6, 4, 9, 6);
+            ctx.quadraticCurveTo(10, 8, 8, 9);
+            ctx.quadraticCurveTo(2, 10, -4, 9);
+            ctx.closePath(); ctx.fill(); ctx.restore();
+        }
+        function body(bx, by, rot = 0) {
+            ctx.save(); ctx.translate(bx, by); ctx.rotate(rot);
+            ctx.beginPath(); ctx.ellipse(0, 0, 8, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+        }
+        function limb(x1, y1, x2, y2, r = 5.5) {
+            ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+            if (r > 0) { ctx.beginPath(); ctx.arc(x2, y2, r, 0, Math.PI * 2); ctx.fill(); }
+        }
+        function cLimb(x1, y1, cx, cy, x2, y2, r = 5.5) {
+            ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.quadraticCurveTo(cx, cy, x2, y2); ctx.stroke();
+            if (r > 0) { ctx.beginPath(); ctx.arc(x2, y2, r, 0, Math.PI * 2); ctx.fill(); }
+        }
+        switch (pose) {
+            case 'stand':
+                head(x, y - 20); body(x, y - 4);
+                limb(x - 2, y - 10, x - 12, y - 10, 5); limb(x + 2, y - 10, x + 16, y - 4, 5);
+                limb(x - 2, y + 4, x - 8, y + 18, 5.5); limb(x + 2, y + 4, x + 10, y + 18, 5.5); break;
+            case 'fall1':
+                head(x, y - 18, -1, 1); body(x, y - 2);
+                cLimb(x - 4, y - 8, x - 18, y - 16, x - 20, y - 4, 5); cLimb(x + 4, y - 8, x + 18, y - 16, x + 20, y - 4, 5);
+                limb(x - 4, y + 6, x - 16, y + 12, 5.5); limb(x + 4, y + 6, x + 16, y + 12, 5.5); break;
+            case 'fall2':
+                head(x, y - 16, 1, 1, Math.PI / 4); body(x, y, Math.PI / 4);
+                limb(x - 6, y - 6, x - 18, y - 12, 5); limb(x + 6, y + 6, x + 18, y + 12, 5);
+                limb(x - 6, y + 6, x - 12, y + 20, 5.5); limb(x + 6, y - 6, x + 12, y - 20, 5.5); break;
+            case 'impact':
+                head(x - 12, y - 8, 1, 1, -Math.PI / 3); body(x, y + 4, Math.PI / 2);
+                limb(x - 8, y + 4, x - 24, y - 2, 5); limb(x + 8, y + 4, x + 24, y - 2, 5);
+                limb(x - 8, y + 4, x - 16, y + 16, 5.5); limb(x + 8, y + 4, x + 16, y + 16, 5.5); break;
+            case 'rise1':
+                head(x, y - 22, 1, 1, -Math.PI / 8); body(x, y - 4);
+                limb(x - 4, y - 8, x - 16, y + 2, 5); limb(x + 4, y - 8, x + 16, y + 2, 5);
+                limb(x - 4, y + 6, x - 8, y + 22, 5.5); limb(x + 4, y + 6, x + 8, y + 22, 5.5); break;
+            case 'rise2':
+                head(x, y - 24, -1, 1, Math.PI / 8); body(x, y - 6);
+                cLimb(x - 4, y - 10, x - 16, y - 22, x - 12, y - 30, 5); cLimb(x + 4, y - 10, x + 16, y - 22, x + 12, y - 30, 5);
+                limb(x - 4, y + 4, x - 12, y + 16, 5.5); limb(x + 4, y + 4, x + 12, y + 16, 5.5); break;
+            case 'fly':
+                head(x + 12, y - 12, 1, 1, Math.PI / 2.5); body(x, y - 4, Math.PI / 2.5);
+                limb(x - 2, y + 2, x + 10, y + 14, 5); limb(x, y - 8, x + 20, y - 4, 5);
+                limb(x - 8, y, x - 20, y - 12, 5.5); limb(x - 6, y - 6, x - 16, y - 20, 5.5); break;
+            case 'safe':
+                head(x, y - 20, -1, 1); body(x, y - 4);
+                limb(x - 4, y - 10, x - 16, y - 20, 6.5); limb(x + 4, y - 10, x + 16, y - 20, 6.5);
+                limb(x - 4, y + 6, x - 8, y + 20, 5.5); limb(x + 4, y + 6, x + 8, y + 20, 5.5); break;
+            case 'angel':
+                head(x, y - 16, 1, 1, -Math.PI / 6); body(x, y - 2);
+                limb(x - 4, y - 4, x - 12, y + 4, 4); limb(x + 4, y - 4, x + 12, y + 4, 4);
+                ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(x + 4, y - 30, 10, 3, Math.PI / 8, 0, Math.PI * 2); ctx.stroke();
+                ctx.lineWidth = 3;
+                ctx.beginPath(); ctx.moveTo(x - 6, y - 4); ctx.bezierCurveTo(x - 24, y - 18, x - 26, y + 8, x - 6, y + 4); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(x + 6, y - 4); ctx.bezierCurveTo(x + 24, y - 18, x + 26, y + 8, x + 6, y + 4); ctx.stroke(); break;
+        }
+    }
+
+    // ── Trampolim ────────────────────────────────────────────────
+    function drawTramp(idx, on) {
+        const cx = TX[idx], by = TY, bw = 36; setColor(on);
+        ctx.lineWidth = 6; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(cx - bw, by - 16); ctx.lineTo(cx + bw, by - 16); ctx.stroke();
+        ctx.lineWidth = 3.5; ctx.beginPath();
+        ctx.moveTo(cx - bw + 6, by - 16); ctx.quadraticCurveTo(cx, by - 10, cx + bw - 6, by - 16); ctx.stroke();
+        function ff(fx, fy, fr) {
+            ctx.save(); ctx.translate(fx, fy - 14);
+            ctx.beginPath(); ctx.ellipse(0, 0, 8, 11, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
+            ctx.save(); ctx.translate(fx + (fr ? 2 : -2), fy - 28); ctx.scale(fr ? 1 : -1, 1);
+            ctx.beginPath();
+            ctx.moveTo(-4, 9); ctx.arc(-2, -2, 10, Math.PI * 0.6, Math.PI * 1.85);
+            ctx.quadraticCurveTo(9, -11, 13, -6); ctx.quadraticCurveTo(14, -4, 11, -2);
+            ctx.quadraticCurveTo(3, -1, 1, 2); ctx.quadraticCurveTo(6, 4, 9, 6);
+            ctx.quadraticCurveTo(10, 8, 8, 9); ctx.quadraticCurveTo(2, 10, -4, 9);
+            ctx.closePath(); ctx.fill(); ctx.restore();
+            ctx.beginPath(); ctx.arc(fx + (fr ? 2 : -2), fy - 36, 7, Math.PI, 0);
+            ctx.rect(fx - 12 + (fr ? 2 : -2), fy - 36, 24, 3.5); ctx.fill();
+            function lb(x1, y1, x2, y2, r) { ctx.lineWidth = 5; ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke(); if (r > 0) { ctx.beginPath(); ctx.arc(x2, y2, r, 0, Math.PI * 2); ctx.fill(); } }
+            if (fr) { lb(fx + 4, fy - 18, fx + 16, fy - 14, 4.5); lb(fx - 4, fy - 18, fx - 10, fy - 8, 4.5); lb(fx, fy - 6, fx - 8, fy + 14, 5.5); lb(fx + 4, fy - 6, fx + 10, fy + 14, 5.5); }
+            else { lb(fx - 4, fy - 18, fx - 16, fy - 14, 4.5); lb(fx + 4, fy - 18, fx + 10, fy - 8, 4.5); lb(fx, fy - 6, fx + 8, fy + 14, 5.5); lb(fx - 4, fy - 6, fx - 10, fy + 14, 5.5); }
+        }
+        ff(cx - bw - 18, by, true); ff(cx + bw + 18, by, false);
+    }
+
+    // ── Edifício & Fogo ──────────────────────────────────────────
+    function drawBuilding(on) {
+        setColor(on); ctx.lineWidth = 4;
+        ctx.strokeRect(8, 48, 60, H - 48);
+        for (let r = 0; r < 4; r++) { const wy = 64 + r * 70; ctx.strokeRect(14, wy, 18, 22); ctx.strokeRect(38, wy, 18, 22); lines([[8, wy + 22, 68, wy + 22]], on); }
+        lines([[8, 48, 68, 48], [28, 30, 28, 48], [40, 30, 40, 48]], on);
+        drawFire(on); lines([[68, 82, 90, 82]], on);
+    }
+    function drawFire(on) {
+        const t = Math.floor(Date.now() / 300) % 2; setColor(on); ctx.lineWidth = 3;
+        if (t === 0) { ctx.beginPath(); ctx.moveTo(18, 48); ctx.quadraticCurveTo(14, 30, 22, 20); ctx.quadraticCurveTo(26, 10, 20, 2); ctx.quadraticCurveTo(30, 12, 28, 22); ctx.quadraticCurveTo(34, 10, 32, 2); ctx.quadraticCurveTo(38, 15, 34, 28); ctx.quadraticCurveTo(40, 20, 38, 10); ctx.quadraticCurveTo(44, 25, 40, 38); ctx.quadraticCurveTo(44, 30, 42, 48); ctx.stroke(); }
+        else { ctx.beginPath(); ctx.moveTo(16, 48); ctx.quadraticCurveTo(10, 28, 20, 16); ctx.quadraticCurveTo(24, 6, 18, 0); ctx.quadraticCurveTo(30, 10, 26, 22); ctx.quadraticCurveTo(34, 8, 30, 0); ctx.quadraticCurveTo(40, 18, 36, 30); ctx.quadraticCurveTo(42, 22, 40, 8); ctx.quadraticCurveTo(48, 28, 44, 48); ctx.stroke(); }
+    }
+
+    // ── Ambulância ───────────────────────────────────────────────
+    function drawAmbulance(on) {
+        ctx.lineWidth = 3.5; setColor(on);
+        poly([[504, 360], [504, 285], [520, 270], [580, 270], [580, 360]], on);
+        lines([[520, 270, 520, 360]], on);
+        ctx.strokeRect(522, 275, 24, 28);
+        const cx2 = 556, cy2 = 305, cs = 10;
+        lines([[cx2 - cs, cy2, cx2 + cs, cy2], [cx2, cy2 - cs, cx2, cy2 + cs]], on);
+        circle(525, 360, 16, on); circle(525, 360, 10, on);
+        circle(563, 360, 16, on); circle(563, 360, 10, on);
+        const t2 = Math.floor(Date.now() / 250) % 2;
+        if (t2 === 0) circle(534, 268, 6, on); else circle(546, 268, 6, on);
+    }
+
+    // ── Chão ─────────────────────────────────────────────────────
+    function drawGround(on) {
+        setColor(on); ctx.lineWidth = 3;
+        lines([[68, H - 30, 500, H - 30]], on);
+        for (let x = 100; x < 500; x += 40) lines([[x, H - 30, x + 20, H - 30]], on);
+    }
+
+    // ── Miss UI ──────────────────────────────────────────────────
+    function updateMissUI() {
+        const el = document.getElementById('fire-miss-display');
+        if (!el) return;
+        let s = 'FALHA ';
+        for (let i = 0; i < 3; i++) s += i < fMisses ? '✕ ' : '○ ';
+        el.textContent = s;
+    }
+
+    // ── Render ───────────────────────────────────────────────────
+    function render() {
+        ctx.clearRect(0, 0, W, H);
+        drawBuilding(false); drawAmbulance(false); drawGround(false);
+        for (let i = 0; i < 3; i++) drawTramp(i, false);
+        PATH.forEach(s => drawPerson(s.x, s.y, s.pose, false));
+        Object.values(MISS_POS).forEach(p => drawPerson(p.x, p.y, 'angel', false));
+        if (fState === 'MENU') return;
+        drawBuilding(true); drawAmbulance(true); drawGround(true);
+        const blinkOn = fState !== 'PAUSED_MISS' || (Math.floor(Date.now() / 200) % 2 === 0);
+        if (blinkOn) drawTramp(fTrampPos, true);
+        fJumpers.forEach(j => {
+            if (j.isAngel) { const mp = MISS_POS[j.originCheck]; if (mp && Math.floor(Date.now() / 150) % 2 === 0) drawPerson(mp.x, mp.y, 'angel', true); }
+            else { const s = PATH[j.state]; drawPerson(s.x, s.y, s.pose, true); }
+        });
+        const sd = document.getElementById('fire-score-display');
+        if (sd) sd.textContent = fScore.toString().padStart(4, '0');
+        updateMissUI();
+    }
+
+    // ── Lógica ───────────────────────────────────────────────────
+    function updateLogic() {
+        if (fState === 'PAUSED_MISS') {
+            fPauseTicks--;
+            if (fPauseTicks <= 0) {
+                fJumpers = fJumpers.filter(j => !j.isAngel);
+                if (fMisses >= 3) { endFire(); return; }
+                fState = 'PLAYING';
+            }
+            return;
+        }
+        fSound('tick');
+        let su = false;
+        for (let i = fJumpers.length - 1; i >= 0; i--) {
+            const j = fJumpers[i];
+            const s = PATH[j.state];
+            if (s.check !== null) {
+                if (fTrampPos === s.check) {
+                    j.state++;
+                    if (!su) { fSound('bounce'); su = true; }
+                } else {
+                    j.isAngel = true; j.originCheck = j.state;
+                    fMisses++; fNoMiss = false;
+                    fState = 'PAUSED_MISS'; fPauseTicks = 14;
+                    if (!su) { fSound('miss'); su = true; }
+                    continue;
+                }
+            } else { j.state++; }
+            if (j.state >= PATH.length) {
+                fScore++;
+                fJumpers.splice(i, 1);
+                if (!su) { fSound('score'); su = true; }
+                if (fScore % 10 === 0 && fTickInt > 200) fTickInt -= 40;
+                // Conquistas de pontuação
+                if (fScore === 10) unlockAchievement('fire_10');
+                if (fScore === 10 && fNoMiss) unlockAchievement('fire_no_miss');
+                if (fScore === 25) unlockAchievement('fire_25');
+            }
+        }
+        const active = fJumpers.filter(j => !j.isAngel);
+        const canSpawn = active.length === 0 || (active.length < 2 && active.every(j => j.state >= 6));
+        const chance = Math.min(0.55, 0.15 + fScore * 0.01);
+        if (canSpawn && Math.random() < chance) fJumpers.push({ state: 0, isAngel: false, originCheck: null });
+    }
+
+    function gameLoop(ts) {
+        if (fState === 'PLAYING' || fState === 'PAUSED_MISS') {
+            if (ts - fLastTick > fTickInt) { updateLogic(); fLastTick = ts; }
+            render();
+        }
+        fAnimId = requestAnimationFrame(gameLoop);
+    }
+
+    // ── Controlos ────────────────────────────────────────────────
+    function fLeft() { if (fState !== 'PLAYING' || fTrampPos <= 0) return; fTrampPos--; fSound('tick'); render(); }
+    function fRight() { if (fState !== 'PLAYING' || fTrampPos >= 2) return; fTrampPos++; fSound('tick'); render(); }
+
+    function fKeyDown(e) {
+        if (e.key === 'ArrowLeft') { e.preventDefault(); fLeft(); }
+        if (e.key === 'ArrowRight') { e.preventDefault(); fRight(); }
+    }
+    window.addEventListener('keydown', fKeyDown);
+
+    // Guarda referência para remover ao fechar
+    window._fireCleaner = () => {
+        window.removeEventListener('keydown', fKeyDown);
+        if (fAnimId) cancelAnimationFrame(fAnimId);
+        fAnimId = null;
+    };
+
+    const $l = document.getElementById('fire-btn-left');
+    const $r = document.getElementById('fire-btn-right');
+    $l.addEventListener('mousedown', e => { e.preventDefault(); fLeft(); });
+    $l.addEventListener('touchstart', e => { e.preventDefault(); fLeft(); }, { passive: false });
+    $r.addEventListener('mousedown', e => { e.preventDefault(); fRight(); });
+    $r.addEventListener('touchstart', e => { e.preventDefault(); fRight(); }, { passive: false });
+
+    // ── Estado ───────────────────────────────────────────────────
+    function startFire() {
+        fInitAudio();
+        fScore = 0; fMisses = 0; fTrampPos = 1; fJumpers = [];
+        fTickInt = 600; fPauseTicks = 0; fNoMiss = true;
+        fState = 'PLAYING';
+        document.getElementById('fire-ui-overlay').style.display = 'none';
+        fLastTick = performance.now();
+        if (!fAnimId) fAnimId = requestAnimationFrame(gameLoop);
+        updateMissUI();
+
+        // Conquista de primeira vez
+        if (!fFirstPlay) {
+            fFirstPlay = true;
+            unlockAchievement('fire_first');
+            gamesPlayed.add('fire');
+            if (gamesPlayed.size >= 3) unlockAchievement('game_addict');
+        }
+    }
+
+    function endFire() {
+        fState = 'GAMEOVER';
+        fSound('miss');
+        setTimeout(() => {
+            const ov = document.getElementById('fire-ui-overlay');
+            if (!ov) return;
+            ov.style.display = '';
+            ov.querySelector('h1').style.display = 'none';
+            ov.querySelector('.fire-subtitle').style.display = 'none';
+            const gs = document.getElementById('fire-gameover-stats');
+            gs.style.display = 'flex';
+            document.getElementById('fire-final-score').textContent = fScore.toString().padStart(4, '0');
+            document.getElementById('fire-start-btn').textContent = 'TENTAR NOVAMENTE';
+        }, 1200);
+    }
+
+    document.getElementById('fire-start-btn').addEventListener('click', startFire);
+
+    render();
+}
 
         // --- WACKENDER (DEFENDER CLONE) ---
 
@@ -3342,12 +3902,21 @@
                 c.fillRect(state.player.worldX * scale, state.player.y / 10 + 5, 6, 6);
             }
 
+            let _wackRafId = null;
+
             function gameLoop() {
                 if (!state.playing) return;
                 update();
                 draw();
-                requestAnimationFrame(gameLoop);
+                _wackRafId = requestAnimationFrame(gameLoop);
             }
+
+            // Expõe cleaner para closeWindow
+            window._wackCleaner = () => {
+                state.playing = false;
+                if (_wackRafId) { cancelAnimationFrame(_wackRafId); _wackRafId = null; }
+                if (audioCtx && audioCtx.state !== 'closed') audioCtx.close();
+            };
 
             function gameOver() {
                 // Terminou sem usar bomba
@@ -3799,6 +4368,47 @@
         function closeWindow(id) {
             const state = windowState[id];
             const win = document.getElementById(id);
+            const appId = state?.app?.id;
+
+            // --- Limpeza de áudio e loops por app ---
+
+            // Music Player: pausa o <audio> antes de remover o DOM
+            if (appId === 'music') {
+                const audio = document.getElementById(`audio-${id}`);
+                if (audio) { audio.pause(); audio.src = ''; }
+            }
+
+            // Doogly: limpa sub-apps (Wackender, LCD Fire, GlossyWare)
+            if (appId === 'doogly') {
+                if (typeof window._fireCleaner === 'function') {
+                    window._fireCleaner();
+                    window._fireCleaner = null;
+                }
+                if (typeof window._wackCleaner === 'function') {
+                    window._wackCleaner();
+                    window._wackCleaner = null;
+                }
+                if (typeof window._gwCleaner === 'function') {
+                    window._gwCleaner();
+                    window._gwCleaner = null;
+                }
+                // Fecha o AudioContext do LCD Fire
+                if (typeof fAudioCtx !== 'undefined' && fAudioCtx && fAudioCtx.state !== 'closed') {
+                    fAudioCtx.close();
+                }
+            }
+
+            // Snake: cancela o setInterval
+            if (window[`snakeInterval_${id}`]) {
+                clearInterval(window[`snakeInterval_${id}`]);
+                delete window[`snakeInterval_${id}`];
+            }
+
+            // Breakout: cancela o requestAnimationFrame
+            if (win?._brAnimId) {
+                cancelAnimationFrame(win._brAnimId);
+                win._brAnimId = null;
+            }
 
             if (win) win.remove();
 
