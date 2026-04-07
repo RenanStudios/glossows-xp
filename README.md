@@ -62,6 +62,7 @@ Acesse o **Doogly** e pesquise para desbloquear:
 | `glossyware` | GlossyWare — microjogos caóticos |
 | `dorfight` | DORFight — jogo de luta |
 | `wackender` | Wackender — shooter espacial |
+| `lcd fire` | LCD Fire — mini-game simples |
 
 ---
 
