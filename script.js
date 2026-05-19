@@ -4022,7 +4022,7 @@ function initLCDFireLogic() {
                                                                 <b>Sistema:</b> Glossows XP
                                                             </div>
                                                             <div class="hub-panel">
-                                                                <b>Versão:</b> 6.5.50
+                                                                <b>Versão:</b> 7.0.00
                                                             </div>
                                                             <div class="hub-panel">
                                                                 <b>Build:</b> Service Pack 3
@@ -4272,6 +4272,11 @@ function initLCDFireLogic() {
             if (appId === 'cmd') initCMD(winId);
             if (appId === 'mines') initMines(winId);
             if (appId === 'tetris') initTetris(winId);
+            if (appId === 'notepad') npInit(winId);
+            if (appId === 'notepad') {
+                win.style.width = '680px';
+                win.style.height = '520px';
+            }
             if (appId === 'glossybird') {
                 setTimeout(() => startGlossyBird(`glossyBird-${winId}`), 50);
             }
@@ -4506,21 +4511,104 @@ function initLCDFireLogic() {
         function generateAppContent(appId, winId) {
             switch (appId) {
                 case 'notepad':
-                    return `<textarea class="w-full h-full p-2 outline-none resize-none font-mono" placeholder="Digite aqui..."></textarea>`;
+                    return `
+<div class="np-wrap" id="np-${winId}">
+  <div class="np-menubar">
+    <div class="np-menu-root" data-menu="arquivo">
+      <span class="np-menu-item">Arquivo</span>
+      <div class="np-dropdown">
+        <div class="np-dd-item" onclick="npAction('${winId}','new')"><span>Novo</span><span class="np-dd-shortcut">Ctrl+N</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','open')"><span>Abrir...</span><span class="np-dd-shortcut">Ctrl+O</span></div>
+        <div class="np-dd-sep"></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','save')"><span>Salvar</span><span class="np-dd-shortcut">Ctrl+S</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','saveas')"><span>Salvar Como...</span></div>
+        <div class="np-dd-sep"></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','print')"><span>Imprimir...</span><span class="np-dd-shortcut">Ctrl+P</span></div>
+      </div>
+    </div>
+    <div class="np-menu-root" data-menu="editar">
+      <span class="np-menu-item">Editar</span>
+      <div class="np-dropdown">
+        <div class="np-dd-item" onclick="npAction('${winId}','undo')"><span>Desfazer</span><span class="np-dd-shortcut">Ctrl+Z</span></div>
+        <div class="np-dd-sep"></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','cut')"><span>Recortar</span><span class="np-dd-shortcut">Ctrl+X</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','copy')"><span>Copiar</span><span class="np-dd-shortcut">Ctrl+C</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','paste')"><span>Colar</span><span class="np-dd-shortcut">Ctrl+V</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','selectall')"><span>Selecionar Tudo</span><span class="np-dd-shortcut">Ctrl+A</span></div>
+        <div class="np-dd-sep"></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','find')"><span>Localizar...</span><span class="np-dd-shortcut">Ctrl+F</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','replace')"><span>Substituir...</span><span class="np-dd-shortcut">Ctrl+H</span></div>
+        <div class="np-dd-sep"></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','time')"><span>Data/Hora</span><span class="np-dd-shortcut">F5</span></div>
+      </div>
+    </div>
+    <div class="np-menu-root" data-menu="formato">
+      <span class="np-menu-item">Formatar</span>
+      <div class="np-dropdown">
+        <div class="np-dd-item np-dd-toggle" id="np-wrap-toggle-${winId}" onclick="npAction('${winId}','wordwrap')"><span>✓ Quebra de Linha</span></div>
+        <div class="np-dd-sep"></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','font-sm')"><span>Fonte Pequena</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','font-md')"><span>Fonte Média</span></div>
+        <div class="np-dd-item" onclick="npAction('${winId}','font-lg')"><span>Fonte Grande</span></div>
+      </div>
+    </div>
+    <div class="np-menu-root" data-menu="ajuda">
+      <span class="np-menu-item">Ajuda</span>
+      <div class="np-dropdown">
+        <div class="np-dd-item" onclick="npAction('${winId}','about')"><span>Sobre o Bloco de Notas</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="np-find-bar" id="np-find-${winId}" style="display:none">
+    <span class="np-find-label">Localizar:</span>
+    <input class="np-find-input" id="np-find-input-${winId}" type="text" placeholder="Pesquisar...">
+    <button class="np-find-btn" onclick="npFindNext('${winId}')">Próximo</button>
+    <button class="np-find-btn" onclick="npFindClose('${winId}')">✕</button>
+  </div>
+
+  <div class="np-body">
+    <textarea class="np-textarea" id="np-ta-${winId}" spellcheck="false" placeholder="Digite aqui..."></textarea>
+  </div>
+
+  <div class="np-statusbar">
+    <span id="np-pos-${winId}">Ln 1, Col 1</span>
+    <span id="np-chars-${winId}" style="margin-left:auto;margin-right:8px">0 caracteres</span>
+    <span id="np-words-${winId}">0 palavras</span>
+  </div>
+</div>`;
 
                 case 'calc':
                     return `
-                                                                            <div class="p-2 h-full flex flex-col justify-center">
-                                                                                <div class="calc-display" id="calc-disp-${winId}">0</div>
-                                                                                <div class="calculator-grid">
-                                                                                    ${['7', '8', '9', '/', '4', '5', '6', '*', '1', '2', '3', '-', 'C', '0', '=', '+'].map(k => {
-                        let attr = '';
-                        if (k === 'C') attr = 'data-func="clear"';
-                        if (k === '=') attr = 'data-func="equals"';
-                        return `<button class="calc-btn" ${attr} onclick="calcInput('${winId}', '${k}')">${k}</button>`;
-                    }).join('')}
-                                                                                </div>
-                                                                            </div>`;
+<div class="calc-wrap" id="calc-wrap-${winId}">
+  <div class="calc-mode-bar">
+    <button class="calc-mode-btn active" id="calc-mode-std-${winId}" onclick="calcSetMode('${winId}','std')">Padrão</button>
+    <button class="calc-mode-btn" id="calc-mode-sci-${winId}" onclick="calcSetMode('${winId}','sci')">Científica</button>
+  </div>
+  <div class="calc-expr" id="calc-expr-${winId}"></div>
+  <div class="calc-display" id="calc-disp-${winId}">0</div>
+  <div id="calc-sci-panel-${winId}" class="calc-sci-grid" style="display:none">
+    ${[
+                            ['sin', 'sin('], ['cos', 'cos('], ['tan', 'tan('], ['log', 'log('],
+                            ['ln', 'ln('], ['√', 'sqrt('], ['x²', 'sq('], ['π', 'π'],
+                            ['e', 'e'], ['(', '('], [')', ')'], ['±', '±'],
+                        ].map(([label, val]) =>
+                            `<button class="calc-btn calc-btn-sci" onclick="calcInput('${winId}','${val}')">${label}</button>`
+                        ).join('')}
+  </div>
+  <div class="calculator-grid">
+    ${[
+                            ['C', 'C'], ['⌫', '⌫'], ['%', '%'], ['/', '÷'],
+                            ['7', '7'], ['8', '8'], ['9', '9'], ['*', '×'],
+                            ['4', '4'], ['5', '5'], ['6', '6'], ['-', '-'],
+                            ['1', '1'], ['2', '2'], ['3', '3'], ['+', '+'],
+                            ['±', '±'], ['0', '0'], ['.', '.'], ['=', '='],
+                        ].map(([label, val]) => {
+                            let attr = val === '=' ? 'data-func="equals"' : val === 'C' ? 'data-func="clear"' : '';
+                            return `<button class="calc-btn" ${attr} onclick="calcInput('${winId}','${val}')">${label}</button>`;
+                        }).join('')}
+  </div>
+</div>`;
 
                 case 'settings':
                     return `
@@ -5989,26 +6077,324 @@ onclick="revealMine('${winId}',${i},this)">
             } else {
                 stopMetroBokeh();
             }
+}
+
+// --- NOTEPAD LOGIC ---
+function npInit(winId) {
+    const wrap = document.getElementById(`np-${winId}`);
+    if (!wrap) return;
+    const ta = document.getElementById(`np-ta-${winId}`);
+
+    // Fechar dropdowns ao clicar fora
+    document.addEventListener('click', function npOutside(e) {
+        if (!wrap.contains(e.target)) {
+            wrap.querySelectorAll('.np-menu-root.open').forEach(m => m.classList.remove('open'));
         }
+        // limpa se janela sumiu
+        if (!document.getElementById(`np-${winId}`)) {
+            document.removeEventListener('click', npOutside);
+        }
+    });
+
+    // Abrir/fechar dropdowns
+    wrap.querySelectorAll('.np-menu-root').forEach(root => {
+        root.querySelector('.np-menu-item').addEventListener('click', (e) => {
+            e.stopPropagation();
+            const isOpen = root.classList.contains('open');
+            wrap.querySelectorAll('.np-menu-root.open').forEach(m => m.classList.remove('open'));
+            if (!isOpen) root.classList.add('open');
+        });
+    });
+
+    // Hover entre menus enquanto algum está aberto
+    wrap.querySelectorAll('.np-menu-root').forEach(root => {
+        root.addEventListener('mouseenter', () => {
+            if (wrap.querySelector('.np-menu-root.open')) {
+                wrap.querySelectorAll('.np-menu-root.open').forEach(m => m.classList.remove('open'));
+                root.classList.add('open');
+            }
+        });
+    });
+
+    // Status bar: posição do cursor e contagem
+    ta.addEventListener('keyup', () => npUpdateStatus(winId));
+    ta.addEventListener('click', () => npUpdateStatus(winId));
+    ta.addEventListener('input', () => npUpdateStatus(winId));
+
+    // Atalhos de teclado
+    ta.addEventListener('keydown', (e) => {
+        if (e.ctrlKey || e.metaKey) {
+            if (e.key === 's') { e.preventDefault(); npAction(winId, 'save'); }
+            if (e.key === 'n') { e.preventDefault(); npAction(winId, 'new'); }
+            if (e.key === 'f') { e.preventDefault(); npAction(winId, 'find'); }
+            if (e.key === 'h') { e.preventDefault(); npAction(winId, 'replace'); }
+            if (e.key === 'a') { e.preventDefault(); ta.select(); }
+        }
+        if (e.key === 'F5') { e.preventDefault(); npAction(winId, 'time'); }
+        if (e.key === 'Tab') {
+            e.preventDefault();
+            const s = ta.selectionStart, end = ta.selectionEnd;
+            ta.value = ta.value.substring(0, s) + '    ' + ta.value.substring(end);
+            ta.selectionStart = ta.selectionEnd = s + 4;
+        }
+    });
+
+    npUpdateStatus(winId);
+}
+
+function npUpdateStatus(winId) {
+    const ta = document.getElementById(`np-ta-${winId}`);
+    const posEl = document.getElementById(`np-pos-${winId}`);
+    const charEl = document.getElementById(`np-chars-${winId}`);
+    const wordEl = document.getElementById(`np-words-${winId}`);
+    if (!ta) return;
+
+    const text = ta.value;
+    const beforeCursor = text.substring(0, ta.selectionStart);
+    const lines = beforeCursor.split('\n');
+    const ln = lines.length;
+    const col = lines[lines.length - 1].length + 1;
+
+    if (posEl) posEl.textContent = `Ln ${ln}, Col ${col}`;
+    if (charEl) charEl.textContent = `${text.length} caracteres`;
+    if (wordEl) {
+        const words = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+        wordEl.textContent = `${words} palavras`;
+    }
+}
+
+function npAction(winId, action) {
+    // fecha todos os dropdowns
+    const wrap = document.getElementById(`np-${winId}`);
+    if (wrap) wrap.querySelectorAll('.np-menu-root.open').forEach(m => m.classList.remove('open'));
+
+    const ta = document.getElementById(`np-ta-${winId}`);
+    if (!ta) return;
+
+    switch (action) {
+        case 'new':
+            if (ta.value.trim() !== '') {
+                if (!confirm('Deseja descartar as alterações e criar um novo documento?')) return;
+            }
+            ta.value = '';
+            npUpdateStatus(winId);
+            break;
+
+        case 'open':
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.txt,.md,.log,.csv,.js,.html,.css,.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => {
+                    ta.value = ev.target.result;
+                    npUpdateStatus(winId);
+                    // atualiza título da janela
+                    const titleEl = wrap?.closest('.window')?.querySelector('.window-title');
+                    if (titleEl) titleEl.textContent = file.name + ' - Bloco de Notas';
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+            break;
+
+        case 'save':
+        case 'saveas':
+            const blob = new Blob([ta.value], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'documento.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            _showToast('Arquivo salvo!', 'success');
+            break;
+
+        case 'print':
+            const w = window.open('', '_blank');
+            w.document.write(`<pre style="font-family:monospace;white-space:pre-wrap">${ta.value.replace(/</g, '&lt;')}</pre>`);
+            w.document.close();
+            w.print();
+            break;
+
+        case 'undo':
+            document.execCommand('undo');
+            break;
+
+        case 'cut':
+            ta.focus();
+            document.execCommand('cut');
+            break;
+
+        case 'copy':
+            ta.focus();
+            document.execCommand('copy');
+            break;
+
+        case 'paste':
+            ta.focus();
+            navigator.clipboard.readText().then(text => {
+                const s = ta.selectionStart, e = ta.selectionEnd;
+                ta.value = ta.value.substring(0, s) + text + ta.value.substring(e);
+                ta.selectionStart = ta.selectionEnd = s + text.length;
+                npUpdateStatus(winId);
+            });
+            break;
+
+        case 'selectall':
+            ta.select();
+            break;
+
+        case 'find':
+            const fb = document.getElementById(`np-find-${winId}`);
+            if (fb) {
+                fb.style.display = fb.style.display === 'none' ? 'flex' : 'none';
+                if (fb.style.display === 'flex') document.getElementById(`np-find-input-${winId}`)?.focus();
+            }
+            break;
+
+        case 'replace':
+            const term = prompt('Localizar:');
+            if (!term) break;
+            const repl = prompt('Substituir por:');
+            if (repl === null) break;
+            ta.value = ta.value.split(term).join(repl);
+            npUpdateStatus(winId);
+            _showToast(`Substituição concluída.`, 'info');
+            break;
+
+        case 'time':
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('pt-BR') + ' ' + now.toLocaleDateString('pt-BR');
+            const s = ta.selectionStart;
+            ta.value = ta.value.substring(0, s) + timeStr + ta.value.substring(ta.selectionEnd);
+            ta.selectionStart = ta.selectionEnd = s + timeStr.length;
+            npUpdateStatus(winId);
+            break;
+
+        case 'wordwrap':
+            ta.style.whiteSpace = ta.style.whiteSpace === 'nowrap' ? '' : 'nowrap';
+            const toggle = document.getElementById(`np-wrap-toggle-${winId}`);
+            if (toggle) toggle.querySelector('span').textContent =
+                ta.style.whiteSpace === 'nowrap' ? '   Quebra de Linha' : '✓ Quebra de Linha';
+            break;
+
+        case 'font-sm': ta.style.fontSize = '11px'; break;
+        case 'font-md': ta.style.fontSize = '13px'; break;
+        case 'font-lg': ta.style.fontSize = '16px'; break;
+
+        case 'about':
+            _showToast('Bloco de Notas — Glossows XP · Estilo Windows 7', 'info');
+            break;
+    }
+}
+
+function npFindNext(winId) {
+    const ta = document.getElementById(`np-ta-${winId}`);
+    const input = document.getElementById(`np-find-input-${winId}`);
+    if (!ta || !input || !input.value) return;
+    const term = input.value;
+    const start = ta.value.indexOf(term, ta.selectionEnd);
+    if (start !== -1) {
+        ta.focus();
+        ta.setSelectionRange(start, start + term.length);
+    } else {
+        // volta ao início
+        const fromStart = ta.value.indexOf(term);
+        if (fromStart !== -1) {
+            ta.focus();
+            ta.setSelectionRange(fromStart, fromStart + term.length);
+        } else {
+            _showToast(`"${term}" não encontrado.`, 'error');
+        }
+    }
+}
+
+function npFindClose(winId) {
+    const fb = document.getElementById(`np-find-${winId}`);
+    if (fb) fb.style.display = 'none';
+}
 
         // Calculator
-        function calcInput(winId, val) {
-            const disp = document.getElementById(`calc-disp-${winId}`);
-            if (val === 'C') disp.innerText = '0';
-            else if (val === '=') {
-                try {
-                    disp.innerText = eval(disp.innerText);
-                    calcCount++;
-                    if (calcCount >= 10) unlockAchievement("calc_master");
-                } catch {
-                    disp.innerText = 'Erro';
-                }
+function calcInput(winId, val) {
+    const disp = document.getElementById(`calc-disp-${winId}`);
+    const expr = document.getElementById(`calc-expr-${winId}`);
+    let cur = disp.innerText;
 
-            } else {
-                if (disp.innerText === '0') disp.innerText = val;
-                else disp.innerText += val;
-            }
+    if (val === 'C') {
+        disp.innerText = '0';
+        if (expr) expr.innerText = '';
+        return;
+    }
+    if (val === '⌫') {
+        disp.innerText = cur.length > 1 ? cur.slice(0, -1) : '0';
+        return;
+    }
+    if (val === '=') {
+        try {
+            if (expr) expr.innerText = cur + ' =';
+            let raw = cur
+                .replace(/×/g, '*').replace(/÷/g, '/')
+                .replace(/π/g, Math.PI)
+                .replace(/e(?!\d)/g, Math.E)
+                .replace(/sin\(/g, 'Math.sin(')
+                .replace(/cos\(/g, 'Math.cos(')
+                .replace(/tan\(/g, 'Math.tan(')
+                .replace(/log\(/g, 'Math.log10(')
+                .replace(/ln\(/g, 'Math.log(')
+                .replace(/sqrt\(/g, 'Math.sqrt(')
+                .replace(/sq\(([^)]+)\)/g, '(($1)*($1))');
+            let result = Function('"use strict"; return (' + raw + ')')();
+            result = parseFloat(result.toPrecision(12));
+            disp.innerText = String(result);
+            calcCount++;
+            if (calcCount >= 10) unlockAchievement("calc_master");
+        } catch {
+            disp.innerText = 'Erro';
         }
+        return;
+    }
+    if (val === '±') {
+        if (cur !== '0') disp.innerText = cur.startsWith('-') ? cur.slice(1) : '-' + cur;
+        return;
+    }
+    if (val === '%') {
+        try { disp.innerText = String(parseFloat(cur) / 100); } catch { disp.innerText = 'Erro'; }
+        return;
+    }
+
+    // acrescentar ao display
+    const operators = ['+', '-', '*', '/', '×', '÷'];
+    const lastChar = cur.slice(-1);
+    if (cur === '0' && !['.', '+', '-', '*', '/', '×', '÷', '(', ')'].includes(val) && !val.endsWith('(')) {
+        disp.innerText = val;
+    } else if (operators.includes(val) && operators.includes(lastChar)) {
+        disp.innerText = cur.slice(0, -1) + val; // troca operador
+    } else {
+        disp.innerText += val;
+    }
+}
+
+function calcSetMode(winId, mode) {
+    const sciPanel = document.getElementById(`calc-sci-panel-${winId}`);
+    const wrap = document.getElementById(`calc-wrap-${winId}`);
+    const btnStd = document.getElementById(`calc-mode-std-${winId}`);
+    const btnSci = document.getElementById(`calc-mode-sci-${winId}`);
+    if (!sciPanel) return;
+    if (mode === 'sci') {
+        sciPanel.style.display = 'grid';
+        wrap.style.width = '340px';
+        btnSci.classList.add('active');
+        btnStd.classList.remove('active');
+    } else {
+        sciPanel.style.display = 'none';
+        wrap.style.width = '';
+        btnStd.classList.add('active');
+        btnSci.classList.remove('active');
+    }
+}
 
 // ==============================
 // GLOSSPLAY — VIDEO PLAYER
@@ -8218,7 +8604,7 @@ function gpSetSkin(skin, winId) {
                             response = "";
                         }
                         else if (cmdClean === 'ver') {
-                            response = "Glossows XP Professional [Versão 6.5.50]";
+                            response = "Glossows XP Professional [Versão 7.0.00]";
                         }
                         else if (cmdClean.startsWith('echo ')) {
                             response = fullCmd.substring(5);
