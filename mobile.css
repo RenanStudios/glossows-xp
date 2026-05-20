@@ -1,0 +1,347 @@
+/* ============================================================
+   GLOSSOWS XP — OTIMIZAÇÕES MOBILE (MODO PAISAGEM)
+   Adicione no <head> do index.html APÓS o style.css:
+   <link rel="stylesheet" href="mobile.css">
+
+   Adicione no <head> a meta tag de orientação:
+   <meta name="screen-orientation" content="landscape">
+   ============================================================ */
+
+/* ── 1. FORÇAR ROTAÇÃO: aviso de portrait ───────────────────────────────── */
+#rotate-warning {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    background: linear-gradient(to bottom, #0a2f6b 0%, #1a7de0 50%, #072b5f 100%);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    color: #fff;
+    text-align: center;
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+}
+
+#rotate-warning .rotate-icon {
+    font-size: 64px;
+    animation: rotate-pulse 1.5s ease-in-out infinite;
+}
+
+#rotate-warning p {
+    font-size: 16px;
+    font-weight: 300;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    max-width: 240px;
+    line-height: 1.5;
+}
+
+@keyframes rotate-pulse {
+    0%, 100% { transform: rotate(0deg) scale(1); }
+    50%       { transform: rotate(90deg) scale(1.1); }
+}
+
+/* Mostra o aviso SOMENTE em portrait + mobile */
+@media screen and (max-width: 768px) and (orientation: portrait) {
+    #rotate-warning { display: flex !important; }
+
+    /* Oculta tudo mais enquanto está em portrait */
+    #loadingScreen,
+    #lockscreen,
+    #desktop,
+    #windows-area,
+    #taskbar,
+    #start-menu,
+    #shutdown-screen,
+    #achievement-popup-container {
+        display: none !important;
+    }
+}
+
+/* ── 2. LANDSCAPE MOBILE: variáveis e base ──────────────────────────────── */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+
+    :root {
+        --taskbar-height: 36px;   /* taskbar menor em telas pequenas */
+        --title-bar-height: 24px;
+    }
+
+    /* Impede scroll acidental no body */
+    body {
+        overflow: hidden;
+        touch-action: none;
+    }
+
+    /* ── 3. TASKBAR ─────────────────────────────────────────────────────── */
+    #taskbar {
+        height: var(--taskbar-height) !important;
+        padding: 0 6px !important;
+        font-size: 11px !important;
+    }
+
+    #start-btn {
+        padding: 3px 8px !important;
+        font-size: 11px !important;
+        gap: 4px !important;
+    }
+
+    #start-btn img {
+        width: 14px !important;
+        height: 14px !important;
+    }
+
+    #task-time {
+        font-size: 11px !important;
+    }
+
+    #task-date {
+        font-size: 9px !important;
+    }
+
+    .taskbar-app {
+        padding: 2px 8px !important;
+        font-size: 11px !important;
+        height: 26px !important;
+    }
+
+    /* ── 4. DESKTOP ─────────────────────────────────────────────────────── */
+    #desktop {
+        height: calc(100vh - var(--taskbar-height)) !important;
+        padding: 4px !important;
+        gap: 2px !important;
+    }
+
+    /* Ícones do desktop menores */
+    .desktop-icon {
+        width: 60px !important;
+        padding: 4px !important;
+        gap: 3px !important;
+    }
+
+    .desktop-icon i {
+        font-size: 20px !important;
+    }
+
+    .desktop-icon span {
+        font-size: 9px !important;
+        line-height: 1.2 !important;
+    }
+
+    /* ── 5. JANELAS — comportamento mobile ──────────────────────────────── */
+    .window {
+        /* Janelas abertas ocupam quase tela toda por padrão em mobile */
+        max-width: calc(100vw - 8px) !important;
+        max-height: calc(100vh - var(--taskbar-height) - 4px) !important;
+    }
+
+    /* Barra de título — toque amigável */
+    .title-bar {
+        height: var(--title-bar-height) !important;
+        min-height: var(--title-bar-height) !important;
+        font-size: 11px !important;
+        padding: 0 6px !important;
+        touch-action: none; /* permite capturar drag */
+        cursor: grab;
+    }
+
+    .title-bar:active {
+        cursor: grabbing;
+    }
+
+    /* Botões da janela (min/max/close) maiores p/ toque */
+    .win-btn {
+        width: 18px !important;
+        height: 18px !important;
+        min-width: 18px !important;
+        border-radius: 50% !important;
+    }
+
+    .window-controls {
+        gap: 5px !important;
+    }
+
+    /* ── 6. MENU INICIAR ────────────────────────────────────────────────── */
+    #start-menu {
+        bottom: var(--taskbar-height) !important;
+        font-size: 12px !important;
+        max-height: calc(100vh - var(--taskbar-height) - 4px) !important;
+        overflow-y: auto !important;
+    }
+
+    .start-item {
+        padding: 6px 12px !important;
+        font-size: 12px !important;
+    }
+
+    .wallpaper-item {
+        padding: 4px !important;
+    }
+
+    .wallpaper-thumb {
+        width: 32px !important;
+        height: 24px !important;
+    }
+
+    /* ── 7. LOCK SCREEN ─────────────────────────────────────────────────── */
+    .lock-glass {
+        padding: 12px 20px !important;
+        gap: 4px !important;
+    }
+
+    .lock-time {
+        font-size: 48px !important;
+        line-height: 1 !important;
+    }
+
+    .lock-date {
+        font-size: 12px !important;
+    }
+
+    .slide-hint {
+        font-size: 11px !important;
+        margin-top: 8px !important;
+    }
+
+    /* ── 8. APPS INTERNOS ───────────────────────────────────────────────── */
+
+    /* Calculadora */
+    .calc-wrap {
+        padding: 4px !important;
+        gap: 3px !important;
+    }
+
+    .calc-btn,
+    .calc-btn-sci {
+        padding: 6px 0 !important;
+        font-size: 11px !important;
+    }
+
+    .calc-display {
+        font-size: 20px !important;
+        padding: 4px 8px !important;
+    }
+
+    /* Bloco de Notas */
+    .np-menubar {
+        font-size: 11px !important;
+    }
+
+    .np-textarea {
+        font-size: 12px !important;
+    }
+
+    /* CMD */
+    .cmd-body {
+        font-size: 11px !important;
+        padding: 4px !important;
+    }
+
+    /* File Manager */
+    .fm-sidebar {
+        width: 100px !important;
+        font-size: 11px !important;
+    }
+
+    .fm-item {
+        font-size: 11px !important;
+        padding: 4px 6px !important;
+    }
+
+    /* Achievement popup */
+    #achievement-popup-container {
+        bottom: calc(var(--taskbar-height) + 4px) !important;
+        right: 6px !important;
+    }
+
+    .achievement-popup {
+        font-size: 11px !important;
+        padding: 8px 12px !important;
+        min-width: 180px !important;
+        max-width: 240px !important;
+    }
+
+    /* ── 9. CANVAS GAMES — responsivos ──────────────────────────────────── */
+    canvas {
+        max-width: 100% !important;
+        max-height: calc(100vh - var(--taskbar-height) - var(--title-bar-height) - 8px) !important;
+        touch-action: none;
+    }
+
+    /* Glossy Bird / Snake: toque para pular/mover */
+    .game-tap-hint {
+        font-size: 10px !important;
+    }
+
+    /* Tetris */
+    .tetris-board {
+        max-height: calc(100vh - var(--taskbar-height) - 60px) !important;
+    }
+
+    /* Campo Minado — células menores */
+    .mine-cell {
+        width: 22px !important;
+        height: 22px !important;
+        font-size: 11px !important;
+    }
+
+    /* Jogo da Velha — células maiores p/ toque */
+    .ttt-cell {
+        font-size: 28px !important;
+    }
+}
+
+/* ── 10. SCROLL SUAVE em listas dentro de janelas ───────────────────────── */
+@media (hover: none) and (pointer: coarse) {
+    .window-content,
+    .np-body,
+    .fm-content,
+    .cmd-body,
+    .hub-content,
+    .settings-content {
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior: contain;
+    }
+
+    /* Botões — feedback de toque */
+    .win-btn,
+    .start-item,
+    .desktop-icon,
+    .taskbar-app,
+    .calc-btn,
+    .dorf-btn,
+    .wallpaper-item {
+        -webkit-tap-highlight-color: rgba(255,255,255,0.15);
+    }
+
+    /* Evita zoom acidental em inputs */
+    input, textarea, select {
+        font-size: 16px !important; /* iOS não dá zoom acima de 16px */
+        touch-action: auto;
+    }
+
+    /* Torna a title-bar grande o suficiente p/ arrastar com o dedo */
+    .title-bar {
+        min-height: 28px;
+        cursor: default;
+    }
+}
+
+/* ── 11. SAFE AREA (iPhone com notch em landscape) ──────────────────────── */
+@supports (padding: max(0px)) {
+    @media screen and (orientation: landscape) {
+        #taskbar {
+            padding-left: max(8px, env(safe-area-inset-left)) !important;
+            padding-right: max(8px, env(safe-area-inset-right)) !important;
+        }
+
+        #desktop {
+            padding-left: max(4px, env(safe-area-inset-left)) !important;
+            padding-right: max(4px, env(safe-area-inset-right)) !important;
+        }
+
+        #start-menu {
+            left: max(0px, env(safe-area-inset-left)) !important;
+        }
+    }
+}
