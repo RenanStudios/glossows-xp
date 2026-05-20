@@ -294,7 +294,7 @@
         min-height: 0 !important;
         max-width: calc(100vw - 6px) !important;
         max-height: calc(100vh - 30px - 2px) !important;
-        zoom: 0.7;
+        zoom: 0.55;
     }
 
         /* Tamanhos por app — definidos ANTES do zoom, o zoom encolhe tudo junto */
