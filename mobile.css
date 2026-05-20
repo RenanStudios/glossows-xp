@@ -109,16 +109,6 @@
         line-height: 1.2 !important;
     }
 
-    /* ── 5. JANELAS ───────────────────────────────────────────────────── */
-    .window {
-        min-width: 160px !important;
-        min-height: 100px !important;
-        border-radius: 7px 7px 4px 4px !important;
-        /* Garante que não vaze para fora da tela */
-        max-width: calc(100vw - 6px) !important;
-        max-height: calc(100vh - 30px - 2px) !important;
-    }
-
     /* Title bar — área de toque */
     .title-bar {
         height: 22px !important;
@@ -313,6 +303,78 @@
             height: calc(100vh - 30px) !important;
             top: 0 !important;
             left: 0 !important;
+        }
+
+        /* Calculadora — compacta, mais larga que alta */
+        .window:has(.calc-wrap) {
+            width: 220px !important;
+            height: 200px !important;
+        }
+
+        /* Bloco de Notas */
+        .window:has(.np-wrap) {
+            width: 320px !important;
+            height: 200px !important;
+        }
+
+        /* File Manager / Arquivos */
+        .window:has(.fm-wrap) {
+            width: 300px !important;
+            height: 190px !important;
+        }
+
+        /* Music Player */
+        .window:has(.music-player) {
+            width: 240px !important;
+            height: 170px !important;
+        }
+
+        /* CMD */
+        .window:has(.cmd-body) {
+            width: 300px !important;
+            height: 180px !important;
+        }
+
+        /* Doogly */
+        .window:has(#doogly-search) {
+            width: 280px !important;
+            height: 170px !important;
+        }
+
+        /* Jogos — um pouco maiores pois precisam de espaço pra jogar */
+        .window:has(canvas) {
+            width: 300px !important;
+            height: 210px !important;
+        }
+
+        /* Jogo da Velha especificamente */
+        .window:has(.ttt-board) {
+            width: 200px !important;
+            height: 200px !important;
+        }
+
+        /* Hub / Configurações */
+        .window:has(.hub-nav-btn),
+        .window:has(.settings-item) {
+            width: 320px !important;
+            height: 200px !important;
+        }
+
+        /* GlossPlay */
+        .window:has(.glossplay-wrap) {
+            width: 300px !important;
+            height: 190px !important;
+        }
+
+    /* Music Player — botões maiores para toque */
+    .music-controls {
+        gap: 10px !important;
+    }
+
+        .music-controls button {
+            width: 34px !important;
+            height: 34px !important;
+            font-size: 14px !important;
         }
 }
 
