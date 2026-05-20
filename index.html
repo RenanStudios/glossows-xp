@@ -2,7 +2,11 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="screen-orientation" content="landscape">
     <title>Glossows XP</title>
     <link rel="icon" type="image/png" href="img/icon.png">
     <!-- Tailwind CSS for layout utilities -->
@@ -11,6 +15,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Estilos externos -->
     <link rel="stylesheet" href="style.css">
+    <!-- Otimizações mobile (landscape) -->
+    <link rel="stylesheet" href="mobile.css">
 </head>
 <body class="bg-default" id="main-body">
 
@@ -190,5 +196,7 @@
 
     <!-- Scripts externos -->
     <script src="script.js"></script>
+    <!-- Patch mobile (touch drag + rotate warning) -->
+    <script src="mobile-patch.js"></script>
 </body>
 </html>
