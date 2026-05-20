@@ -298,6 +298,22 @@
     #reset-modal-box h3 { font-size: 13px !important; }
     #reset-modal-box p  { font-size: 10px !important; }
     .modal-btn { height: 32px !important; font-size: 11px !important; border-radius: 7px !important; }
+
+    /* Remove os mínimos que forçam a janela a ser grande */
+    .window {
+        min-width: 0 !important;
+        min-height: 0 !important;
+        width: 340px !important;
+        height: calc(100vh - 30px - 8px) !important;
+    }
+
+        /* Corrige o maximizar para usar a taskbar menor (30px) */
+        .window[data-maximized="true"] {
+            width: 100% !important;
+            height: calc(100vh - 30px) !important;
+            top: 0 !important;
+            left: 0 !important;
+        }
 }
 
 /* ── 11. TOUCH — feedback e scroll em qualquer tamanho ──────────────────── */
