@@ -115,16 +115,19 @@
 
     /* ── 6. MAXIMIZAR JANELA AO ABRIR EM TELAS MUITO PEQUENAS ────────── */
     // Em landscape mobile, janelas abertas ficam maximizadas por padrão
+    // Abre janelas em tamanho compacto em vez de maximizar
     const _origOpenApp = window.openApp;
     if (typeof _origOpenApp === 'function' && window.innerHeight <= 480) {
         window.openApp = function (appId) {
             _origOpenApp(appId);
-            // Aguarda a janela ser criada
             requestAnimationFrame(() => {
                 const wins = document.querySelectorAll('.window');
                 const lastWin = wins[wins.length - 1];
-                if (lastWin && lastWin.id && typeof maximizeWindow === 'function') {
-                    maximizeWindow(lastWin.id);
+                if (lastWin) {
+                    lastWin.style.width = '340px';
+                    lastWin.style.height = (window.innerHeight - 30 - 8) + 'px';
+                    lastWin.style.left = '20px';
+                    lastWin.style.top = '4px';
                 }
             });
         };
