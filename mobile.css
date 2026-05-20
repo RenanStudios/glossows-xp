@@ -289,92 +289,68 @@
     #reset-modal-box p  { font-size: 10px !important; }
     .modal-btn { height: 32px !important; font-size: 11px !important; border-radius: 7px !important; }
 
-    /* Remove os mínimos que forçam a janela a ser grande */
     .window {
         min-width: 0 !important;
         min-height: 0 !important;
-        width: 340px !important;
-        height: calc(100vh - 30px - 8px) !important;
+        max-width: calc(100vw - 6px) !important;
+        max-height: calc(100vh - 30px - 2px) !important;
+        zoom: 0.65;
     }
 
-        /* Corrige o maximizar para usar a taskbar menor (30px) */
-        .window[data-maximized="true"] {
-            width: 100% !important;
-            height: calc(100vh - 30px) !important;
-            top: 0 !important;
-            left: 0 !important;
-        }
-
-        /* Calculadora — compacta, mais larga que alta */
+        /* Tamanhos por app — definidos ANTES do zoom, o zoom encolhe tudo junto */
         .window:has(.calc-wrap) {
-            width: 220px !important;
-            height: 200px !important;
-        }
-
-        /* Bloco de Notas */
-        .window:has(.np-wrap) {
-            width: 320px !important;
-            height: 200px !important;
-        }
-
-        /* File Manager / Arquivos */
-        .window:has(.fm-wrap) {
-            width: 300px !important;
-            height: 190px !important;
-        }
-
-        /* Music Player */
-        .window:has(.music-player) {
-            width: 240px !important;
-            height: 170px !important;
-        }
-
-        /* CMD */
-        .window:has(.cmd-body) {
-            width: 300px !important;
-            height: 180px !important;
-        }
-
-        /* Doogly */
-        .window:has(#doogly-search) {
             width: 280px !important;
-            height: 170px !important;
+            height: 340px !important;
         }
 
-        /* Jogos — um pouco maiores pois precisam de espaço pra jogar */
-        .window:has(canvas) {
-            width: 300px !important;
-            height: 210px !important;
+        .window:has(.np-wrap) {
+            width: 680px !important;
+            height: 520px !important;
         }
 
-        /* Jogo da Velha especificamente */
-        .window:has(.ttt-board) {
-            width: 200px !important;
-            height: 200px !important;
+        .window:has(.fm-wrap) {
+            width: 500px !important;
+            height: 380px !important;
         }
 
-        /* Hub / Configurações */
-        .window:has(.hub-nav-btn),
+        .window:has(.music-player) {
+            width: 340px !important;
+            height: 300px !important;
+        }
+
+        .window:has(.cmd-body) {
+            width: 460px !important;
+            height: 320px !important;
+        }
+
+        .window:has(#doogly-search) {
+            width: 420px !important;
+            height: 300px !important;
+        }
+
+        .window:has(.hub-nav-btn) {
+            width: 500px !important;
+            height: 400px !important;
+        }
+
         .window:has(.settings-item) {
-            width: 320px !important;
-            height: 200px !important;
+            width: 420px !important;
+            height: 360px !important;
         }
 
-        /* GlossPlay */
         .window:has(.glossplay-wrap) {
-            width: 300px !important;
-            height: 190px !important;
+            width: 460px !important;
+            height: 340px !important;
         }
 
-    /* Music Player — botões maiores para toque */
-    .music-controls {
-        gap: 10px !important;
-    }
+        .window:has(.ttt-board) {
+            width: 300px !important;
+            height: 340px !important;
+        }
 
-        .music-controls button {
-            width: 34px !important;
-            height: 34px !important;
-            font-size: 14px !important;
+        .window:has(canvas) {
+            width: 420px !important;
+            height: 380px !important;
         }
 }
 
