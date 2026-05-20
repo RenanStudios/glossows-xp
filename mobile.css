@@ -1,13 +1,9 @@
 /* ============================================================
    GLOSSOWS XP — OTIMIZAÇÕES MOBILE (MODO PAISAGEM)
-   Adicione no <head> do index.html APÓS o style.css:
-   <link rel="stylesheet" href="mobile.css">
-
-   Adicione no <head> a meta tag de orientação:
-   <meta name="screen-orientation" content="landscape">
+   Coloque após style.css no <head>
    ============================================================ */
 
-/* ── 1. FORÇAR ROTAÇÃO: aviso de portrait ───────────────────────────────── */
+/* ── 1. AVISO DE PORTRAIT ───────────────────────────────────────────────── */
 #rotate-warning {
     display: none;
     position: fixed;
@@ -22,324 +18,315 @@
     text-align: center;
     font-family: 'Segoe UI', Tahoma, sans-serif;
 }
-
 #rotate-warning .rotate-icon {
-    font-size: 64px;
+    font-size: 56px;
     animation: rotate-pulse 1.5s ease-in-out infinite;
 }
-
 #rotate-warning p {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 300;
-    letter-spacing: 1px;
     opacity: 0.9;
-    max-width: 240px;
-    line-height: 1.5;
+    max-width: 220px;
+    line-height: 1.6;
 }
-
 @keyframes rotate-pulse {
-    0%, 100% { transform: rotate(0deg) scale(1); }
-    50%       { transform: rotate(90deg) scale(1.1); }
+    0%,100% { transform: rotate(0deg) scale(1); }
+    50%      { transform: rotate(90deg) scale(1.1); }
 }
 
-/* Mostra o aviso SOMENTE em portrait + mobile */
-@media screen and (max-width: 768px) and (orientation: portrait) {
+@media screen and (max-width: 900px) and (orientation: portrait) {
     #rotate-warning { display: flex !important; }
-
-    /* Oculta tudo mais enquanto está em portrait */
-    #loadingScreen,
-    #lockscreen,
-    #desktop,
-    #windows-area,
-    #taskbar,
-    #start-menu,
-    #shutdown-screen,
-    #achievement-popup-container {
+    #loadingScreen, #lockscreen, #desktop, #windows-area,
+    #taskbar, #start-menu, #shutdown-screen, #achievement-popup-container {
         display: none !important;
     }
 }
 
-/* ── 2. LANDSCAPE MOBILE: variáveis e base ──────────────────────────────── */
-@media screen and (max-height: 500px) and (orientation: landscape) {
+/* ══════════════════════════════════════════════════════════════════════════
+   LANDSCAPE MOBILE — escala densa igual ao desktop em tela pequena
+   Aplica em qualquer tela com altura ≤ 480px e orientação landscape
+   (cobre ~99% dos celulares em landscape: 667×375, 740×360, 812×375 etc.)
+   ══════════════════════════════════════════════════════════════════════════ */
+@media screen and (max-height: 480px) and (orientation: landscape) {
 
+    /* ── 2. VARIÁVEIS ─────────────────────────────────────────────────── */
     :root {
-        --taskbar-height: 36px;   /* taskbar menor em telas pequenas */
-        --title-bar-height: 24px;
+        --taskbar-height: 30px;
+        --title-bar-height: 22px;
     }
 
-    /* Impede scroll acidental no body */
-    body {
-        overflow: hidden;
-        touch-action: none;
-    }
+    body { overflow: hidden; touch-action: none; }
 
-    /* ── 3. TASKBAR ─────────────────────────────────────────────────────── */
+    /* ── 3. TASKBAR ───────────────────────────────────────────────────── */
     #taskbar {
-        height: var(--taskbar-height) !important;
-        padding: 0 6px !important;
-        font-size: 11px !important;
+        height: 30px !important;
+        padding: 0 6px 0 0 !important;
+        font-size: 10px !important;
     }
-
     #start-btn {
-        padding: 3px 8px !important;
-        font-size: 11px !important;
+        padding: 3px 10px 3px 8px !important;
+        font-size: 10px !important;
+        font-weight: bold !important;
+        border-radius: 0 11px 11px 0 !important;
         gap: 4px !important;
     }
+    #start-btn img { width: 13px !important; height: 13px !important; }
 
-    #start-btn img {
-        width: 14px !important;
-        height: 14px !important;
-    }
-
-    #task-time {
-        font-size: 11px !important;
-    }
-
-    #task-date {
-        font-size: 9px !important;
-    }
+    #task-time { font-size: 10px !important; line-height: 1.2 !important; }
+    #task-date { font-size: 8px !important; }
 
     .taskbar-app {
-        padding: 2px 8px !important;
-        font-size: 11px !important;
-        height: 26px !important;
+        min-width: 28px !important;
+        height: 22px !important;
+        padding: 0 6px !important;
+        font-size: 10px !important;
+        border-radius: 3px !important;
     }
 
-    /* ── 4. DESKTOP ─────────────────────────────────────────────────────── */
+    #taskbar-apps { gap: 2px !important; }
+
+    /* ── 4. DESKTOP ───────────────────────────────────────────────────── */
     #desktop {
-        height: calc(100vh - var(--taskbar-height)) !important;
-        padding: 4px !important;
-        gap: 2px !important;
+        height: calc(100vh - 30px) !important;
+        padding: 3px 4px !important;
+        gap: 1px !important;
     }
 
-    /* Ícones do desktop menores */
-    .desktop-icon {
-        width: 60px !important;
-        padding: 4px !important;
-        gap: 3px !important;
+    /* Ícone — proporcional ao que é no desktop, só menor */
+    .icon {
+        width: 46px !important;
+        margin: 3px !important;
     }
-
-    .desktop-icon i {
-        font-size: 20px !important;
+    .icon-img {
+        width: 32px !important;
+        height: 32px !important;
+        font-size: 15px !important;
+        border-radius: 8px !important;
+        margin-bottom: 3px !important;
     }
-
-    .desktop-icon span {
-        font-size: 9px !important;
+    .icon span {
+        font-size: 8px !important;
         line-height: 1.2 !important;
     }
 
-    /* ── 5. JANELAS — comportamento mobile ──────────────────────────────── */
+    /* ── 5. JANELAS ───────────────────────────────────────────────────── */
     .window {
-        /* Janelas abertas ocupam quase tela toda por padrão em mobile */
-        max-width: calc(100vw - 8px) !important;
-        max-height: calc(100vh - var(--taskbar-height) - 4px) !important;
+        min-width: 160px !important;
+        min-height: 100px !important;
+        border-radius: 7px 7px 4px 4px !important;
+        /* Garante que não vaze para fora da tela */
+        max-width: calc(100vw - 6px) !important;
+        max-height: calc(100vh - 30px - 2px) !important;
     }
 
-    /* Barra de título — toque amigável */
+    /* Title bar — área de toque */
     .title-bar {
-        height: var(--title-bar-height) !important;
-        min-height: var(--title-bar-height) !important;
-        font-size: 11px !important;
-        padding: 0 6px !important;
-        touch-action: none; /* permite capturar drag */
+        height: 22px !important;
+        min-height: 22px !important;
+        padding: 0 5px !important;
+        font-size: 10px !important;
+        font-weight: bold !important;
+        border-radius: 6px 6px 0 0 !important;
+        touch-action: none;
         cursor: grab;
     }
+    .title-bar:active { cursor: grabbing; }
+    .title-bar span { gap: 4px !important; font-size: 10px !important; }
+    .title-bar i { font-size: 9px !important; }
 
-    .title-bar:active {
-        cursor: grabbing;
-    }
-
-    /* Botões da janela (min/max/close) maiores p/ toque */
+    /* Botões min/max/close */
+    .window-controls { gap: 3px !important; }
     .win-btn {
-        width: 18px !important;
-        height: 18px !important;
-        min-width: 18px !important;
-        border-radius: 50% !important;
+        width: 14px !important;
+        height: 14px !important;
+        min-width: 14px !important;
+        font-size: 7px !important;
     }
 
-    .window-controls {
-        gap: 5px !important;
+    /* Conteúdo da janela */
+    .window-content {
+        border-width: 1px !important;
     }
 
-    /* ── 6. MENU INICIAR ────────────────────────────────────────────────── */
+    /* ── 6. MENU INICIAR ─────────────────────────────────────────────── */
     #start-menu {
-        bottom: var(--taskbar-height) !important;
-        font-size: 12px !important;
-        max-height: calc(100vh - var(--taskbar-height) - 4px) !important;
+        bottom: 30px !important;
+        width: 190px !important;
+        border-radius: 6px 6px 0 0 !important;
+        font-size: 11px !important;
+        max-height: calc(100vh - 30px) !important;
         overflow-y: auto !important;
     }
-
-    .start-item {
-        padding: 6px 12px !important;
-        font-size: 12px !important;
-    }
-
-    .wallpaper-item {
-        padding: 4px !important;
-    }
-
-    .wallpaper-thumb {
-        width: 32px !important;
-        height: 24px !important;
-    }
-
-    /* ── 7. LOCK SCREEN ─────────────────────────────────────────────────── */
-    .lock-glass {
-        padding: 12px 20px !important;
-        gap: 4px !important;
-    }
-
-    .lock-time {
-        font-size: 48px !important;
-        line-height: 1 !important;
-    }
-
-    .lock-date {
-        font-size: 12px !important;
-    }
-
-    .slide-hint {
+    #start-menu > div:first-child {
+        padding: 5px 8px !important;
         font-size: 11px !important;
-        margin-top: 8px !important;
     }
+    #start-menu > div:first-child img {
+        width: 13px !important;
+        height: 13px !important;
+    }
+    .start-item {
+        padding: 6px 10px !important;
+        font-size: 11px !important;
+        gap: 7px !important;
+    }
+    .start-item i { font-size: 11px !important; }
 
-    /* ── 8. APPS INTERNOS ───────────────────────────────────────────────── */
+    /* Wallpaper submenu */
+    .wallpaper-submenu { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px 8px; }
+    .wallpaper-item { padding: 3px !important; flex-direction: column; align-items: center; }
+    .wallpaper-thumb { width: 28px !important; height: 20px !important; border-radius: 3px !important; }
+    .wallpaper-item span { font-size: 8px !important; }
+
+    /* ── 7. LOCK SCREEN ──────────────────────────────────────────────── */
+    #lockscreen .lock-glass {
+        padding: 10px 18px !important;
+        gap: 2px !important;
+        border-radius: 16px !important;
+    }
+    .lock-time { font-size: 42px !important; line-height: 1 !important; }
+    .lock-date { font-size: 10px !important; }
+    .slide-hint { font-size: 9px !important; margin-top: 6px !important; }
+    .slide-hint i { font-size: 10px !important; }
+
+    /* ── 8. APPS INTERNOS ────────────────────────────────────────────── */
 
     /* Calculadora */
-    .calc-wrap {
-        padding: 4px !important;
-        gap: 3px !important;
+    .calc-wrap { padding: 4px !important; gap: 3px !important; }
+    .calc-display, #calc-result { font-size: 18px !important; padding: 3px 6px !important; }
+    .calc-expr { font-size: 9px !important; }
+    .calc-mode-btn { font-size: 9px !important; padding: 3px 0 !important; }
+    .calc-btn, .calc-btn-sci {
+        padding: 5px 0 !important;
+        font-size: 10px !important;
+        border-radius: 4px !important;
     }
-
-    .calc-btn,
-    .calc-btn-sci {
-        padding: 6px 0 !important;
-        font-size: 11px !important;
-    }
-
-    .calc-display {
-        font-size: 20px !important;
-        padding: 4px 8px !important;
-    }
+    .calc-sci-grid { gap: 3px !important; padding: 4px !important; }
 
     /* Bloco de Notas */
-    .np-menubar {
-        font-size: 11px !important;
-    }
-
-    .np-textarea {
-        font-size: 12px !important;
-    }
+    .np-menubar { font-size: 10px !important; height: 20px !important; }
+    .np-dd-item { font-size: 10px !important; padding: 4px 8px !important; }
+    .np-find-bar { padding: 3px 5px !important; gap: 4px !important; }
+    .np-textarea { font-size: 11px !important; padding: 4px 6px !important; }
+    .np-statusbar { height: 16px !important; font-size: 9px !important; }
 
     /* CMD */
-    .cmd-body {
-        font-size: 11px !important;
-        padding: 4px !important;
-    }
+    .cmd-body { font-size: 10px !important; padding: 3px 5px !important; }
+    .cmd-input { font-size: 10px !important; }
 
     /* File Manager */
-    .fm-sidebar {
-        width: 100px !important;
-        font-size: 11px !important;
-    }
+    .fm-sidebar { width: 90px !important; font-size: 10px !important; }
+    .fm-item { font-size: 10px !important; padding: 3px 5px !important; gap: 4px !important; }
+    .fm-item i { font-size: 10px !important; }
+    .fm-toolbar { font-size: 10px !important; padding: 3px 5px !important; gap: 4px !important; }
 
-    .fm-item {
-        font-size: 11px !important;
-        padding: 4px 6px !important;
-    }
+    /* Hub */
+    .hub-nav-btn { font-size: 10px !important; padding: 4px 8px !important; }
+    .hub-title { font-size: 13px !important; }
+    .achievement-card { padding: 5px 7px !important; font-size: 9px !important; }
 
-    /* Achievement popup */
-    #achievement-popup-container {
-        bottom: calc(var(--taskbar-height) + 4px) !important;
-        right: 6px !important;
-    }
+    /* Configurações */
+    .settings-section-title { font-size: 10px !important; }
+    .settings-item { font-size: 10px !important; padding: 4px 8px !important; }
 
-    .achievement-popup {
-        font-size: 11px !important;
-        padding: 8px 12px !important;
-        min-width: 180px !important;
-        max-width: 240px !important;
-    }
+    /* Music Player */
+    .music-player { padding: 6px !important; }
+    .music-controls button { width: 28px !important; height: 28px !important; font-size: 12px !important; }
+    .music-title { font-size: 10px !important; }
+    .music-progress { height: 4px !important; }
 
-    /* ── 9. CANVAS GAMES — responsivos ──────────────────────────────────── */
+    /* Doogly */
+    #doogly-logo { font-size: 22px !important; }
+    #doogly-search { font-size: 11px !important; padding: 4px 8px !important; }
+    .doogly-btn { font-size: 10px !important; padding: 4px 10px !important; }
+
+    /* GlossPlay */
+    .glossplay-wrap { font-size: 10px !important; }
+    .glossplay-item { padding: 4px 6px !important; font-size: 10px !important; }
+
+    /* ── 9. JOGOS ─────────────────────────────────────────────────────── */
     canvas {
         max-width: 100% !important;
-        max-height: calc(100vh - var(--taskbar-height) - var(--title-bar-height) - 8px) !important;
+        max-height: calc(100vh - 30px - 22px - 4px) !important;
         touch-action: none;
+        display: block;
+        margin: 0 auto;
     }
 
-    /* Glossy Bird / Snake: toque para pular/mover */
-    .game-tap-hint {
-        font-size: 10px !important;
+    /* Jogo da Velha */
+    .ttt-cell { font-size: 22px !important; }
+    .ttt-board { gap: 4px !important; }
+    .ttt-status { font-size: 10px !important; }
+
+    /* Campo Minado */
+    .mine-cell {
+        width: 18px !important;
+        height: 18px !important;
+        font-size: 9px !important;
+        border-radius: 2px !important;
     }
+    .mine-header { font-size: 9px !important; padding: 2px 4px !important; }
 
     /* Tetris */
-    .tetris-board {
-        max-height: calc(100vh - var(--taskbar-height) - 60px) !important;
-    }
+    .tetris-wrap { gap: 4px !important; }
+    .tetris-info { font-size: 9px !important; gap: 4px !important; }
 
-    /* Campo Minado — células menores */
-    .mine-cell {
-        width: 22px !important;
-        height: 22px !important;
-        font-size: 11px !important;
-    }
+    /* Cobrinha */
+    .snake-score { font-size: 10px !important; }
 
-    /* Jogo da Velha — células maiores p/ toque */
-    .ttt-cell {
-        font-size: 28px !important;
+    /* ── 10. POPUPS / MODAIS ─────────────────────────────────────────── */
+    #achievement-popup-container {
+        bottom: calc(30px + 4px) !important;
+        right: 5px !important;
     }
+    .achievement-popup {
+        font-size: 10px !important;
+        padding: 6px 10px !important;
+        min-width: 160px !important;
+        max-width: 210px !important;
+        border-radius: 8px !important;
+        gap: 6px !important;
+    }
+    .achievement-popup .ach-icon { font-size: 18px !important; }
+
+    /* Modal de confirmação */
+    #reset-modal-box {
+        width: 240px !important;
+        padding: 18px 16px 14px !important;
+        border-radius: 12px !important;
+    }
+    #reset-modal-box h3 { font-size: 13px !important; }
+    #reset-modal-box p  { font-size: 10px !important; }
+    .modal-btn { height: 32px !important; font-size: 11px !important; border-radius: 7px !important; }
 }
 
-/* ── 10. SCROLL SUAVE em listas dentro de janelas ───────────────────────── */
+/* ── 11. TOUCH — feedback e scroll em qualquer tamanho ──────────────────── */
 @media (hover: none) and (pointer: coarse) {
-    .window-content,
-    .np-body,
-    .fm-content,
-    .cmd-body,
-    .hub-content,
-    .settings-content {
+    .window-content, .np-body, .fm-content, .cmd-body,
+    .hub-content, .settings-content, #start-menu {
         -webkit-overflow-scrolling: touch;
         overscroll-behavior: contain;
     }
-
-    /* Botões — feedback de toque */
-    .win-btn,
-    .start-item,
-    .desktop-icon,
-    .taskbar-app,
-    .calc-btn,
-    .dorf-btn,
-    .wallpaper-item {
+    .win-btn, .start-item, .icon, .taskbar-app,
+    .calc-btn, .dorf-btn, .wallpaper-item, .hub-nav-btn {
         -webkit-tap-highlight-color: rgba(255,255,255,0.15);
     }
-
-    /* Evita zoom acidental em inputs */
-    input, textarea, select {
-        font-size: 16px !important; /* iOS não dá zoom acima de 16px */
-        touch-action: auto;
-    }
-
-    /* Torna a title-bar grande o suficiente p/ arrastar com o dedo */
-    .title-bar {
-        min-height: 28px;
-        cursor: default;
-    }
+    /* Impede zoom automático em inputs no iOS */
+    input, textarea, select { font-size: max(11px, 16px) !important; touch-action: auto; }
+    .title-bar { touch-action: none; }
 }
 
-/* ── 11. SAFE AREA (iPhone com notch em landscape) ──────────────────────── */
+/* ── 12. SAFE AREA — iPhone notch em landscape ──────────────────────────── */
 @supports (padding: max(0px)) {
     @media screen and (orientation: landscape) {
         #taskbar {
-            padding-left: max(8px, env(safe-area-inset-left)) !important;
-            padding-right: max(8px, env(safe-area-inset-right)) !important;
+            padding-left:  max(6px, env(safe-area-inset-left))  !important;
+            padding-right: max(6px, env(safe-area-inset-right)) !important;
         }
-
         #desktop {
-            padding-left: max(4px, env(safe-area-inset-left)) !important;
-            padding-right: max(4px, env(safe-area-inset-right)) !important;
+            padding-left:  max(3px, env(safe-area-inset-left))  !important;
+            padding-right: max(3px, env(safe-area-inset-right)) !important;
         }
-
         #start-menu {
             left: max(0px, env(safe-area-inset-left)) !important;
         }
